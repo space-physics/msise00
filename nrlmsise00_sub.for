@@ -1,5 +1,6 @@
 C-----------------------------------------------------------------------
       SUBROUTINE GTD7(IYD,SEC,ALT,GLAT,GLONG,STL,F107A,F107,AP,MASS,D,T)
+c        Implicit None
 C
 C     NRLMSISE-00
 C     -----------
@@ -132,6 +133,10 @@ C              22 - ALL TN3 VAR           23 - TURBO SCALE HEIGHT VAR
 C
 C        To get current values of SW: CALL TRETRV(SW)
 C
+
+      CHARACTER(len=4) :: ISDATE(3),ISTIME(2),NAME(2),
+     & ISD(3),IST(2),NAM(2)
+      
       DIMENSION D(9),T(2),AP(7),DS(9),TS(2)
       DIMENSION ZN3(5),ZN2(4),SV(25)
       COMMON/GTS3C/TLB,S,DB04,DB16,DB28,DB32,DB40,DB48,DB01,ZA,T0,Z0
@@ -140,8 +145,8 @@ C
       COMMON/LOWER7/PTM(10),PDM(10,8)
       COMMON/PARM7/PT(150),PD(150,9),PS(150),PDL(25,2),PTL(100,4),
      $ PMA(100,10),SAM(100)
-      COMMON/DATIM7/ISD(3),IST(2),NAM(2)
-      COMMON/DATIME/ISDATE(3),ISTIME(2),NAME(2)
+      COMMON/DATIM7/ISD,IST,NAM
+      COMMON/DATIME/ISDATE,ISTIME,NAME
       COMMON/CSW/SW(25),ISW,SWC(25)
       COMMON/MAVG7/PAVGM(10)
       COMMON/DMIX/DM04,DM16,DM28,DM32,DM40,DM01,DM14
@@ -1651,6 +1656,7 @@ C       O&O2 CHEMISTRY/DISSOCIATION CORRECTION FOR MSIS MODELS
 C-----------------------------------------------------------------------
       BLOCK DATA GTD7BK
 C          MSISE-00 01-FEB-02   
+      CHARACTER(len=4) :: ISDATE,ISTIME,NAME
       COMMON/PARM7/PT1(50),PT2(50),PT3(50),PA1(50),PA2(50),PA3(50),
      $ PB1(50),PB2(50),PB3(50),PC1(50),PC2(50),PC3(50),
      $ PD1(50),PD2(50),PD3(50),PE1(50),PE2(50),PE3(50),
