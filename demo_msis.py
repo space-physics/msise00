@@ -15,7 +15,12 @@ from numpy import arange, meshgrid, empty, atleast_1d
 from dateutil.parser import parse
 from datetime import timedelta,datetime, time
 from pytz import UTC
+from astropy.time import Time
+from astropy.coordinates import get_sun,EarthLocation, AltAz
 from matplotlib.pyplot import figure,show
+import sys
+sys.path.append('../python-mapping')
+from coordconv3d import aer2geodetic
 #
 import gtd7
 
@@ -52,6 +57,7 @@ def testgtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
     return densd,tempd
 
 def plotgtd(dens,temp,dtime,altkm):
+
     if dens.ndim==2: #altitude 1-D
         ax = figure().gca()
         for g in dens.columns:
@@ -78,14 +84,24 @@ def plotgtd(dens,temp,dtime,altkm):
         ax.grid(True)
         ax.set_title('Temperature from MSISE-00')
     elif dens.ndim==3: #lat/lon grid
+#%%sun lat/lon #FIXME this is a seemingly arbitrary procedure
+        ttime = Time(dtime)
+        obs = EarthLocation(0,0) # geodetic lat,lon = 0,0 arbitrary
+        sun = get_sun(time=ttime)
+        aaf = AltAz(obstime=ttime,location=obs)
+        sloc = sun.transform_to(aaf)
+        slat,slon,alt = aer2geodetic(sloc.az.value, sloc.alt.value, sloc.distance.value,0,0,0)
+#%%
         for g in dens.items:
             fg = figure()
             ax = fg.gca()
             hi = ax.imshow(dens[g].values,extent=(glon[0,0],glon[0,-1],glat[0,0],glat[-1,0]))
             fg.colorbar(hi)
+            ax.plot(slon,slat,linestyle='none',marker='*',markersize=15,color='w')
             ax.set_xlabel('longitude (deg)')
             ax.set_ylabel('latitude (deg)')
             ax.set_title('Density: ' + g + '\n' + str(dtime) + ' at alt.(km) '+str(altkm))
+            ax.autoscale(True,tight=True)
     else:
         print('densities' + str(dens))
         print('temperatures ' + str(temp))
@@ -122,7 +138,7 @@ if __name__ == '__main__':
 #%% lat/lon grid mode at constant altitude
     else:# len(p.altkm)==1:
         if p.altkm[0] is None:
-            altkm = 100
+            altkm = 200
         else:
             altkm = p.altkm[0]
         lat = arange(-90,90+5,5)
