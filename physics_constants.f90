@@ -4,7 +4,7 @@ module physics_constants
 
   public
 
-  ! Basic phisical constants of matter. The 10^-23 and 10^23 factors
+  ! Basic physical constants of matter. The 10^-23 and 10^23 factors
   ! have been removed to ease calculations.
 
   ! Boltzman Constant - CODATA 2010
