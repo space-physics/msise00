@@ -133,7 +133,7 @@ C              22 - ALL TN3 VAR           23 - TURBO SCALE HEIGHT VAR
 C
 C        To get current values of SW: CALL TRETRV(SW)
 C
-
+      Intent(OUT)   :: D,T
       CHARACTER(len=4) :: ISDATE(3),ISTIME(2),NAME(2),
      & ISD(3),IST(2),NAM(2)
       
@@ -178,7 +178,7 @@ C
       XMM=PDM(5,3)
 C
 C       THERMOSPHERE/MESOSPHERE (above ZN2(1))
-      ALTT=AMAX1(ALT,ZN2(1))
+      ALTT=MAX(ALT,ZN2(1))
       MSS=MASS
 C       Only calculate N2 in thermosphere if alt in mixed region
       IF(ALT.LT.ZMIX.AND.MASS.GT.0) MSS=28
@@ -1323,7 +1323,7 @@ CCCCCCWRITE(6,*) 'DB',ALT,DLB,TINF,TLB,XM,ALPHA,ZLB,S2,MN1,ZN1,TN1
       DENSU=1.
 C        Joining altitude of Bates and spline
       ZA=ZN1(1)
-      Z=AMAX1(ALT,ZA)
+      Z=MAX(ALT,ZA)
 C      Geopotential altitude difference from ZLB
       ZG2=ZETA(Z,ZLB)
 C      Bates temperature
@@ -1338,7 +1338,7 @@ C      Temperature gradient at ZA from Bates profile
       DTA=(TINF-TA)*S2*((RE+ZLB)/(RE+ZA))**2
       TGN1(1)=DTA 
       TN1(1)=TA
-      Z=AMAX1(ALT,ZN1(MN1))
+      Z=MAX(ALT,ZN1(MN1))
       MN=MN1
       Z1=ZN1(1)
       Z2=ZN1(MN)
@@ -1404,7 +1404,7 @@ C       Calculate Temperature and Density Profiles for lower atmos.
       DENSM=D0
       IF(ALT.GT.ZN2(1)) GOTO 50
 C      STRATOSPHERE/MESOSPHERE TEMPERATURE
-      Z=AMAX1(ALT,ZN2(MN2))
+      Z=MAX(ALT,ZN2(MN2))
       MN=MN2
       Z1=ZN2(1)
       Z2=ZN2(MN)
@@ -1564,7 +1564,7 @@ C        Y: OUTPUT VALUE
     1 CONTINUE
       IF(X.GT.XA(KLO).AND.KHI.LE.N) THEN
         XX=X
-        IF(KHI.LT.N) XX=AMIN1(X,XA(KHI))
+        IF(KHI.LT.N) XX=MIN(X,XA(KHI))
         H=XA(KHI)-XA(KLO)
         A=(XA(KHI)-XX)/H
         B=(XX-XA(KLO))/H
