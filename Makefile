@@ -3,6 +3,9 @@ FCFLAGS = -O2 -mtune=native
 
 all: libnrlmsis.a testgtd7
 
+clean:
+	$(RM) libnrlmsis.a $(LIBOBJS)
+
 LIBOBJS = physics_constants.o utils_spline.o physics_msis.o utils_constants.o
 
 %.o: %.f90
