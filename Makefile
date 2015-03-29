@@ -1,5 +1,5 @@
 FC = gfortran 
-FCFLAGS = -O2 -mtune=native -pedantic
+FCFLAGS = -O2 -mtune=native -pedantic -Wall
 
 all: libnrlmsis.a testgtd7
 
