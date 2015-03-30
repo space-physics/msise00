@@ -81,12 +81,24 @@ def datetime2gtd(dtime,glon):
     stl = empty((dtime.size,glon.shape[0],glon.shape[1]))
 
     for i,t in enumerate(dtime):
+        t = forceutc(t)
         iyd[i] = int(t.strftime('%j'))
         #seconds since utc midnight
         utsec[i] = timedelta.total_seconds(t-datetime.combine(t.date(),time(0,tzinfo=UTC)))
 
         stl[i,...] = utsec[i]/3600 + glon/15 #FIXME let's be sure this is appropriate
     return iyd,utsec,stl
+
+def forceutc(t):
+    """
+    input: python datetime (naive, utc, non-utc)
+    output: utc datetime
+    """
+    if t.tzinfo == None:
+        t = t.replace(tzinfo = UTC)
+    else:
+        t = t.astimezone(UTC)
+    return t
 
 def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon):
     rodir = gettempdir()
@@ -188,10 +200,6 @@ if __name__ == '__main__':
         dtime = date_range(parse(''),periods=24,freq='1H',tz=UTC,normalize=True).to_pydatetime()
     else:
         dtime = parse(p.simtime)
-        if dtime.tzinfo == None:
-            dtime = dtime.replace(tzinfo = UTC)
-        else:
-            dtime = dtime.astimezone(UTC)
     print('using simulation time(s): ' + str(dtime))
 #%% altitude 1-D mode
     if p.latlon[0] and p.latlon[1]:
