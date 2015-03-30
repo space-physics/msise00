@@ -35,6 +35,7 @@ def testgtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
     else: #I didn't use numpy.nditer just yet
         species = ['He','O','N2','O2','Ar','Total','H','N','AnomalousO']
         ttypes = ['exotemp','heretemp']
+        dtime = atleast_1d(dtime) #keep for code reuse
         iyd,utsec,stl = datetime2gtd(dtime,glon)
 
         dens = empty((dtime.size,9,glat.shape[0],glat.shape[1]))
