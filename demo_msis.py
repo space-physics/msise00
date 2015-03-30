@@ -10,14 +10,15 @@ Original fortran code from
 http://nssdcftp.gsfc.nasa.gov/models/atmospheric/msis/nrlmsise00/
 """
 from __future__ import division
-from pandas import  DataFrame, Panel
-from numpy import arange, meshgrid, empty, atleast_1d
+from pandas import DataFrame, Panel4D, date_range
+from numpy import arange, meshgrid, empty, atleast_1d,atleast_2d
 from dateutil.parser import parse
 from datetime import timedelta,datetime, time
 from pytz import UTC
 from astropy.time import Time
 from astropy.coordinates import get_sun,EarthLocation, AltAz
-from matplotlib.pyplot import figure,show
+from matplotlib.pyplot import figure,show, subplots, close
+from matplotlib.ticker import ScalarFormatter
 import sys
 sys.path.append('../python-mapping')
 from coordconv3d import aer2geodetic
@@ -25,17 +26,21 @@ from coordconv3d import aer2geodetic
 import gtd7
 
 def testgtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
-    iyd = int(dtime.strftime('%j'))
-    #seconds since utc midnight
-    utsec = timedelta.total_seconds(dtime-datetime.combine(dtime.date(),time(0,tzinfo=UTC)))
+    dtime = atleast_1d(dtime); iyd=empty(dtime.size); utsec=empty(dtime.size)
+    altkm = atleast_1d(altkm); glat = atleast_2d(glat); glon=atleast_2d(glon)
+    stl = empty((dtime.size,glat.shape[0],glat.shape[1]))
 
-    stl = utsec/3600 + glon/15
+    for i,t in enumerate(dtime):
+        iyd[i] = int(t.strftime('%j'))
+        #seconds since utc midnight
+        utsec[i] = timedelta.total_seconds(t-datetime.combine(t.date(),time(0,tzinfo=UTC)))
+
+        stl[i,...] = utsec[i]/3600 + glon/15 #FIXME let's be sure this is appropriate
 
 #%% get ready for iteration
     species = ['He','O','N2','O2','Ar','Total','H','N','AnomalousO']
     ttypes = ['exotemp','heretemp']
-    altkm = atleast_1d(altkm)
-    glat = atleast_1d(glat); glon=atleast_1d(glon)
+
 #%% altitude 1-D
     if glat.size==1 and glon.size==1:
         dens = empty((altkm.size,9)); temp=empty((altkm.size,2))
@@ -46,19 +51,27 @@ def testgtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
         tempd = DataFrame(temp, index=altkm, columns=ttypes)
 #%% lat/lon grid at 1 altitude
     else: #I didn't use numpy.nditer just yet
-        dens = empty((9,glat.shape[0],glat.shape[1])); temp = empty((2,glat.shape[0],glat.shape[1]))
-        for i in range(glat.shape[0]):
-            for j in range(glat.shape[1]):
-                dens[:,i,j], temp[:,i,j] = gtd7.gtd7(iyd,utsec,altkm,glat[i,j],glon[i,j],stl,f107a,f107,ap,mass)
+        dens = empty((dtime.size,9,glat.shape[0],glat.shape[1]))
+        temp = empty((dtime.size,2,glat.shape[0],glat.shape[1]))
+        for k in range(dtime.size):
+          for i in range(glat.shape[0]):
+              for j in range(glat.shape[1]):
+                dens[k,:,i,j], temp[k,:,i,j] = gtd7.gtd7(iyd[k],utsec[k],altkm,
+                                       glat[i,j],glon[i,j],stl[k],f107a,f107,ap,mass)
 
-        densd = Panel(dens, items=species,major_axis=glat[:,0],minor_axis=glon[0,:])
-        tempd = Panel(temp, items=ttypes, major_axis=glat[:,0],minor_axis=glon[0,:])
+        densd = Panel4D(dens, labels=dtime,items=species,major_axis=glat[:,0],minor_axis=glon[0,:])
+        tempd = Panel4D(temp, labels=dtime,items=ttypes, major_axis=glat[:,0],minor_axis=glon[0,:])
 
     return densd,tempd
 
-def plotgtd(dens,temp,dtime,altkm):
+def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon):
+    sfmt = ScalarFormatter(useMathText=True) #for 10^3 instead of 1e3
+    sfmt.set_powerlimits((-2, 2))
+    sfmt.set_scientific(True)
+    sfmt.set_useOffset(False)
 
     if dens.ndim==2: #altitude 1-D
+        footer = '\nlat/lon ' +str(glat) +'/'+str(glon) +'  Ap='+str(ap[0]) + '  F10.7='+str(f107)
         ax = figure().gca()
         for g in dens.columns:
             if g != 'Total':
@@ -68,40 +81,56 @@ def plotgtd(dens,temp,dtime,altkm):
         ax.set_ylabel('altitude [km]')
         ax.set_xlabel('density [cm$^{-3}$]')
         ax.grid(True)
-        ax.set_title('Number Density from MSISE-00')
+        ax.set_title('Number Density from MSISE-00' + footer)
 
         ax = figure().gca()
         ax.semilogx(dens['Total'],dens.index)
         ax.set_xlabel('Total Mass Density [gm/cm^-3]')
         ax.set_ylabel('altitude [km]')
         ax.grid(True)
-        ax.set_title('Total Mass Density from MSISE-00')
+        ax.set_title('Total Mass Density from MSISE-00'+footer)
 
         ax = figure().gca()
         ax.plot(temp['heretemp'],temp.index)
         ax.set_xlabel('Temperature')
         ax.set_ylabel('altitude [km]')
         ax.grid(True)
-        ax.set_title('Temperature from MSISE-00')
-    elif dens.ndim==3: #lat/lon grid
+        ax.set_title('Temperature from MSISE-00' + footer)
+    elif dens.ndim==4: #lat/lon grid
 #%%sun lat/lon #FIXME this is a seemingly arbitrary procedure
         ttime = Time(dtime)
         obs = EarthLocation(0,0) # geodetic lat,lon = 0,0 arbitrary
         sun = get_sun(time=ttime)
         aaf = AltAz(obstime=ttime,location=obs)
         sloc = sun.transform_to(aaf)
-        slat,slon,alt = aer2geodetic(sloc.az.value, sloc.alt.value, sloc.distance.value,0,0,0)
+        slat,slon = aer2geodetic(sloc.az.value, sloc.alt.value, sloc.distance.value,0,0,0)[:2]
 #%%
-        for g in dens.items:
-            fg = figure()
-            ax = fg.gca()
-            hi = ax.imshow(dens[g].values,extent=(glon[0,0],glon[0,-1],glat[0,0],glat[-1,0]))
-            fg.colorbar(hi)
-            ax.plot(slon,slat,linestyle='none',marker='*',markersize=15,color='w')
-            ax.set_xlabel('longitude (deg)')
-            ax.set_ylabel('latitude (deg)')
-            ax.set_title('Density: ' + g + '\n' + str(dtime) + ' at alt.(km) '+str(altkm))
-            ax.autoscale(True,tight=True)
+        for k,t in enumerate(dens): #dens is a Panel4D
+            fg,ax = subplots(4,2,sharex=True, figsize=(8,8))
+            fg.suptitle(str(t) + ' at alt.(km) '+str(altkm) +
+                        '\nAp='+str(ap[0]) + '  F10.7='+str(f107),
+                         fontsize=14)
+            ax=ax.ravel(); i = 0 #don't use enumerate b/c of skip
+            for g in dens[t].items:
+                if g != 'Total':
+                    a = ax[i]
+                    hi = a.imshow(dens.loc[t,g].values, aspect='auto',
+                             extent=(glon[0,0],glon[0,-1],glat[0,0],glat[-1,0]))
+                    fg.colorbar(hi,ax=a, format=sfmt)
+                    a.plot(slon[k],slat[k],linestyle='none',
+                                            marker='o',markersize=5,color='w')
+                    a.set_title('Density: ' + g,fontsize=11)
+                    a.set_xlim(-180,180)
+                    a.set_ylim(-90,90)
+                    a.autoscale(False)
+                    i+=1
+            for i in range(0,6+2,2):
+                ax[i].set_ylabel('latitude (deg)')
+            for i in (6,7):
+                ax[i].set_xlabel('longitude (deg)')
+            fg.savefig('/tmp/{:.1f}_{:03d}'.format(altkm,k) + '.png',dpi=100,bbox_inches='tight')
+            if dtime.size>8:
+                close()
     else:
         print('densities' + str(dens))
         print('temperatures ' + str(temp))
@@ -109,7 +138,7 @@ def plotgtd(dens,temp,dtime,altkm):
 if __name__ == '__main__':
     from argparse import ArgumentParser
     p = ArgumentParser(description='calls MSISE-00 from Python, a basic demo')
-    p.add_argument('simtime',help='yyyy-mm-ddTHH:MM:SSZ time of sim',type=str,nargs='?',default='')
+    p.add_argument('simtime',help='yyyy-mm-ddTHH:MM:SSZ time of sim',type=str,nargs='?',default=None)
     p.add_argument('-a','--altkm',help='altitude (km) (start,stop,step)',type=float,nargs='+',default=[None])
     p.add_argument('-c','--latlon',help='geodetic latitude/longitude (deg)',type=float,nargs=2,default=(None,None))
     p.add_argument('--f107a',help=' 81 day AVERAGE OF F10.7 FLUX (centered on day DDD)',type=float,default=150)
@@ -120,11 +149,14 @@ if __name__ == '__main__':
                          'MASS 17 IS Anomalous O ONLY.'),type=float,default=48)
     p = p.parse_args()
 
-    dtime = parse(p.simtime)
-    if dtime.tzinfo == None:
-        dtime = dtime.replace(tzinfo = UTC)
+    if p.simtime is None: #cycle through a few times for a demo
+        dtime = date_range(parse(''),periods=24,freq='1H',tz=UTC,normalize=True).to_pydatetime()
     else:
-        dtime = dtime.astimezone(UTC)
+        dtime = parse(p.simtime)
+        if dtime.tzinfo == None:
+            dtime = dtime.replace(tzinfo = UTC)
+        else:
+            dtime = dtime.astimezone(UTC)
 #%% altitude 1-D mode
     if p.latlon[0] and p.latlon[1]:
         if p.altkm[0] is None:
@@ -147,5 +179,5 @@ if __name__ == '__main__':
 
     dens,temp = testgtd7(dtime,altkm,glat,glon,p.f107a,p.f107,p.ap,p.mass)
 
-    plotgtd(dens,temp,dtime,altkm)
+    plotgtd(dens,temp,dtime,altkm,p.ap,p.f107,glat,glon)
     show()
