@@ -9,7 +9,7 @@ bostonmicrowave.com
 Original fortran code from
 http://nssdcftp.gsfc.nasa.gov/models/atmospheric/msis/nrlmsise00/
 """
-from __future__ import division
+from __future__ import division, print_function, absolute_import
 from pandas import DataFrame, Panel4D, date_range
 from numpy import arange, meshgrid, empty, atleast_1d,atleast_2d
 from dateutil.parser import parse
@@ -19,6 +19,7 @@ from astropy.time import Time
 from astropy.coordinates import get_sun,EarthLocation, AltAz
 from matplotlib.pyplot import figure,show, subplots, close
 from matplotlib.ticker import ScalarFormatter
+from tempfile import gettempdir
 import sys
 sys.path.append('../python-mapping')
 from coordconv3d import aer2geodetic
@@ -26,29 +27,14 @@ from coordconv3d import aer2geodetic
 import gtd7
 
 def testgtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
-    dtime = atleast_1d(dtime); iyd=empty(dtime.size); utsec=empty(dtime.size)
     altkm = atleast_1d(altkm); glat = atleast_2d(glat); glon=atleast_2d(glon)
-    stl = empty((dtime.size,glat.shape[0],glat.shape[1]))
-
-    for i,t in enumerate(dtime):
-        iyd[i] = int(t.strftime('%j'))
-        #seconds since utc midnight
-        utsec[i] = timedelta.total_seconds(t-datetime.combine(t.date(),time(0,tzinfo=UTC)))
-
-        stl[i,...] = utsec[i]/3600 + glon/15 #FIXME let's be sure this is appropriate
-
 #%% get ready for iteration
     species = ['He','O','N2','O2','Ar','Total','H','N','AnomalousO']
     ttypes = ['exotemp','heretemp']
-
+    iyd,utsec,stl = datetime2gtd(dtime,glon)
 #%% altitude 1-D
     if glat.size==1 and glon.size==1:
-        dens = empty((altkm.size,9)); temp=empty((altkm.size,2))
-        for i,a in enumerate(altkm):
-            dens[i,:],temp[i,:] = gtd7.gtd7(iyd,utsec,a,glat,glon,stl, f107a,f107, ap,mass)
-
-        densd = DataFrame(dens, index=altkm, columns=species)
-        tempd = DataFrame(temp, index=altkm, columns=ttypes)
+        dens,temp = rungtd
 #%% lat/lon grid at 1 altitude
     else: #I didn't use numpy.nditer just yet
         dens = empty((dtime.size,9,glat.shape[0],glat.shape[1]))
@@ -64,7 +50,39 @@ def testgtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
 
     return densd,tempd
 
+def rungtd():
+    dens = empty((altkm.size,9)); temp=empty((altkm.size,2))
+    for i,a in enumerate(altkm):
+        dens[i,:],temp[i,:] = gtd7.gtd7(iyd,utsec,a,glat,glon,stl, f107a,f107, ap,mass)
+
+    densd = DataFrame(dens, index=altkm, columns=species)
+    tempd = DataFrame(temp, index=altkm, columns=ttypes)
+
+def datetime2gtd(dtime,glon):
+    """
+    Inputs:
+    dtime: Numpy 1-D array of datetime.datetime
+    glon: Numpy 2-D array of geodetic longitudes
+
+    Outputs:
+    iyd: day of year
+    utsec: seconds from midnight utc
+    stl: local solar time
+    """
+    dtime = atleast_1d(dtime)
+    iyd=empty(dtime.size); utsec=empty(dtime.size)
+    stl = empty((dtime.size,glon.shape[0],glon.shape[1]))
+
+    for i,t in enumerate(dtime):
+        iyd[i] = int(t.strftime('%j'))
+        #seconds since utc midnight
+        utsec[i] = timedelta.total_seconds(t-datetime.combine(t.date(),time(0,tzinfo=UTC)))
+
+        stl[i,...] = utsec[i]/3600 + glon/15 #FIXME let's be sure this is appropriate
+    return iyd,utsec,stl
+
 def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon):
+    rodir = gettempdir()
     sfmt = ScalarFormatter(useMathText=True) #for 10^3 instead of 1e3
     sfmt.set_powerlimits((-2, 2))
     sfmt.set_scientific(True)
@@ -85,7 +103,7 @@ def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon):
 
         ax = figure().gca()
         ax.semilogx(dens['Total'],dens.index)
-        ax.set_xlabel('Total Mass Density [gm/cm^-3]')
+        ax.set_xlabel('Total Mass Density [g cm$^{-3}$]')
         ax.set_ylabel('altitude [km]')
         ax.grid(True)
         ax.set_title('Total Mass Density from MSISE-00'+footer)
@@ -97,6 +115,8 @@ def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon):
         ax.grid(True)
         ax.set_title('Temperature from MSISE-00' + footer)
     elif dens.ndim==4: #lat/lon grid
+        if dtime.size>8:
+            print('silently outputting plots to ' + rodir)
 #%%sun lat/lon #FIXME this is a seemingly arbitrary procedure
         ttime = Time(dtime)
         obs = EarthLocation(0,0) # geodetic lat,lon = 0,0 arbitrary
@@ -128,12 +148,20 @@ def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon):
                 ax[i].set_ylabel('latitude (deg)')
             for i in (6,7):
                 ax[i].set_xlabel('longitude (deg)')
-            fg.savefig('/tmp/{:.1f}_{:03d}'.format(altkm,k) + '.png',dpi=100,bbox_inches='tight')
+            thisofn = rodir+'/{:.1f}_{:03d}'.format(altkm[0],k) + '.png'
+            fg.savefig(thisofn,dpi=100,bbox_inches='tight')
             if dtime.size>8:
+                print('wrote ' + thisofn)
                 close()
     else:
         print('densities' + str(dens))
         print('temperatures ' + str(temp))
+
+def latlonworldgrid(latstep=5,lonstep=5):
+    lat = arange(-90,90+latstep,latstep)
+    lon = arange(-180,180+lonstep,lonstep)
+    glon,glat = meshgrid(lon,lat)
+    return glat,glon
 
 if __name__ == '__main__':
     from argparse import ArgumentParser
@@ -157,8 +185,10 @@ if __name__ == '__main__':
             dtime = dtime.replace(tzinfo = UTC)
         else:
             dtime = dtime.astimezone(UTC)
+    print('using simulation time(s): ' + str(dtime))
 #%% altitude 1-D mode
     if p.latlon[0] and p.latlon[1]:
+        print('entering single location mode, ',end='')
         if p.altkm[0] is None:
             amm = (60,1000,5)
         elif len(p.altkm) == 3:
@@ -169,13 +199,15 @@ if __name__ == '__main__':
         glat,glon=p.latlon
 #%% lat/lon grid mode at constant altitude
     else:# len(p.altkm)==1:
+        print('lat/lon not specified, entering auto whole-world grid mode at first altitude')
         if p.altkm[0] is None:
             altkm = 200
         else:
             altkm = p.altkm[0]
-        lat = arange(-90,90+5,5)
-        lon = arange(-180,180+10,10)
-        glon,glat = meshgrid(lon,lat)
+        glat,glon = latlonworldgrid()
+
+    altkm = atleast_1d(altkm)
+    print('using altitudes from {:.1f} to {:.1f} km'.format(altkm[0],altkm[-1]))
 
     dens,temp = testgtd7(dtime,altkm,glat,glon,p.f107a,p.f107,p.ap,p.mass)
 
