@@ -28,15 +28,14 @@ import gtd7
 
 def testgtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
     altkm = atleast_1d(altkm); glat = atleast_2d(glat); glon=atleast_2d(glon)
-#%% get ready for iteration
-    species = ['He','O','N2','O2','Ar','Total','H','N','AnomalousO']
-    ttypes = ['exotemp','heretemp']
-    iyd,utsec,stl = datetime2gtd(dtime,glon)
 #%% altitude 1-D
     if glat.size==1 and glon.size==1:
-        dens,temp = rungtd
+        densd,tempd = rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass)
 #%% lat/lon grid at 1 altitude
     else: #I didn't use numpy.nditer just yet
+        species = ['He','O','N2','O2','Ar','Total','H','N','AnomalousO']
+        ttypes = ['exotemp','heretemp']
+        iyd,utsec,stl = datetime2gtd(dtime,glon)
         dens = empty((dtime.size,9,glat.shape[0],glat.shape[1]))
         temp = empty((dtime.size,2,glat.shape[0],glat.shape[1]))
         for k in range(dtime.size):
@@ -50,13 +49,17 @@ def testgtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
 
     return densd,tempd
 
-def rungtd():
+def rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass):
+    species = ['He','O','N2','O2','Ar','Total','H','N','AnomalousO']
+    ttypes = ['exotemp','heretemp']
+    iyd,utsec,stl = datetime2gtd(dtime,glon)
     dens = empty((altkm.size,9)); temp=empty((altkm.size,2))
     for i,a in enumerate(altkm):
         dens[i,:],temp[i,:] = gtd7.gtd7(iyd,utsec,a,glat,glon,stl, f107a,f107, ap,mass)
 
     densd = DataFrame(dens, index=altkm, columns=species)
     tempd = DataFrame(temp, index=altkm, columns=ttypes)
+    return densd,tempd
 
 def datetime2gtd(dtime,glon):
     """
