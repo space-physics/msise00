@@ -27,7 +27,7 @@ from coordconv3d import aer2geodetic
 import gtd7
 
 def testgtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
-    altkm = atleast_1d(altkm); glat = atleast_2d(glat); glon=atleast_2d(glon)
+    glat = atleast_2d(glat); glon=atleast_2d(glon) #has to be here
 #%% altitude 1-D
     if glat.size==1 and glon.size==1:
         densd,tempd = rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass)
@@ -36,6 +36,7 @@ def testgtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
         species = ['He','O','N2','O2','Ar','Total','H','N','AnomalousO']
         ttypes = ['exotemp','heretemp']
         iyd,utsec,stl = datetime2gtd(dtime,glon)
+
         dens = empty((dtime.size,9,glat.shape[0],glat.shape[1]))
         temp = empty((dtime.size,2,glat.shape[0],glat.shape[1]))
         for k in range(dtime.size):
@@ -53,6 +54,8 @@ def rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass):
     species = ['He','O','N2','O2','Ar','Total','H','N','AnomalousO']
     ttypes = ['exotemp','heretemp']
     iyd,utsec,stl = datetime2gtd(dtime,glon)
+
+    altkm = atleast_1d(altkm)
     dens = empty((altkm.size,9)); temp=empty((altkm.size,2))
     for i,a in enumerate(altkm):
         dens[i,:],temp[i,:] = gtd7.gtd7(iyd,utsec,a,glat,glon,stl, f107a,f107, ap,mass)
@@ -72,7 +75,7 @@ def datetime2gtd(dtime,glon):
     utsec: seconds from midnight utc
     stl: local solar time
     """
-    dtime = atleast_1d(dtime)
+    dtime = atleast_1d(dtime); glon=atleast_2d(glon)
     iyd=empty(dtime.size); utsec=empty(dtime.size)
     stl = empty((dtime.size,glon.shape[0],glon.shape[1]))
 
