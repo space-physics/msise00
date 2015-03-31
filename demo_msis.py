@@ -40,6 +40,8 @@ def testgtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
 
         dens = empty((dtime.size,9,glat.shape[0],glat.shape[1]))
         temp = empty((dtime.size,2,glat.shape[0],glat.shape[1]))
+
+        gtd7.meters(1) # makes output in m^-3 and kg/m^-3
         for k in range(dtime.size):
           for i in range(glat.shape[0]):
               for j in range(glat.shape[1]):
@@ -58,6 +60,8 @@ def rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass):
 
     altkm = atleast_1d(altkm)
     dens = empty((altkm.size,9)); temp=empty((altkm.size,2))
+
+    gtd7.meters(1) # makes output in m^-3 and kg/m^-3
     for i,a in enumerate(altkm):
         dens[i,:],temp[i,:] = gtd7.gtd7(iyd,utsec,a,glat,glon,stl, f107a,f107, ap,mass)
 
@@ -116,13 +120,13 @@ def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon):
         ax.legend(loc='best')
         ax.set_xlim(left=1e3)
         ax.set_ylabel('altitude [km]')
-        ax.set_xlabel('density [cm$^{-3}$]')
+        ax.set_xlabel('density [m$^{-3}$]')
         ax.grid(True)
         ax.set_title('Number Density from MSISE-00' + footer)
 
         ax = figure().gca()
         ax.semilogx(dens['Total'],dens.index)
-        ax.set_xlabel('Total Mass Density [g cm$^{-3}$]')
+        ax.set_xlabel('Total Mass Density [kg m$^{-3}$]')
         ax.set_ylabel('altitude [km]')
         ax.grid(True)
         ax.set_title('Total Mass Density from MSISE-00'+footer)
