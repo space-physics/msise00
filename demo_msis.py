@@ -10,6 +10,7 @@ Original fortran code from
 http://nssdcftp.gsfc.nasa.gov/models/atmospheric/msis/nrlmsise00/
 """
 from __future__ import division, print_function, absolute_import
+from six import string_types
 from pandas import DataFrame, Panel4D, date_range
 from numpy import arange, meshgrid, empty, atleast_1d,atleast_2d
 from dateutil.parser import parse
@@ -72,7 +73,7 @@ def rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass):
 def datetime2gtd(dtime,glon):
     """
     Inputs:
-    dtime: Numpy 1-D array of datetime.datetime
+    dtime: Numpy 1-D array of datetime.datetime OR string suitable for dateutil.parser.parse
     glon: Numpy 2-D array of geodetic longitudes
 
     Outputs:
@@ -81,10 +82,13 @@ def datetime2gtd(dtime,glon):
     stl: local solar time
     """
     dtime = atleast_1d(dtime); glon=atleast_2d(glon)
-    iyd=empty(dtime.size); utsec=empty(dtime.size)
+    iyd=empty(dtime.size,dtype=int); utsec=empty(dtime.size)
     stl = empty((dtime.size,glon.shape[0],glon.shape[1]))
 
     for i,t in enumerate(dtime):
+        if isinstance(t,string_types):
+            t = parse(t)
+
         t = forceutc(t)
         iyd[i] = int(t.strftime('%j'))
         #seconds since utc midnight
