@@ -10,22 +10,28 @@ Original fortran code from
 http://nssdcftp.gsfc.nasa.gov/models/atmospheric/msis/nrlmsise00/
 """
 from __future__ import division, print_function, absolute_import
-from six import string_types
 from pandas import DataFrame, Panel4D, date_range
 from numpy import arange, meshgrid, empty, atleast_1d,atleast_2d
-from dateutil.parser import parse
-from datetime import timedelta,datetime, time
 from pytz import UTC
-from astropy.time import Time
-from astropy.coordinates import get_sun,EarthLocation, AltAz
+from datetime import datetime
+try:
+    from astropy.time import Time
+    from astropy.coordinates import get_sun,EarthLocation, AltAz
+except ImportError as e:
+    print('you must have AstroPy>=1.0 to have full functionality, attempting to fail soft. ' + str(e))
+    get_sun=None
 from matplotlib.pyplot import figure,show, subplots, close
 from matplotlib.ticker import ScalarFormatter
 from tempfile import gettempdir
 import sys
 sys.path.append('../python-mapping')
 from coordconv3d import aer2geodetic
+from fortrandates import datetime2gtd
 #
-import gtd7
+try:
+    import gtd7
+except ImportError as e:
+    exit('you must compile using f2py. Please see README.md. ' + str(e))
 
 def testgtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
     glat = atleast_2d(glat); glon=atleast_2d(glon) #has to be here
@@ -70,44 +76,6 @@ def rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass):
     tempd = DataFrame(temp, index=altkm, columns=ttypes)
     return densd,tempd
 
-def datetime2gtd(dtime,glon):
-    """
-    Inputs:
-    dtime: Numpy 1-D array of datetime.datetime OR string suitable for dateutil.parser.parse
-    glon: Numpy 2-D array of geodetic longitudes
-
-    Outputs:
-    iyd: day of year
-    utsec: seconds from midnight utc
-    stl: local solar time
-    """
-    dtime = atleast_1d(dtime); glon=atleast_2d(glon)
-    iyd=empty(dtime.size,dtype=int); utsec=empty(dtime.size)
-    stl = empty((dtime.size,glon.shape[0],glon.shape[1]))
-
-    for i,t in enumerate(dtime):
-        if isinstance(t,string_types):
-            t = parse(t)
-
-        t = forceutc(t)
-        iyd[i] = int(t.strftime('%j'))
-        #seconds since utc midnight
-        utsec[i] = timedelta.total_seconds(t-datetime.combine(t.date(),time(0,tzinfo=UTC)))
-
-        stl[i,...] = utsec[i]/3600 + glon/15 #FIXME let's be sure this is appropriate
-    return iyd,utsec,stl
-
-def forceutc(t):
-    """
-    input: python datetime (naive, utc, non-utc)
-    output: utc datetime
-    """
-    if t.tzinfo == None:
-        t = t.replace(tzinfo = UTC)
-    else:
-        t = t.astimezone(UTC)
-    return t
-
 def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon):
     rodir = gettempdir()
     sfmt = ScalarFormatter(useMathText=True) #for 10^3 instead of 1e3
@@ -145,12 +113,13 @@ def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon):
         if dtime.size>8:
             print('silently outputting plots to ' + rodir)
 #%%sun lat/lon #FIXME this is a seemingly arbitrary procedure
-        ttime = Time(dtime)
-        obs = EarthLocation(0,0) # geodetic lat,lon = 0,0 arbitrary
-        sun = get_sun(time=ttime)
-        aaf = AltAz(obstime=ttime,location=obs)
-        sloc = sun.transform_to(aaf)
-        slat,slon = aer2geodetic(sloc.az.value, sloc.alt.value, sloc.distance.value,0,0,0)[:2]
+        if get_sun is not None:
+            ttime = Time(dtime)
+            obs = EarthLocation(0,0) # geodetic lat,lon = 0,0 arbitrary
+            sun = get_sun(time=ttime)
+            aaf = AltAz(obstime=ttime,location=obs)
+            sloc = sun.transform_to(aaf)
+            slat,slon = aer2geodetic(sloc.az.value, sloc.alt.value, sloc.distance.value,0,0,0)[:2]
 #%%
         for k,t in enumerate(dens): #dens is a Panel4D
             fg,ax = subplots(4,2,sharex=True, figsize=(8,8))
@@ -164,7 +133,8 @@ def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon):
                     hi = a.imshow(dens.loc[t,g].values, aspect='auto',
                              extent=(glon[0,0],glon[0,-1],glat[0,0],glat[-1,0]))
                     fg.colorbar(hi,ax=a, format=sfmt)
-                    a.plot(slon[k],slat[k],linestyle='none',
+                    if get_sun is not None:
+                        a.plot(slon[k],slat[k],linestyle='none',
                                             marker='o',markersize=5,color='w')
                     a.set_title('Density: ' + g,fontsize=11)
                     a.set_xlim(-180,180)
@@ -205,10 +175,7 @@ if __name__ == '__main__':
     p = p.parse_args()
 
     if p.simtime is None: #cycle through a few times for a demo
-        dtime = date_range(parse(''),periods=24,freq='1H',tz=UTC,normalize=True).to_pydatetime()
-    else:
-        dtime = parse(p.simtime)
-    print('using simulation time(s): ' + str(dtime))
+        dtime = date_range(datetime.now(),periods=24,freq='1H',tz=UTC,normalize=True).to_pydatetime()
 #%% altitude 1-D mode
     if p.latlon[0] and p.latlon[1]:
         print('entering single location mode, ',end='')
