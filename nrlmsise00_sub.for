@@ -133,11 +133,11 @@ C              22 - ALL TN3 VAR           23 - TURBO SCALE HEIGHT VAR
 C
 C        To get current values of SW: CALL TRETRV(SW)
 C
-      Intent(OUT)   :: D,T
+      Real,Intent(OUT)   :: D(9), T(2)
       CHARACTER(len=4) :: ISDATE(3),ISTIME(2),NAME(2),
      & ISD(3),IST(2),NAM(2)
       
-      DIMENSION D(9),T(2),AP(7),DS(9),TS(2)
+      DIMENSION AP(7),DS(9),TS(2)
       DIMENSION ZN3(5),ZN2(4),SV(25)
       COMMON/GTS3C/TLB,S,DB04,DB16,DB28,DB32,DB40,DB48,DB01,ZA,T0,Z0
      & ,G0,RL,DD,DB14,TR12
@@ -249,7 +249,7 @@ C      ***** HE DENSITY ****
 C      **** O DENSITY ****
         D(2)=0
         D(9)=0
-  216   CONTINUE
+        CONTINUE
 C      ***** O2 DENSITY ****
         D(4)=0
         IF(MASS.NE.32.AND.MASS.NE.48) GOTO 232
@@ -278,7 +278,7 @@ C
    10 CONTINUE
       GOTO 90
    50 CONTINUE
-      DD=DENSM(ALT,1.,0,TZ,MN3,ZN3,TN3,TGN3,MN2,ZN2,TN2,TGN2)                
+      DD=DENSM(ALT,1.,0.,TZ,MN3,ZN3,TN3,TGN3,MN2,ZN2,TN2,TGN2)                
       T(2)=TZ
    90 CONTINUE
       ALAST=ALT
@@ -286,7 +286,7 @@ C
       END
 C-----------------------------------------------------------------------
       SUBROUTINE GTD7D(IYD,SEC,ALT,GLAT,GLONG,STL,F107A,F107,AP,MASS,
-     $ D,T)
+     & D,T)
 C
 C     NRLMSISE-00
 C     -----------
@@ -347,8 +347,8 @@ C        D(8) - N NUMBER DENSITY(CM-3)
 C        D(9) - Anomalous oxygen NUMBER DENSITY(CM-3)
 C        T(1) - EXOSPHERIC TEMPERATURE
 C        T(2) - TEMPERATURE AT ALT
-C
-      DIMENSION D(9),T(2),AP(7),DS(9),TS(2)
+      Real,Intent(Out) :: D(9), T(2)
+      DIMENSION AP(7)
       COMMON/METSEL/IMR
       CALL GTD7(IYD,SEC,ALT,GLAT,GLONG,STL,F107A,F107,AP,MASS,D,T)
 C       TOTAL MASS DENSITY
@@ -358,8 +358,7 @@ C
      &       D(7)+14.*D(8)+16.*D(9))  
          IF(IMR.EQ.1) D(6)=D(6)/1000.
          ENDIF
-      RETURN
-      END
+      END SUBROUTINE GTD7D
 C-----------------------------------------------------------------------
       SUBROUTINE GHP7(IYD,SEC,ALT,GLAT,GLONG,STL,F107A,F107,AP,
      $  D,T,PRESS)
@@ -468,7 +467,8 @@ C-----------------------------------------------------------------------
       FUNCTION VTST7(IYD,SEC,GLAT,GLONG,STL,F107A,F107,AP,IC)
 C       Test if geophysical variables or switches changed and save
 C       Return 0 if unchanged and 1 if changed
-      DIMENSION AP(7),IYDL(2),SECL(2),GLATL(2),GLL(2),STLL(2)
+      Real AP(*)
+      DIMENSION IYDL(2),SECL(2),GLATL(2),GLL(2),STLL(2)
       DIMENSION FAL(2),FL(2),APL(7,2),SWL(25,2),SWCL(25,2)
       COMMON/CSW/SW(25),ISW,SWC(25)
       SAVE
@@ -952,7 +952,7 @@ C      Convert outputs to Kg & Meters if METER true
       SAVE
       IMR=0
       IF(METER) IMR=1
-      END
+      END SUBROUTINE METERS
 C-----------------------------------------------------------------------
       FUNCTION SCALH(ALT,XM,TEMP)
 C      Calculate scale height (km)
@@ -961,14 +961,13 @@ C      Calculate scale height (km)
       DATA RGAS/831.4/
       G=GSURF/(1.+ALT/RE)**2
       SCALH=RGAS*TEMP/(G*XM)
-      RETURN
-      END
+      END FUNCTION SCALH
 C-----------------------------------------------------------------------
       FUNCTION GLOBE7(YRD,SEC,LAT,LONG,TLOC,F107A,F107,AP,P)
 C       CALCULATE G(L) FUNCTION 
 C       Upper Thermosphere Parameters
       REAL LAT, LONG
-      DIMENSION P(1),SV(25),AP(1)
+      Real P(*),SV(25),AP(*)
       COMMON/TTEST/TINF,GB,ROUT,T(15)
       COMMON/CSW/SW(25),ISW,SWC(25)
       COMMON/LPOLY/PLG(9,4),CTLOC,STLOC,C2TLOC,S2TLOC,C3TLOC,S3TLOC,
@@ -1182,8 +1181,7 @@ C  PARMS NOT USED: 83, 90,100,140-150
       DO 50 I = 1,NSW
    50 TINF = TINF + ABS(SW(I))*T(I)
       GLOBE7 = TINF
-      RETURN
-      END
+      END FUNCTION GLOBE7
 C-----------------------------------------------------------------------
       SUBROUTINE TSELEC(SV)
 C        SET SWITCHES
@@ -1222,7 +1220,7 @@ C      VERSION OF GLOBE FOR LOWER ATMOSPHERE 10/26/99
       COMMON/LPOLY/PLG(9,4),CTLOC,STLOC,C2TLOC,S2TLOC,C3TLOC,S3TLOC,
      $ IYR,DAY,DF,DFA,APD,APDF,APT(4),LONG
       COMMON/CSW/SW(25),ISW,SWC(25)
-      DIMENSION P(1),T(14)
+      Real P(*),T(14)
       SAVE
       DATA DR/1.72142E-2/,DGTR/1.74533E-2/,PSET/2./
       DATA DAYL/-1./,P32,P18,P14,P39/4*-1000./
@@ -1388,8 +1386,7 @@ C       integrate spline temperatures
 C       Density at altitude
       DENSU=DENSU*(T1/TZ)**(1.+ALPHA)*EXP(-EXPL)
    50 CONTINUE
-      RETURN
-      END
+      END FUNCTION DENSU
 C--------------------------------------------------------------------
       FUNCTION DENSM(ALT,D0,XM,TZ,MN3,ZN3,TN3,TGN3,MN2,ZN2,TN2,TGN2)
 C       Calculate Temperature and Density Profiles for lower atmos.
