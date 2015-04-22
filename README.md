@@ -1,7 +1,7 @@
 # msise-00
 NRL MSISE-00 atmospheric model
 
-!(http://blogs.bu.edu/mhirsch/files/2015/04/demo200km1.gif)
+![msis global at 200km](http://blogs.bu.edu/mhirsch/files/2015/04/demo200km1.gif)
 
 All credit to original authors, I slightly modified the Fortran 77 
 code so it could compile in a modern compiler. 
