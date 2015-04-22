@@ -1,6 +1,8 @@
 # msise-00
 NRL MSISE-00 atmospheric model
 
+The plot immediately below shows a slice at 200km on a world-wide grid. The yellow ball represents the sun footprint on Earth.
+
 ![msis global at 200km](http://blogs.bu.edu/mhirsch/files/2015/04/demo200km1.gif)
 
 All credit to original authors, I slightly modified the Fortran 77 
