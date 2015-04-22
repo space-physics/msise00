@@ -25,7 +25,13 @@ from matplotlib.ticker import ScalarFormatter
 from tempfile import gettempdir
 import sys
 sys.path.append('../python-mapping')
-from coordconv3d import aer2geodetic
+try:
+    from coordconv3d import aer2geodetic
+except ImportError as e:
+    print('please get the python-mapping utility to enable more plots')
+    print('https://github.com/scienceopen/python-mapping')
+    print(str(e))
+    doplot=False
 from fortrandates import datetime2gtd
 #
 try:
@@ -201,5 +207,8 @@ if __name__ == '__main__':
 
     dens,temp = testgtd7(dtime,altkm,glat,glon,p.f107a,p.f107,p.ap,p.mass)
 
-    plotgtd(dens,temp,dtime,altkm,p.ap,p.f107,glat,glon)
-    show()
+    if doplot:
+        plotgtd(dens,temp,dtime,altkm,p.ap,p.f107,glat,glon)
+        show()
+    else:
+        print('plotting was disabled.')
