@@ -13,6 +13,7 @@ from __future__ import division, print_function, absolute_import
 from pandas import DataFrame, Panel4D, date_range
 from numpy import arange, meshgrid, empty, atleast_1d,atleast_2d
 from pytz import UTC
+from dateutil.parser import parse
 from datetime import datetime
 try:
     from astropy.time import Time
@@ -195,6 +196,7 @@ if __name__ == '__main__':
         glat,glon=p.latlon
 #%% lat/lon grid mode at constant altitude
     else:# len(p.altkm)==1:
+        dtime = parse(p.simtime)
         print('lat/lon not specified, entering auto whole-world grid mode at first altitude')
         if p.altkm[0] is None:
             altkm = 200

@@ -1,10 +1,10 @@
 from six import string_types
 from datetime import timedelta,datetime, time
 from pytz import UTC
-from numpy import atleast_1d, empty, atleast_2d
+from numpy import atleast_1d, empty, atleast_2d,nan
 from dateutil.parser import parse
 
-def datetime2gtd(dtime,glon):
+def datetime2gtd(dtime,glon=nan):
     """
     Inputs:
     dtime: Numpy 1-D array of datetime.datetime OR string suitable for dateutil.parser.parse
