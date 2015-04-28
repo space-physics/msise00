@@ -11,7 +11,7 @@ http://nssdcftp.gsfc.nasa.gov/models/atmospheric/msis/nrlmsise00/
 """
 from __future__ import division, print_function, absolute_import
 from pandas import DataFrame, Panel4D, date_range
-from numpy import arange, meshgrid, empty, atleast_1d,atleast_2d
+from numpy import arange, meshgrid, empty, atleast_1d,atleast_2d,array
 from pytz import UTC
 from dateutil.parser import parse
 from datetime import datetime
@@ -28,6 +28,7 @@ import sys
 sys.path.append('../python-mapping')
 try:
     from coordconv3d import aer2geodetic
+    doplot=True
 except ImportError as e:
     print('please get the python-mapping utility to enable more plots')
     print('https://github.com/scienceopen/python-mapping')
@@ -42,6 +43,9 @@ except ImportError as e:
 
 def testgtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
     glat = atleast_2d(glat); glon=atleast_2d(glon) #has to be here
+#%% set / print msis globals
+    gtd7.tselec((1,1,1,1,1,1,1,1,-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)) #like the msis_driver example
+    print(gtd7.tretrv())
 #%% altitude 1-D
     if glat.size==1 and glon.size==1:
         densd,tempd = rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass)
@@ -84,6 +88,7 @@ def rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass):
     return densd,tempd
 
 def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon):
+    dtime = atleast_1d(dtime)
     rodir = gettempdir()
     sfmt = ScalarFormatter(useMathText=True) #for 10^3 instead of 1e3
     sfmt.set_powerlimits((-2, 2))
@@ -170,7 +175,7 @@ def latlonworldgrid(latstep=5,lonstep=5):
 if __name__ == '__main__':
     from argparse import ArgumentParser
     p = ArgumentParser(description='calls MSISE-00 from Python, a basic demo')
-    p.add_argument('simtime',help='yyyy-mm-ddTHH:MM:SSZ time of sim',type=str,nargs='?',default=None)
+    p.add_argument('simtime',help='yyyy-mm-ddTHH:MM:SSZ time of sim',type=str,nargs='?',default='')
     p.add_argument('-a','--altkm',help='altitude (km) (start,stop,step)',type=float,nargs='+',default=[None])
     p.add_argument('-c','--latlon',help='geodetic latitude/longitude (deg)',type=float,nargs=2,default=(None,None))
     p.add_argument('--f107a',help=' 81 day AVERAGE OF F10.7 FLUX (centered on day DDD)',type=float,default=150)
@@ -181,7 +186,7 @@ if __name__ == '__main__':
                          'MASS 17 IS Anomalous O ONLY.'),type=float,default=48)
     p = p.parse_args()
 
-    if p.simtime is None: #cycle through a few times for a demo
+    if not p.simtime: #cycle through a few times for a demo
         dtime = date_range(datetime.now(),periods=24,freq='1H',tz=UTC,normalize=True).to_pydatetime()
 #%% altitude 1-D mode
     if p.latlon[0] and p.latlon[1]:
