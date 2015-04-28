@@ -11,7 +11,7 @@ http://nssdcftp.gsfc.nasa.gov/models/atmospheric/msis/nrlmsise00/
 """
 from __future__ import division, print_function, absolute_import
 from pandas import DataFrame, Panel4D, date_range
-from numpy import arange, meshgrid, empty, atleast_1d,atleast_2d,array
+from numpy import arange, meshgrid, empty, atleast_1d,atleast_2d,array,repeat
 from pytz import UTC
 from dateutil.parser import parse
 from datetime import datetime
@@ -72,6 +72,8 @@ def testgtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
     return densd,tempd
 
 def rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass=48):
+    ap = atleast_1d(ap)
+    if ap.size==1: ap = repeat(ap,7)
     species = ['He','O','N2','O2','Ar','Total','H','N','AnomalousO']
     ttypes = ['exotemp','heretemp']
     iyd,utsec,stl = datetime2gtd(dtime,glon)
