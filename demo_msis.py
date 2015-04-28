@@ -71,7 +71,7 @@ def testgtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
 
     return densd,tempd
 
-def rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass):
+def rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass=48):
     species = ['He','O','N2','O2','Ar','Total','H','N','AnomalousO']
     ttypes = ['exotemp','heretemp']
     iyd,utsec,stl = datetime2gtd(dtime,glon)
