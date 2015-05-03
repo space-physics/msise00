@@ -8,17 +8,19 @@ The plot immediately below shows a slice at 200km on a world-wide grid. The yell
 All credit to original authors, I slightly modified the Fortran 77 
 code so it could compile in a modern compiler. 
 
+Installation:
+-------------
 ```
+git clone --recursive https://github.com/scienceopen/msise-00
+
+pip install -r requirements.txt 
+
 f2py3 -m gtd7 -c nrlmsise00_sub.for 
 ```
 plot by:
 ```
 python demo_msis.py
 ```
-
-Prereqs:
---------
-``` pip install -r requirements.txt ```
 
 #### Reference
 Original fortran code from
