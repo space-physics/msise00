@@ -11,7 +11,7 @@ code so it could compile in a modern compiler.
 Installation:
 -------------
 ```
-git clone --recursive https://github.com/scienceopen/msise-00
+git clone --recursive https://github.com/scienceopen/msise00
 
 pip install -r requirements.txt 
 
