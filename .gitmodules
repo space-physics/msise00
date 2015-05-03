@@ -1,0 +1,3 @@
+[submodule "pymap3d"]
+	path = pymap3d
+	url = https://github.com/scienceopen/pymap3d
