@@ -15,7 +15,7 @@ git clone --recursive https://github.com/scienceopen/msise00
 
 pip install -r requirements.txt 
 
-f2py -m gtd7 -c nrlmsise00_sub.for 
+make -f Makefile.f2py
 ```
 plot by:
 ```
@@ -28,4 +28,7 @@ http://nssdcftp.gsfc.nasa.gov/models/atmospheric/msis/nrlmsise00/
 
 [>1200 citations 2002 paper](http://onlinelibrary.wiley.com/doi/10.1029/2002JA009430/pdf)
 
-
+If you don't have make (which you should have) you can manually compile by:
+```
+f2py -m gtd7 -c nrlmsise00_sub.for 
+```
