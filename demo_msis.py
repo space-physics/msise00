@@ -24,13 +24,12 @@ except ImportError as e:
 from matplotlib.pyplot import figure,show, subplots, close
 from matplotlib.ticker import ScalarFormatter
 from tempfile import gettempdir
-import sys
-sys.path.append('../python-mapping')
 try:
-    from coordconv3d import aer2geodetic
+    from pymap3d.coordconv3d import aer2geodetic
 except ImportError as e:
-    print('please get the python-mapping utility to enable more plots')
-    print('https://github.com/scienceopen/python-mapping')
+    print('please get the python-mapping utility to enable more plots.  ',
+    'https://github.com/scienceopen/python-mapping \n  ',
+    'git submodule update --remote --merge')
     print(str(e))
     doplot=False
 from fortrandates import datetime2gtd
@@ -170,7 +169,7 @@ def latlonworldgrid(latstep=5,lonstep=5):
 if __name__ == '__main__':
     from argparse import ArgumentParser
     p = ArgumentParser(description='calls MSISE-00 from Python, a basic demo')
-    p.add_argument('simtime',help='yyyy-mm-ddTHH:MM:SSZ time of sim',type=str,nargs='?',default=None)
+    p.add_argument('simtime',help='yyyy-mm-ddTHH:MM:SSZ time of sim',type=str,nargs='?',default='')
     p.add_argument('-a','--altkm',help='altitude (km) (start,stop,step)',type=float,nargs='+',default=[None])
     p.add_argument('-c','--latlon',help='geodetic latitude/longitude (deg)',type=float,nargs=2,default=(None,None))
     p.add_argument('--f107a',help=' 81 day AVERAGE OF F10.7 FLUX (centered on day DDD)',type=float,default=150)
@@ -181,7 +180,7 @@ if __name__ == '__main__':
                          'MASS 17 IS Anomalous O ONLY.'),type=float,default=48)
     p = p.parse_args()
 
-    if p.simtime is None: #cycle through a few times for a demo
+    if not p.simtime: #cycle through a few times for a demo
         dtime = date_range(datetime.now(),periods=24,freq='1H',tz=UTC,normalize=True).to_pydatetime()
 #%% altitude 1-D mode
     if p.latlon[0] and p.latlon[1]:
