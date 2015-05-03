@@ -2,7 +2,6 @@
 
 F2PY = f2py 
 F2PY_FLAGS = --quiet
-#F2PY_FLAGS = --quiet --fcompiler=gnu95
 #F2PY_FLAGS +=-DF2PY_REPORT_ON_ARRAY_COPY=1
 #F2PY_FLAGS +=--noarch --f90flags='${ARCHFLAGS}'
 
@@ -10,12 +9,10 @@ MODULE=gtd7
 
 SOURCES = nrlmsise00_sub.for
 
-OBJS := $(addsuffix , $(basename $(SOURCES)))
-
 all: ${MODULE}.so
 
-${MODULE}.so: $(OBJS).for
-	${F2PY} ${F2PY_FLAGS} -c $< -m ${MODULE}
+${MODULE}.so: ${SOURCES}
+	${F2PY} ${F2PY_FLAGS} -c $^ -m ${MODULE}
 
 clean:
 	${RM} ${MODULE}.so
