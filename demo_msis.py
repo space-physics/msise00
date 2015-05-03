@@ -24,6 +24,10 @@ except ImportError as e:
 from matplotlib.pyplot import figure,show, subplots, close
 from matplotlib.ticker import ScalarFormatter
 from tempfile import gettempdir
+#
+import sys,os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+#
 try:
     from pymap3d.coordconv3d import aer2geodetic
     doplot=True
