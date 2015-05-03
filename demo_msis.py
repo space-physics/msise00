@@ -11,7 +11,7 @@ http://nssdcftp.gsfc.nasa.gov/models/atmospheric/msis/nrlmsise00/
 """
 from __future__ import division, print_function, absolute_import
 from pandas import DataFrame, Panel4D, date_range
-from numpy import arange, meshgrid, empty, atleast_1d,atleast_2d
+from numpy import arange, meshgrid, empty, atleast_1d,atleast_2d,array,repeat
 from pytz import UTC
 from dateutil.parser import parse
 from datetime import datetime
@@ -43,8 +43,9 @@ except ImportError as e:
 def testgtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
     glat = atleast_2d(glat); glon=atleast_2d(glon) #has to be here
 #%% set / print msis globals
-    gtd7.tselec((1,1,1,1,1,1,1,1,-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)) #like the msis_driver example
-    print(gtd7.tretrv())
+    tselecopts = array([1,1,1,1,1,1,1,1,-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],float)
+    gtd7.tselec(tselecopts) #like the msis_driver example
+    print('tselec options used:   {}'.format(gtd7.csw.sw)) #don't use tretrv, it doesn't work
 #%% altitude 1-D
     if glat.size==1 and glon.size==1:
         densd,tempd = rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass)
@@ -176,7 +177,7 @@ def latlonworldgrid(latstep=5,lonstep=5):
 if __name__ == '__main__':
     from argparse import ArgumentParser
     p = ArgumentParser(description='calls MSISE-00 from Python, a basic demo')
-    p.add_argument('simtime',help='yyyy-mm-ddTHH:MM:SSZ time of sim',type=str,nargs='?',default='')
+    p.add_argument('simtime',help='yyyy-mm-ddTHH:MM:SSZ time of sim',type=str,nargs='?',default='2013-04-14T08:54:00')
     p.add_argument('-a','--altkm',help='altitude (km) (start,stop,step)',type=float,nargs='+',default=[None])
     p.add_argument('-c','--latlon',help='geodetic latitude/longitude (deg)',type=float,nargs=2,default=(None,None))
     p.add_argument('--f107a',help=' 81 day AVERAGE OF F10.7 FLUX (centered on day DDD)',type=float,default=150)
@@ -189,20 +190,19 @@ if __name__ == '__main__':
 
     if not p.simtime: #cycle through a few times for a demo
         dtime = date_range(datetime.now(),periods=24,freq='1H',tz=UTC,normalize=True).to_pydatetime()
+    else:
+        dtime = parse(p.simtime)
 #%% altitude 1-D mode
     if p.latlon[0] and p.latlon[1]:
-        print('entering single location mode, ',end='')
+        print('entering single location mode')
         if p.altkm[0] is None:
             amm = (60,1000,5)
         elif len(p.altkm) == 3:
             amm = p.altkm[0],p.altkm[1],p.altkm[2]
-            if p.latlon[0] is None: #use pfisr coord
-                glat = 65; glon=-148
         altkm = arange(amm[0],amm[1],amm[2])
         glat,glon=p.latlon
 #%% lat/lon grid mode at constant altitude
     else:# len(p.altkm)==1:
-        dtime = parse(p.simtime)
         print('lat/lon not specified, entering auto whole-world grid mode at first altitude')
         if p.altkm[0] is None:
             altkm = 200

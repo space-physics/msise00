@@ -15,7 +15,7 @@ git clone --recursive https://github.com/scienceopen/msise-00
 
 pip install -r requirements.txt 
 
-f2py3 -m gtd7 -c nrlmsise00_sub.for 
+f2py -m gtd7 -c nrlmsise00_sub.for 
 ```
 plot by:
 ```
