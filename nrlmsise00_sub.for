@@ -992,7 +992,7 @@ C       Eq. A24a
    10 CONTINUE
       IF(SW(9).GT.0) SW9=1.
       IF(SW(9).LT.0) SW9=-1.
-      IYR = YRD/1000.
+      IYR = int(YRD/1000.)
       DAY = YRD - IYR*1000.
       XLONG=LONG
 C      Eq. A22 (remainder of code)
@@ -1194,25 +1194,27 @@ C        FOR ON, OR 2. FOR MAIN EFFECTS OFF BUT CROSS TERMS ON
 C
 C        To get current values of SW: CALL TRETRV(SW)
 C
-      DIMENSION SV(1),SAV(25),SVV(1)
+      Real,intent(in) :: SV(25)
+      Real,intent(out) :: SVV(25)
+      Real SAV(25)
       COMMON/CSW/SW(25),ISW,SWC(25)
       SAVE
-      DO 100 I = 1,25
+      DO I = 1,25
         SAV(I)=SV(I)
-        SW(I)=AMOD(SV(I),2.)
+        SW(I)=MOD(SV(I),2.)
         IF(ABS(SV(I)).EQ.1.OR.ABS(SV(I)).EQ.2.) THEN
           SWC(I)=1.
         ELSE
           SWC(I)=0.
         ENDIF
-  100 CONTINUE
+      End DO
       ISW=64999
       RETURN
       ENTRY TRETRV(SVV)
-      DO 200 I=1,25
+      DO I=1,25
         SVV(I)=SAV(I)
-  200 CONTINUE
-      END
+      End Do
+      END SUBROUTINE TSELEC
 C-----------------------------------------------------------------------
       FUNCTION GLOB7S(P)
 C      VERSION OF GLOBE FOR LOWER ATMOSPHERE 10/26/99

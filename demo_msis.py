@@ -26,6 +26,7 @@ from matplotlib.ticker import ScalarFormatter
 from tempfile import gettempdir
 try:
     from pymap3d.coordconv3d import aer2geodetic
+    doplot=True
 except ImportError as e:
     print('please get the python-mapping utility to enable more plots.  ',
     'https://github.com/scienceopen/python-mapping \n  ',
@@ -41,6 +42,9 @@ except ImportError as e:
 
 def testgtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
     glat = atleast_2d(glat); glon=atleast_2d(glon) #has to be here
+#%% set / print msis globals
+    gtd7.tselec((1,1,1,1,1,1,1,1,-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)) #like the msis_driver example
+    print(gtd7.tretrv())
 #%% altitude 1-D
     if glat.size==1 and glon.size==1:
         densd,tempd = rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass)
@@ -66,7 +70,9 @@ def testgtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
 
     return densd,tempd
 
-def rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass):
+def rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass=48):
+    ap = atleast_1d(ap)
+    if ap.size==1: ap = repeat(ap,7)
     species = ['He','O','N2','O2','Ar','Total','H','N','AnomalousO']
     ttypes = ['exotemp','heretemp']
     iyd,utsec,stl = datetime2gtd(dtime,glon)
@@ -83,6 +89,7 @@ def rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass):
     return densd,tempd
 
 def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon):
+    dtime = atleast_1d(dtime)
     rodir = gettempdir()
     sfmt = ScalarFormatter(useMathText=True) #for 10^3 instead of 1e3
     sfmt.set_powerlimits((-2, 2))
