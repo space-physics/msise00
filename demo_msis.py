@@ -42,7 +42,7 @@ from fortrandates import datetime2gtd
 try:
     import gtd7
 except ImportError as e:
-    exit('you must compile using f2py. Please see README.md. ' + str(e))
+    exit('you must compile msise00 by typing  make -f Makefile.f2py in the msise00 directory ' + str(e))
 
 def testgtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
     glat = atleast_2d(glat); glon=atleast_2d(glon) #has to be here
