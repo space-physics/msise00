@@ -15,14 +15,6 @@ from numpy import arange, meshgrid, empty, atleast_1d,atleast_2d,array,repeat
 from pytz import UTC
 from dateutil.parser import parse
 from datetime import datetime
-try:
-    from astropy.time import Time
-    from astropy.coordinates import get_sun,EarthLocation, AltAz
-except ImportError as e:
-    print('you must have AstroPy>=1.0 to have full functionality, attempting to fail soft. ' + str(e))
-    get_sun=None
-from matplotlib.pyplot import figure,show, subplots, close
-from matplotlib.ticker import ScalarFormatter
 from tempfile import gettempdir
 #
 import sys,os
@@ -94,6 +86,13 @@ def rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass=48):
     return densd,tempd
 
 def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon):
+    try:
+        from astropy.time import Time
+        from astropy.coordinates import get_sun,EarthLocation, AltAz
+    except ImportError as e:
+        print('you must have AstroPy>=1.0 to have full functionality, attempting to fail soft. ' + str(e))
+        get_sun=None
+#
     dtime = atleast_1d(dtime)
     rodir = gettempdir()
     sfmt = ScalarFormatter(useMathText=True) #for 10^3 instead of 1e3
@@ -179,6 +178,9 @@ def latlonworldgrid(latstep=5,lonstep=5):
     return glat,glon
 
 if __name__ == '__main__':
+    from matplotlib.pyplot import figure,show, subplots, close
+    from matplotlib.ticker import ScalarFormatter
+
     from argparse import ArgumentParser
     p = ArgumentParser(description='calls MSISE-00 from Python, a basic demo')
     p.add_argument('simtime',help='yyyy-mm-ddTHH:MM:SSZ time of sim',type=str,nargs='?',default='2013-04-14T08:54:00')
