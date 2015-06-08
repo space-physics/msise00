@@ -171,15 +171,10 @@ def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon):
         print('densities' + str(dens))
         print('temperatures ' + str(temp))
 
-def latlonworldgrid(latstep=5,lonstep=5):
-    lat = arange(-90,90+latstep,latstep)
-    lon = arange(-180,180+lonstep,lonstep)
-    glon,glat = meshgrid(lon,lat)
-    return glat,glon
-
 if __name__ == '__main__':
     from matplotlib.pyplot import figure,show, subplots, close
     from matplotlib.ticker import ScalarFormatter
+    from gridaurora.worldgrid import latlonworldgrid
 
     from argparse import ArgumentParser
     p = ArgumentParser(description='calls MSISE-00 from Python, a basic demo')
