@@ -9,6 +9,7 @@ from astropy.coordinates import get_sun, AltAz,EarthLocation
 import astropy.units as u
 import numpy as np
 from matplotlib.pyplot import figure,show
+#
 from pymap3d.coordconv3d import aer2geodetic
 
 midnight=Time('2014-12-21T00:00:00Z')
