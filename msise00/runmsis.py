@@ -21,7 +21,7 @@ from matplotlib.ticker import ScalarFormatter
 #sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 #
 from pymap3d.coordconv3d import aer2geodetic
-from gridaurora.fortrandates import datetime2gtd
+from histutils.fortrandates import datetime2gtd
 #
 import gtd7
 
