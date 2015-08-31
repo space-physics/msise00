@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-
+import setuptools #enables develop
 from numpy.distutils.core import setup,Extension
 
 
-with open('README.rst') as f:
+with open('README.rst','r') as f:
 	long_description = f.read()
 
 #%% install
@@ -18,8 +18,9 @@ setup(name='msise00',
                         'numpy','six','pytz','pandas','astropy'],
       packages=['msise00'],
       dependency_links = ['https://github.com/scienceopen/pymap3d/tarball/master#egg=pymap3d',
-                          'https://github.com/scienceopen/gridaurora/tarball/master#egg=gridaurora'
+                          'https://github.com/scienceopen/histutils/tarball/master#egg=histutils'
                             ],
-      ext_modules=[Extension(name='gtd7',sources=['fortrancode/nrlmsise00_sub.for'],
+      ext_modules=[Extension(name='gtd7',
+                    sources=['fortrancode/nrlmsise00_sub.for'],
                     f2py_options=['quiet'])]
 	  )
