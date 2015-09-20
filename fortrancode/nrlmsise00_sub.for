@@ -133,11 +133,14 @@ C              22 - ALL TN3 VAR           23 - TURBO SCALE HEIGHT VAR
 C
 C        To get current values of SW: CALL TRETRV(SW)
 C
-      Real,Intent(OUT)   :: D(9), T(2)
-      CHARACTER(len=4) :: ISDATE(3),ISTIME(2),NAME(2),
+      Real,Intent(OUT):: D(9), T(2)
+      Real,Intent(In) :: SEC,ALT,GLAT,GLONG,STL,F107A,F107,AP(7)
+      Integer,Intent(IN)::IYD,MASS
+
+      CHARACTER(len=4):: ISDATE(3),ISTIME(2),NAME(2),
      & ISD(3),IST(2),NAM(2)
 
-      DIMENSION AP(7),DS(9),TS(2)
+      Real DS(9),TS(2)
       DIMENSION ZN3(5),ZN2(4),SV(25)
       COMMON/GTS3C/TLB,S,DB04,DB16,DB28,DB32,DB40,DB48,DB01,ZA,T0,Z0
      & ,G0,RL,DD,DB14,TR12
@@ -287,6 +290,7 @@ C
 C-----------------------------------------------------------------------
       SUBROUTINE GTD7D(IYD,SEC,ALT,GLAT,GLONG,STL,F107A,F107,AP,MASS,
      & D,T)
+      Implicit None
 C
 C     NRLMSISE-00
 C     -----------
@@ -348,7 +352,11 @@ C        D(9) - Anomalous oxygen NUMBER DENSITY(CM-3)
 C        T(1) - EXOSPHERIC TEMPERATURE
 C        T(2) - TEMPERATURE AT ALT
       Real,Intent(Out) :: D(9), T(2)
-      DIMENSION AP(7)
+      Real,Intent(In)  :: SEC,ALT,GLAT,GLONG,STL,F107A,F107,AP(7)
+      Integer,Intent(In):: IYD,MASS
+
+      Integer IMR      
+
       COMMON/METSEL/IMR
       CALL GTD7(IYD,SEC,ALT,GLAT,GLONG,STL,F107A,F107,AP,MASS,D,T)
 C       TOTAL MASS DENSITY
@@ -464,10 +472,11 @@ C      RADIUS (REFF)
       RETURN
       END
 C-----------------------------------------------------------------------
-      FUNCTION VTST7(IYD,SEC,GLAT,GLONG,STL,F107A,F107,AP,IC)
+      Real FUNCTION VTST7(IYD,SEC,GLAT,GLONG,STL,F107A,F107,AP,IC)
 C       Test if geophysical variables or switches changed and save
 C       Return 0 if unchanged and 1 if changed
-      Real AP(*)
+      Integer,Intent(In) :: IYD,IC
+      Real, Intent(In) :: SEC,GLAT,GLONG,STL,F107A,F107, AP(*)
       DIMENSION IYDL(2),SECL(2),GLATL(2),GLL(2),STLL(2)
       DIMENSION FAL(2),FL(2),APL(7,2),SWL(25,2),SWCL(25,2)
       COMMON/CSW/SW(25),ISW,SWC(25)
@@ -508,8 +517,7 @@ C       Return 0 if unchanged and 1 if changed
         SWCL(I,IC)=SWC(I)
    16 CONTINUE
    20 CONTINUE
-      RETURN
-      END
+      END FUNCTION VTST7
 C-----------------------------------------------------------------------
       SUBROUTINE GTS7(IYD,SEC,ALT,GLAT,GLONG,STL,F107A,F107,AP,MASS,D,T)
 C
@@ -943,18 +951,20 @@ C       ADJUST DENSITIES FROM CGS TO KGM
       ALAST=ALT
       RETURN
   100 FORMAT(1X,'MASS', I5, '  NOT VALID')
-      END
+      END Subroutine GTS7
 C-----------------------------------------------------------------------
       SUBROUTINE METERS(METER)
+      Implicit None
 C      Convert outputs to Kg & Meters if METER true
-      LOGICAL METER
+      LOGICAL,Intent(In) :: METER
+      Integer IMR
       COMMON/METSEL/IMR
       SAVE
       IMR=0
       IF(METER) IMR=1
       END SUBROUTINE METERS
 C-----------------------------------------------------------------------
-      FUNCTION SCALH(ALT,XM,TEMP)
+      Real FUNCTION SCALH(ALT,XM,TEMP)
 C      Calculate scale height (km)
       COMMON/PARMB/GSURF,RE
       SAVE
@@ -963,11 +973,15 @@ C      Calculate scale height (km)
       SCALH=RGAS*TEMP/(G*XM)
       END FUNCTION SCALH
 C-----------------------------------------------------------------------
-      FUNCTION GLOBE7(YRD,SEC,LAT,LONG,TLOC,F107A,F107,AP,P)
+      Real FUNCTION GLOBE7(YRD,SEC,LAT,LONG,TLOC,F107A,F107,AP,P)
 C       CALCULATE G(L) FUNCTION
 C       Upper Thermosphere Parameters
-      REAL LAT, LONG
-      Real P(*),SV(25),AP(*)
+      REAL,Intent(IN) :: YRD,SEC,LAT, LONG,TLOC,F107A,F107,AP(*)
+!     inout since P modified in function
+      Real,Intent(inout) :: P(*)  
+
+      
+      Real SV(25)
       COMMON/TTEST/TINF,GB,ROUT,T(15)
       COMMON/CSW/SW(25),ISW,SWC(25)
       COMMON/LPOLY/PLG(9,4),CTLOC,STLOC,C2TLOC,S2TLOC,C3TLOC,S3TLOC,
@@ -1196,6 +1210,7 @@ C        To get current values of SW: CALL TRETRV(SW)
 C
       Real,intent(in) :: SV(25)
       Real,intent(out) :: SVV(25) !from Python use gtd7.csw.sw instead of tretrv
+
       Real SAV(25)
       COMMON/CSW/SW(25),ISW,SWC(25)
       SAVE
@@ -1216,7 +1231,7 @@ C
       End Do
       END SUBROUTINE TSELEC
 C-----------------------------------------------------------------------
-      FUNCTION GLOB7S(P)
+      Real FUNCTION GLOB7S(P)
 C      VERSION OF GLOBE FOR LOWER ATMOSPHERE 10/26/99
       REAL LONG
       COMMON/LPOLY/PLG(9,4),CTLOC,STLOC,C2TLOC,S2TLOC,C3TLOC,S3TLOC,
@@ -1306,10 +1321,10 @@ C        LONGITUDINAL
       DO 50 I=1,14
    50 TT=TT+ABS(SW(I))*T(I)
       GLOB7S=TT
-      RETURN
-      END
+
+      END FUNCTION GLOB7S
 C--------------------------------------------------------------------
-      FUNCTION DENSU(ALT,DLB,TINF,TLB,XM,ALPHA,TZ,ZLB,S2,
+      Real FUNCTION DENSU(ALT,DLB,TINF,TLB,XM,ALPHA,TZ,ZLB,S2,
      $  MN1,ZN1,TN1,TGN1)
 C       Calculate Temperature and Density Profiles for MSIS models
 C       New lower thermo polynomial 10/30/89
@@ -1475,8 +1490,8 @@ C        Density at altitude
    30 CONTINUE
    50 CONTINUE
       IF(XM.EQ.0) DENSM=TZ
-      RETURN
-      END
+
+      END Function DENSM
 C-----------------------------------------------------------------------
       SUBROUTINE SPLINE(X,Y,N,YP1,YPN,Y2)
 C        CALCULATE 2ND DERIVATIVES OF CUBIC SPLINE INTERP FUNCTION
@@ -1514,8 +1529,8 @@ C        Y2: OUTPUT ARRAY OF SECOND DERIVATIVES
       DO 12 K=N-1,1,-1
         Y2(K)=Y2(K)*Y2(K+1)+U(K)
    12 CONTINUE
-      RETURN
-      END
+
+      END Subroutine Spline
 C-----------------------------------------------------------------------
       SUBROUTINE SPLINT(XA,YA,Y2A,N,X,Y)
 C        CALCULATE CUBIC SPLINE INTERP VALUE
