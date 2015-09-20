@@ -9,7 +9,8 @@ bostonmicrowave.com
 Original fortran code from
 http://nssdcftp.gsfc.nasa.gov/models/atmospheric/msis/nrlmsise00/
 """
-from __future__ import division, print_function, absolute_import
+from __future__ import division, absolute_import
+import logging
 from pandas import DataFrame, Panel4D
 from numpy import  empty, atleast_1d,atleast_2d,array,repeat
 from tempfile import gettempdir
@@ -30,11 +31,9 @@ def rungtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
     glat = atleast_2d(glat); glon=atleast_2d(glon) #has to be here
 #%% set / print msis globals
     tselecopts = array([1,1,1,1,1,1,1,1,-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],float)
-    gtd7.tselec(tselecopts) #like the msis_driver example
-    print('tselec options used:   {}'.format(gtd7.csw.sw)) #don't use tretrv, it doesn't work
 #%% altitude 1-D
     if glat.size==1 and glon.size==1:
-        densd,tempd = rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass)
+        densd,tempd = rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass,tselecopts)
 #%% lat/lon grid at 1 altitude
     else: #I didn't use numpy.nditer just yet
         species = ['He','O','N2','O2','Ar','Total','H','N','AnomalousO']
@@ -57,11 +56,16 @@ def rungtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
 
     return densd,tempd
 
-def rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass=48):
+def rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass,tselecopts):
     ap = atleast_1d(ap)
     if ap.size==1: ap = repeat(ap,7)
     species = ['He','O','N2','O2','Ar','Total','H','N','AnomalousO']
     ttypes = ['exotemp','heretemp']
+
+    gtd7.tselec(tselecopts) #like the msis_driver example
+    logging.debug('tselec options used:   {}'.format(gtd7.csw.sw)) #don't use tretrv, it doesn't work
+
+
     iyd,utsec,stl = datetime2gtd(dtime,glon)
 
     altkm = atleast_1d(altkm)
