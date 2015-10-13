@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
     from argparse import ArgumentParser
     p = ArgumentParser(description='calls MSISE-00 from Python, a basic demo')
-    p.add_argument('simtime',help='yyyy-mm-ddTHH:MM:SSZ time of sim',type=str,nargs='?',default='2013-04-14T08:54:00')
+    p.add_argument('simtime',help='yyyy-mm-ddTHH:MM:SSZ time of sim',type=str,nargs='?',default='2013-04-14T00:00:00Z')
     p.add_argument('-a','--altkm',help='altitude (km) (start,stop,step)',type=float,nargs='+',default=[None])
     p.add_argument('-c','--latlon',help='geodetic latitude/longitude (deg)',type=float,nargs=2,default=(None,None))
     p.add_argument('--f107a',help=' 81 day AVERAGE OF F10.7 FLUX (centered on day DDD)',type=float,default=150)
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     else:
         dtime = parse(p.simtime)
 #%% altitude 1-D mode
-    if p.latlon[0] and p.latlon[1]:
+    if p.latlon[0] is not None and p.latlon[1] is not None:
         print('entering single location mode')
         if p.altkm[0] is None:
             amm = (60,1000,5)
