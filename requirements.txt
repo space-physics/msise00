@@ -3,5 +3,4 @@ numpy
 matplotlib>=1.4
 astropy>=1.0
 six
-python-dateutil
 pytz
