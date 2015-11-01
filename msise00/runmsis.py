@@ -10,9 +10,11 @@ Original fortran code from
 http://nssdcftp.gsfc.nasa.gov/models/atmospheric/msis/nrlmsise00/
 """
 from __future__ import division, absolute_import
+from six import integer_types,string_types
+from datetime import datetime
 import logging
 from pandas import DataFrame, Panel4D
-from numpy import  empty, atleast_1d,atleast_2d,array,repeat
+from numpy import empty, atleast_1d,atleast_2d,array,repeat,ndarray
 from tempfile import gettempdir
 from warnings import warn
 from matplotlib.pyplot import figure,subplots, close
@@ -56,7 +58,17 @@ def rungtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
 
     return densd,tempd
 
-def rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass,tselecopts):
+def rungtd1d(t,altkm,glat,glon,f107a,f107,ap,mass,tselecopts):
+    assert isinstance(t,(datetime,string_types))
+    assert isinstance(altkm,(tuple,list,ndarray))
+    assert isinstance(glat,(float,integer_types))
+    assert isinstance(glon,(float,integer_types))
+    assert isinstance(f107a,(float,integer_types))
+    assert isinstance(f107,(float,integer_types))
+# don't check ap, too complicated
+    assert isinstance(mass,(float,integer_types))
+    assert len(tselecopts)==25
+#%%
     ap = atleast_1d(ap)
     if ap.size==1: ap = repeat(ap,7)
     species = ['He','O','N2','O2','Ar','Total','H','N','AnomalousO']
@@ -66,7 +78,7 @@ def rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass,tselecopts):
     logging.debug('tselec options used:   {}'.format(gtd7.csw.sw)) #don't use tretrv, it doesn't work
 
 
-    iyd,utsec,stl = datetime2gtd(dtime,glon)
+    iyd,utsec,stl = datetime2gtd(t,glon)
 
     altkm = atleast_1d(altkm)
     dens = empty((altkm.size,9)); temp=empty((altkm.size,2))
