@@ -1,7 +1,12 @@
-pandas
-numpy
-matplotlib>=1.4
-astropy>=1.0
+setuptools
 six
 python-dateutil
 pytz
+nose
+numpy
+scipy
+pandas
+h5py
+astropy
+matplotlib
+seaborn
