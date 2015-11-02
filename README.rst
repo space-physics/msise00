@@ -1,3 +1,9 @@
+.. image:: https://travis-ci.org/scienceopen/msise00.svg
+    :target: https://travis-ci.org/scienceopen/msise00
+
+.. image:: https://coveralls.io/repos/scienceopen/msise00/badge.svg?branch=master&service=github 
+   :target: https://coveralls.io/github/scienceopen/msise00?branch=master 
+
 .. image:: https://codeclimate.com/github/scienceopen/msise00/badges/gpa.svg
    :target: https://codeclimate.com/github/scienceopen/msise00
    :alt: Code Climate
