@@ -60,7 +60,7 @@ def rungtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
 
 def rungtd1d(t,altkm,glat,glon,f107a,f107,ap,mass,tselecopts):
     assert isinstance(t,(datetime,string_types))
-    assert isinstance(altkm,(tuple,list,ndarray))
+    assert isinstance(altkm,(float,integer_types,tuple,list,ndarray))
     assert isinstance(glat,(float,integer_types))
     assert isinstance(glon,(float,integer_types))
     assert isinstance(f107a,(float,integer_types))
