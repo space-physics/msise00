@@ -1,6 +1,5 @@
 setuptools
 six
-python-dateutil
 pytz
 nose
 numpy
