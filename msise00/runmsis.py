@@ -4,13 +4,10 @@ NOTE: The performance of this demo has not been checked at all.
 Please do basic sanity checks of output.
 Quick demo of calling NRL MSISE-00 using f2py3 from Python
 Michael Hirsch
-bostonmicrowave.com
 
 Original fortran code from
 http://nssdcftp.gsfc.nasa.gov/models/atmospheric/msis/nrlmsise00/
 """
-from __future__ import division, absolute_import
-from six import integer_types,string_types
 from datetime import datetime
 import logging
 from pandas import DataFrame, Panel4D
@@ -59,14 +56,14 @@ def rungtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
     return densd,tempd
 
 def rungtd1d(t,altkm,glat,glon,f107a,f107,ap,mass,tselecopts):
-    assert isinstance(t,(datetime,string_types))
-    assert isinstance(altkm,(float,integer_types,tuple,list,ndarray))
-    assert isinstance(glat,(float,integer_types))
-    assert isinstance(glon,(float,integer_types))
-    assert isinstance(f107a,(float,integer_types))
-    assert isinstance(f107,(float,integer_types))
+    assert isinstance(t,(datetime,str))
+    assert isinstance(altkm,(float,int,tuple,list,ndarray))
+    assert isinstance(glat,(float,int))
+    assert isinstance(glon,(float,int))
+    assert isinstance(f107a,(float,int))
+    assert isinstance(f107,(float,int))
 # don't check ap, too complicated
-    assert isinstance(mass,(float,integer_types))
+    assert isinstance(mass,(float,int))
     assert len(tselecopts)==25
 #%%
     ap = atleast_1d(ap)
