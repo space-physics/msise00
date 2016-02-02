@@ -3,7 +3,6 @@
 understanding sun apparent position over Earth in geodetic lat,lon
 there must be a better way to do this!
 """
-from __future__ import division,absolute_import
 from astropy.time import Time
 from astropy.coordinates import get_sun, AltAz,EarthLocation
 import astropy.units as u
