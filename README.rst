@@ -11,7 +11,7 @@
 ==========
 msise-00
 ==========
-NRL MSISE-00 atmospheric model
+NRL MSISE-00 atmospheric model.  Said to be valid from altitude z = 0 - 1000 km.
 
 The plot immediately below shows a slice at 200km on a world-wide grid.
 The yellow ball represents the sun footprint on Earth.
@@ -20,16 +20,14 @@ The yellow ball represents the sun footprint on Earth.
 
 Installation
 -------------
-from Terminal::
+::
 
-  git clone --depth 1 https://github.com/scienceopen/msise00
-  conda install -r requirements.txt
   python setup.py install
 
 
 Example Usage:
 --------------
-from Terminal::
+::
 
   python demo_msis.py
 
