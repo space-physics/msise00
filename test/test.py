@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-from __future__ import division,absolute_import
 from numpy.testing import assert_allclose
 from datetime import datetime
 from pytz import UTC
 from numpy import array
+from numpy.testing import run_module_suite
 #
 from msise00.runmsis import rungtd1d
 
@@ -24,4 +24,4 @@ def test_gtd1d():
     assert_allclose(temp.values[0,:],[ 848.71148682,  645.71972656])
 
 if __name__ == '__main__':
-    test_gtd1d()
+    run_module_suite()
