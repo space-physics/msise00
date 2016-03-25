@@ -1,9 +1,10 @@
+sudo: required
+dist: trusty
+
 language: python
 
 python:
     - 3.5
-
-sudo: false
 
 notifications:
   email: false
@@ -32,6 +33,7 @@ install:
     - pip -q install coveralls
     - conda install --yes --quiet numpy
     - python setup.py develop
+    - conda install --yes --quiet scipy=0.16.1 #patch for library travis
 
 script:
     - coverage run test/test.py
