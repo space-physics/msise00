@@ -10,7 +10,7 @@ from msise00.runmsis import rungtd1d
 def test_gtd1d():
     t=datetime(2013,3,31,12,tzinfo=UTC)
     altkm=150.
-    glat=65; glon=-148
+    glat=65.; glon=-148.
     f107a=100; f107=100; ap=4; mass=48.
     tselecopts = array([1,1,1,1,1,1,1,1,-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],float)
 
