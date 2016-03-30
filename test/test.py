@@ -19,7 +19,7 @@ def test_gtd1d():
     assert_allclose(dens.values[0,:-1],[1.19930062e+13, 1.25792119e+16, 2.92461331e+16,
                                  2.75184702e+15, 6.24779497e+13,1.84406768e-09,
                                  8.54530523e+11, 8.42101896e+12])
-    assert (dens.columns.values == ['He', 'O', 'N2', 'O2', 'Ar', 'Total', 'H', 'N', 'AnomalousO']).all()
+    assert (dens.species.values == ['He', 'O', 'N2', 'O2', 'Ar', 'Total', 'H', 'N', 'AnomalousO']).all()
 
     assert_allclose(temp.values[0,:],[ 848.71148682,  645.71972656])
 
