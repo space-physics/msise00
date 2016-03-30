@@ -5,7 +5,8 @@ from datetime import datetime
 from numpy import arange, atleast_1d
 from pandas import date_range
 #
-from msise00.runmsis import plotgtd,rungtd7
+from msise00.runmsis import rungtd7
+from msise00.plots import plotgtd
 
 if __name__ == '__main__':
     from matplotlib.pyplot import show
@@ -13,7 +14,7 @@ if __name__ == '__main__':
 
     from argparse import ArgumentParser
     p = ArgumentParser(description='calls MSISE-00 from Python, a basic demo')
-    p.add_argument('simtime',help='yyyy-mm-ddTHH:MM:SSZ time of sim',type=str,nargs='?',default='2013-04-14T00:00:00Z')
+    p.add_argument('simtime',help='yyyy-mm-ddTHH:MM:SSZ time of sim',type=str,nargs='?',default='2015-04-22T12:00:00Z')
     p.add_argument('-a','--altkm',help='altitude (km) (start,stop,step)',type=float,nargs='+',default=[None])
     p.add_argument('-c','--latlon',help='geodetic latitude/longitude (deg)',type=float,nargs=2,default=(None,None))
     p.add_argument('--f107a',help=' 81 day AVERAGE OF F10.7 FLUX (centered on day DDD)',type=float,default=150)
@@ -22,6 +23,7 @@ if __name__ == '__main__':
     p.add_argument('--mass',help=('MASS NUMBER (ONLY DENSITY FOR SELECTED GAS IS ' +
                        'CALCULATED.  MASS 0 IS TEMPERATURE.  MASS 48 FOR ALL. '+
                          'MASS 17 IS Anomalous O ONLY.'),type=float,default=48)
+    p.add_argument('-o','--odir',help='directory to write plots to')
     p = p.parse_args()
 
     if not p.simtime: #cycle through a few times for a demo
@@ -52,7 +54,7 @@ if __name__ == '__main__':
     dens,temp = rungtd7(dtime,altkm,glat,glon,p.f107a,p.f107,p.ap,p.mass)
 
     try:
-        plotgtd(dens,temp,dtime,altkm,p.ap,p.f107,glat,glon)
+        plotgtd(dens,temp,dtime,altkm,p.ap,p.f107,glat,glon,p.odir)
         show()
     except Exception as e:
         print('plotting was disabled. {}'.format(e))

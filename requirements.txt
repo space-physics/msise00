@@ -6,6 +6,7 @@ nose
 numpy
 scipy
 pandas
+xarray
 h5py
 astropy
 matplotlib
