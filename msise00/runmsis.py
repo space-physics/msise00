@@ -27,24 +27,24 @@ def rungtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
     tselecopts = array([1,1,1,1,1,1,1,1,-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],float)
 #%% altitude 1-D
     if glat.size==1 and glon.size==1:
-        densd,tempd = rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass,tselecopts)
+        dens,temp = rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass,tselecopts)
 #%% lat/lon grid at 1 altitude
     else: #I didn't use numpy.nditer just yet
         dtime = atleast_1d(dtime) #keep for code reuse
 
-        densd = DataArray(data=empty((dtime.size,len(species),glat.shape[0],glat.shape[1])),
+        dens = DataArray(data=empty((dtime.size,len(species),glat.shape[0],glat.shape[1])),
                           coords=[dtime,species,glat[:,0],glon[0,:]],
                           dims=['time','species','lat','lon'])
-        tempd = DataArray(data=empty((dtime.size,len(ttypes),glat.shape[0],glat.shape[1])),
+        temp = DataArray(data=empty((dtime.size,len(ttypes),glat.shape[0],glat.shape[1])),
                           coords=[dtime,ttypes, glat[:,0],glon[0,:]],
                           dims=['time','temp','lat','lon'])
 
         for k,t in enumerate(dtime):
           for i in range(glat.shape[0]):
               for j in range(glat.shape[1]):
-                  densd[k,:,i,j], tempd[k,:,i,j] = rungtd1d(t,altkm,glat[i,j],glon[i,j],f107a,f107,ap,mass,tselecopts)
+                  dens[k,:,i,j], temp[k,:,i,j] = rungtd1d(t,altkm,glat[i,j],glon[i,j],f107a,f107,ap,mass,tselecopts)
 
-    return densd,tempd
+    return dens,temp
 
 def rungtd1d(t,altkm,glat,glon,f107a,f107,ap,mass,tselecopts):
     altkm=atleast_1d(altkm)
@@ -72,12 +72,14 @@ def rungtd1d(t,altkm,glat,glon,f107a,f107,ap,mass,tselecopts):
     iyd,utsec,stl = datetime2gtd(t,glon)
 
     altkm = atleast_1d(altkm)
-    dens = empty((altkm.size,9)); temp=empty((altkm.size,2))
+
+    dens = DataArray(data=empty((altkm.size,len(species))),
+                     coords=[altkm, species],dims=['altkm','species'])
+    temp = DataArray(data=empty((altkm.size,len(ttypes))),
+                      coords=[altkm, ttypes],dims=['altkm','temp'])
 
     gtd7.meters(1) # makes output in m^-3 and kg/m^-3
     for i,a in enumerate(altkm):
         dens[i,:],temp[i,:] = gtd7.gtd7(iyd,utsec,a,glat,glon,stl, f107a,f107, ap,mass)
 
-    densd = DataArray(data=dens, coords=[altkm, species],dims=['altkm','species'])
-    tempd = DataArray(data=temp, coords=[altkm, ttypes],dims=['altkm','temp'])
-    return densd,tempd
+    return dens,temp
