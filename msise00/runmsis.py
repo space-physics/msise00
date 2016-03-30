@@ -11,12 +11,15 @@ http://nssdcftp.gsfc.nasa.gov/models/atmospheric/msis/nrlmsise00/
 from datetime import datetime
 import logging
 from xarray import DataArray
-from numpy import empty, atleast_1d,atleast_2d,array,repeat,ndarray
+from numpy import empty, atleast_1d,atleast_2d,array,repeat
 #
 from histutils.fortrandates import datetime2gtd
 #
 import gtd7
-
+#
+species = ['He','O','N2','O2','Ar','Total','H','N','AnomalousO']
+ttypes = ['exotemp','heretemp']
+first=True
 
 def rungtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
     glat = atleast_2d(glat); glon=atleast_2d(glon) #has to be here
@@ -27,35 +30,31 @@ def rungtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
         densd,tempd = rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass,tselecopts)
 #%% lat/lon grid at 1 altitude
     else: #I didn't use numpy.nditer just yet
-        species = ['He','O','N2','O2','Ar','Total','H','N','AnomalousO']
-        ttypes = ['exoatm','atm']
         dtime = atleast_1d(dtime) #keep for code reuse
-        iyd,utsec,stl = datetime2gtd(dtime,glon)
 
-        dens = empty((dtime.size,9,glat.shape[0],glat.shape[1]))
-        temp = empty((dtime.size,2,glat.shape[0],glat.shape[1]))
-
-        gtd7.meters(1) # makes output in m^-3 and kg/m^-3
-        for k in range(dtime.size):
-          for i in range(glat.shape[0]):
-              for j in range(glat.shape[1]):
-                dens[k,:,i,j], temp[k,:,i,j] = gtd7.gtd7(iyd[k],utsec[k],altkm,
-                                       glat[i,j],glon[i,j],stl[k],f107a,f107,ap,mass)
-
-        densd = DataArray(data=dens,
+        densd = DataArray(data=empty((dtime.size,len(species),glat.shape[0],glat.shape[1])),
                           coords=[dtime,species,glat[:,0],glon[0,:]],
                           dims=['time','species','lat','lon'])
-        tempd = DataArray(data=temp,
+        tempd = DataArray(data=empty((dtime.size,len(ttypes),glat.shape[0],glat.shape[1])),
                           coords=[dtime,ttypes, glat[:,0],glon[0,:]],
                           dims=['time','temp','lat','lon'])
+
+        for k,t in enumerate(dtime):
+          for i in range(glat.shape[0]):
+              for j in range(glat.shape[1]):
+                  densd[k,:,i,j], tempd[k,:,i,j] = rungtd1d(t,altkm,glat[i,j],glon[i,j],f107a,f107,ap,mass,tselecopts)
 
     return densd,tempd
 
 def rungtd1d(t,altkm,glat,glon,f107a,f107,ap,mass,tselecopts):
+    altkm=atleast_1d(altkm)
+    glon = atleast_1d(glon).squeeze()
+    glat = atleast_1d(glat).squeeze()
+
     assert isinstance(t,(datetime,str))
-    assert isinstance(altkm,(float,int,tuple,list,ndarray))
-    assert isinstance(glat,(float,int))
-    assert isinstance(glon,(float,int))
+    assert isinstance(altkm[0],float)
+    assert glat.dtype=='float64'
+    assert glon.dtype=='float64'
     assert isinstance(f107a,(float,int))
     assert isinstance(f107,(float,int))
 # don't check ap, too complicated
@@ -63,13 +62,12 @@ def rungtd1d(t,altkm,glat,glon,f107a,f107,ap,mass,tselecopts):
     assert len(tselecopts)==25
 #%%
     ap = atleast_1d(ap)
-    if ap.size==1: ap = repeat(ap,7)
-    species = ['He','O','N2','O2','Ar','Total','H','N','AnomalousO']
-    ttypes = ['exotemp','heretemp']
+    if ap.size==1:
+        ap = repeat(ap,7)
 
     gtd7.tselec(tselecopts) #like the msis_driver example
-    logging.debug('tselec options used:   {}'.format(gtd7.csw.sw)) #don't use tretrv, it doesn't work
-
+    #if first:
+        #logging.debug('tselec options used:   {}'.format(gtd7.csw.sw)) #don't use tretrv, it doesn't work
 
     iyd,utsec,stl = datetime2gtd(t,glon)
 

@@ -69,12 +69,14 @@ def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon,rodir):
         print('temperatures ' + str(temp))
 
 def plot1d(dens,temp,glat,glon,ap,f107):
-    footer = '\nlat/lon {}/{}  Ap={}  F10.7={}'.format(glat,glon,ap[0],f107)
+    footer = '\n({},{})  Ap {}  F10.7 {}'.format(glat,glon,ap[0],f107)
 
+    z=dens.altkm.values
     ax = figure().gca()
-    for g in dens.columns:
-        if g != 'Total':
-            ax.semilogx(dens[g], dens.index, label=g)
+    for s in dens.T:
+        thisspecies = s.species.values
+        if thisspecies != 'Total':
+            ax.semilogx(s, z, label=thisspecies)
     ax.legend(loc='best')
     ax.set_xlim(left=1e3)
     ax.set_ylabel('altitude [km]')
@@ -83,14 +85,14 @@ def plot1d(dens,temp,glat,glon,ap,f107):
     ax.set_title('Number Density from MSISE-00' + footer)
 
     ax = figure().gca()
-    ax.semilogx(dens['Total'],dens.index)
+    ax.semilogx(dens.loc[:,'Total'], z)
     ax.set_xlabel('Total Mass Density [kg m$^{-3}$]')
     ax.set_ylabel('altitude [km]')
     ax.grid(True)
     ax.set_title('Total Mass Density from MSISE-00'+footer)
 
     ax = figure().gca()
-    ax.plot(temp['heretemp'],temp.index)
+    ax.plot(temp.loc[:,'heretemp'], z)
     ax.set_xlabel('Temperature')
     ax.set_ylabel('altitude [km]')
     ax.grid(True)
