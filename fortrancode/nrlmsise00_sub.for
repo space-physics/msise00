@@ -464,14 +464,18 @@ C-----------------------------------------------------------------------
       SUBROUTINE GLATF(LAT,GV,REFF)
 C      CALCULATE LATITUDE VARIABLE GRAVITY (GV) AND EFFECTIVE
 C      RADIUS (REFF)
-      REAL LAT
+      implicit none
+      REAL,intent(in) :: LAT
+      real, intent(out) :: gv,reff
+      real c2
+      real,parameter :: DGTR=1.74533E-2
+
       SAVE
-      DATA DGTR/1.74533E-2/
+      
       C2 = COS(2.*DGTR*LAT)
       GV = 980.616*(1.-.0026373*C2)
       REFF = 2.*GV/(3.085462E-6 + 2.27E-9*C2)*1.E-5
-      RETURN
-      END
+      END SUBROUTINE GLATF
 C-----------------------------------------------------------------------
       Real FUNCTION VTST7(IYD,SEC,GLAT,GLONG,STL,F107A,F107,AP,IC)
 C       Test if geophysical variables or switches changed and save
@@ -957,7 +961,7 @@ C-----------------------------------------------------------------------
       SUBROUTINE METERS(METER)
       Implicit None
 C      Convert outputs to Kg & Meters if METER true
-      LOGICAL,Intent(In) :: METER
+      logical,Intent(In) :: METER
       Integer IMR
       COMMON/METSEL/IMR
       SAVE
@@ -966,10 +970,13 @@ C      Convert outputs to Kg & Meters if METER true
       END SUBROUTINE METERS
 C-----------------------------------------------------------------------
       Real FUNCTION SCALH(ALT,XM,TEMP)
+      Implicit None
+      real, intent(in) :: alt, xm, temp
+      real gsurf,re, g
+      real,parameter :: RGAS=831.4
 C      Calculate scale height (km)
       COMMON/PARMB/GSURF,RE
       SAVE
-      DATA RGAS/831.4/
       G=GSURF/(1.+ALT/RE)**2
       SCALH=RGAS*TEMP/(G*XM)
       END FUNCTION SCALH
@@ -977,7 +984,7 @@ C-----------------------------------------------------------------------
       Real FUNCTION GLOBE7(YRD,SEC,LAT,LONG,TLOC,F107A,F107,AP,P)
 C       CALCULATE G(L) FUNCTION
 C       Upper Thermosphere Parameters
-      REAL,Intent(IN) :: YRD,SEC,LAT, LONG,TLOC,F107A,F107,AP(*)
+      Real,Intent(IN) :: YRD,SEC,LAT, LONG,TLOC,F107A,F107,AP(*)
 !     inout since P modified in function
       Real,Intent(inout) :: P(*)  
 
@@ -1561,8 +1568,8 @@ C        Y: OUTPUT VALUE
       B=(X-XA(KLO))/H
       Y=A*YA(KLO)+B*YA(KHI)+
      $  ((A*A*A-A)*Y2A(KLO)+(B*B*B-B)*Y2A(KHI))*H*H/6.
-      RETURN
-      END
+
+      END SUBROUTINE SPLINT
 C-----------------------------------------------------------------------
       SUBROUTINE SPLINI(XA,YA,Y2A,N,X,YI)
 C       INTEGRATE CUBIC SPLINE FUNCTION FROM XA(1) TO X
@@ -1592,8 +1599,7 @@ C        Y: OUTPUT VALUE
         KHI=KHI+1
         GOTO 1
       ENDIF
-      RETURN
-      END
+      END SUBROUTINE SPLINI
 C-----------------------------------------------------------------------
       FUNCTION DNET(DD,DM,ZHM,XMM,XM)
 C       TURBOPAUSE CORRECTION FOR MSIS MODELS
@@ -1625,8 +1631,7 @@ C          DNET - combined density
         DNET=DM
         GO TO 50
    50 CONTINUE
-      RETURN
-      END
+      END FUNCTION DNET
 C-----------------------------------------------------------------------
       FUNCTION  CCOR(ALT, R,H1,ZH)
 C        CHEMISTRY/DISSOCIATION CORRECTION FOR MSIS MODELS
@@ -1647,8 +1652,7 @@ C        ZH - altitude of 1/2 R
         GO TO 50
    50 CONTINUE
       CCOR=EXP(CCOR)
-       RETURN
-      END
+      END FUNCTION  CCOR
 C-----------------------------------------------------------------------
       FUNCTION  CCOR2(ALT, R,H1,ZH,H2)
 C       O&O2 CHEMISTRY/DISSOCIATION CORRECTION FOR MSIS MODELS
@@ -2453,4 +2457,4 @@ C         MIDDLE ATMOSPHERE AVERAGES
       DATA PAVGM/
      M  2.61000E+02, 2.64000E+02, 2.29000E+02, 2.17000E+02, 2.17000E+02,
      M  2.23000E+02, 2.86760E+02,-2.93940E+00, 2.50000E+00, 0.00000E+00/
-      END
+      END BLOCK DATA
