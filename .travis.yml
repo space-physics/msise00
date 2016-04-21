@@ -1,10 +1,10 @@
-sudo: required
-dist: trusty
-
 language: python
 
 python:
     - 3.5
+
+sudo: true
+dist: trusty
 
 notifications:
   email: false
@@ -14,14 +14,10 @@ git:
 
 addons:
   apt:
-    sources:
-    - ubuntu-toolchain-r-test
     packages:
-    - gfortran-5
+      - gfortran
 
 before_install:
-    - mkdir -p $HOME/.local/bin
-    - ln -fs /usr/bin/gfortran-5 "$HOME/.local/bin/gfortran" && gfortran --version
     - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
     - chmod +x miniconda.sh
     - bash miniconda.sh -b -p $HOME/miniconda
@@ -32,7 +28,6 @@ install:
     - source activate test
     - pip -q install coveralls
     - python setup.py develop
-    - conda install --yes scipy=0.16.1 #patch for library travis
 
 script:
     - coverage run test/test.py
