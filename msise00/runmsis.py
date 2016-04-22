@@ -9,7 +9,6 @@ Original fortran code from
 http://nssdcftp.gsfc.nasa.gov/models/atmospheric/msis/nrlmsise00/
 """
 from datetime import datetime
-import logging
 from xarray import DataArray
 from numpy import empty, atleast_1d,atleast_2d,array,repeat
 #
@@ -52,9 +51,13 @@ def rungtd1d(t,altkm,glat,glon,f107a,f107,ap,mass,tselecopts):
     glat = atleast_1d(glat).squeeze()
 
     assert isinstance(t,(datetime,str))
-    assert isinstance(altkm[0],float)
-    assert glat.dtype=='float64'
-    assert glon.dtype=='float64'
+
+
+# Too hard to check?
+#assert isinstance(altkm[0],float)
+    #assert glat.dtype=='float64'
+    #assert glon.dtype=='float64'
+
     assert isinstance(f107a,(float,int))
     assert isinstance(f107,(float,int))
 # don't check ap, too complicated
