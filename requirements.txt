@@ -1,8 +1,7 @@
 setuptools
-six
+nose
 python-dateutil
 pytz
-nose
 numpy
 scipy
 pandas
