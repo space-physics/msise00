@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 from numpy.testing import assert_allclose
 from datetime import datetime
 from pytz import UTC
