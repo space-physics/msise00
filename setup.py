@@ -1,17 +1,11 @@
-#!/usr/bin/env python3
-import os,sys
+#!/usr/bin/env python
 import setuptools #enables develop
 import subprocess
 
-exepath = os.path.dirname(sys.executable)
 try:
-    subprocess.call([os.path.join(exepath,'conda'),'install','--yes','--file','requirements.txt'])
+    subprocess.call(['conda','install','--file','requirements.txt'])
 except Exception as e:
-    print('tried conda in {}, but you will need to install packages in requirements.txt  {}'.format(exepath,e))
-
-
-with open('README.rst','r') as f:
-	  long_description = f.read()
+    pass
 
 #%%
 from numpy.distutils.core import setup,Extension
@@ -23,13 +17,13 @@ ext = Extension(name='gtd7',
 #%% install
 setup(name='msise00',
 	  description='Python wrapper for MSIS-E00 atmosphere model',
-	  long_description=long_description,
 	  author='Michael Hirsch',
 	  url='https://github.com/scienceopen/msise00',
 	  install_requires=['pymap3d','histutils'],
       dependency_links = ['https://github.com/scienceopen/pymap3d/tarball/master#egg=pymap3d',
                           'https://github.com/scienceopen/histutils/tarball/master#egg=histutils'
                             ],
-      ext_modules=[ext]
+      ext_modules=[ext],
+      packages=['msise00']
 	  )
 
