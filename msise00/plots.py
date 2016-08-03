@@ -1,4 +1,4 @@
-from pathlib import Path
+from . import Path
 from numpy import atleast_1d
 from astropy.time import Time
 from astropy.coordinates import get_sun,EarthLocation, AltAz
