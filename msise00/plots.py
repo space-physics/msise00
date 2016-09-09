@@ -5,7 +5,7 @@ from astropy.coordinates import get_sun,EarthLocation, AltAz
 from matplotlib.pyplot import figure,subplots, close
 from matplotlib.ticker import ScalarFormatter
 #
-from pymap3d.coordconv3d import aer2geodetic
+from pymap3d import aer2geodetic
 
 def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon,rodir):
 #

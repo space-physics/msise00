@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
 understanding sun apparent position over Earth in geodetic lat,lon
 there must be a better way to do this!
@@ -9,7 +9,7 @@ import astropy.units as u
 import numpy as np
 from matplotlib.pyplot import figure,show
 #
-from pymap3d.coordconv3d import aer2geodetic
+from pymap3d import aer2geodetic
 
 midnight=Time('2014-12-21T00:00:00Z')
 delta_midnight = np.linspace(0, 180,1000)*u.day
