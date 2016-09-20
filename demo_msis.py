@@ -1,20 +1,23 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
+from tempfile import gettempdir
 from pytz import UTC
 from dateutil.parser import parse
 from datetime import datetime
 from numpy import arange, atleast_1d
 from pandas import date_range
+from matplotlib.pyplot import show
+import seaborn as sns
+sns.set_style('ticks')
 #
-from msise00.runmsis import rungtd7
+from msise00 import rungtd7
 from msise00.plots import plotgtd
+#
+from gridaurora.worldgrid import latlonworldgrid
 
 if __name__ == '__main__':
-    from matplotlib.pyplot import show
-    from gridaurora.worldgrid import latlonworldgrid
-
     from argparse import ArgumentParser
     p = ArgumentParser(description='calls MSISE-00 from Python, a basic demo')
-    p.add_argument('simtime',help='yyyy-mm-ddTHH:MM:SSZ time of sim',type=str,nargs='?',default='2015-04-22T12:00:00Z')
+    p.add_argument('-t','--simtime',help='yyyy-mm-ddTHH:MM:SSZ time of sim')
     p.add_argument('-a','--altkm',help='altitude (km) (start,stop,step)',type=float,nargs=3)
     p.add_argument('-c','--latlon',help='geodetic latitude/longitude (deg)',type=float,nargs=2)
     p.add_argument('--f107a',help=' 81 day AVERAGE OF F10.7 FLUX (centered on day DDD)',type=float,default=150)
@@ -23,7 +26,7 @@ if __name__ == '__main__':
     p.add_argument('--mass',help=('MASS NUMBER (ONLY DENSITY FOR SELECTED GAS IS ' +
                        'CALCULATED.  MASS 0 IS TEMPERATURE.  MASS 48 FOR ALL. '+
                          'MASS 17 IS Anomalous O ONLY.'),type=float,default=48)
-    p.add_argument('-o','--odir',help='directory to write plots to')
+    p.add_argument('-o','--odir',help='directory to write plots to',default=gettempdir())
     p = p.parse_args()
 
     if not p.simtime: #cycle through a few times for a demo
@@ -51,8 +54,6 @@ if __name__ == '__main__':
 
     dens,temp = rungtd7(dtime,altkm,glat,glon,p.f107a,p.f107,p.ap,p.mass)
 
-    try:
-        plotgtd(dens,temp,dtime,altkm,p.ap,p.f107,glat,glon,p.odir)
-        show()
-    except Exception as e:
-        print('plotting was disabled. {}'.format(e))
+    plotgtd(dens,temp,dtime,altkm,p.ap,p.f107,glat,glon,p.odir)
+    show()
+
