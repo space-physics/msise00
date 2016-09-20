@@ -12,7 +12,7 @@ NRL MSISE-00 atmospheric model.  Said to be valid from altitude z = 0 - 1000 km.
 The plot immediately below shows a slice at 200km on a world-wide grid.
 The yellow ball represents the sun footprint on Earth.
 
-.. image:: http://blogs.bu.edu/mhirsch/files/2015/04/demo200km1.gif
+.. image:: tests/msise00_demo.gif
 
 Installation
 -------------

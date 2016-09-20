@@ -1,5 +1,7 @@
 from . import Path
+from pytz import UTC
 from numpy import atleast_1d
+from datetime import datetime
 from astropy.time import Time
 from astropy.coordinates import get_sun,EarthLocation, AltAz
 from matplotlib.pyplot import figure,subplots, close
@@ -21,7 +23,7 @@ def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon,rodir):
     if dens.ndim==2: #altitude 1-D
         plot1d(dens,temp,glat,glon,ap,f107)
     elif dens.ndim==4: #lat/lon grid
-#%%sun lat/lon #FIXME this is a seemingly arbitrary procedure
+#%% sun lat/lon
         ttime = Time(dtime)
         obs = EarthLocation(0,0) # geodetic lat,lon = 0,0 arbitrary
         sun = get_sun(time=ttime)
@@ -32,7 +34,8 @@ def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon,rodir):
         #iterate over time
         for k,d in enumerate(dens): #dens is a 4-D array  time x species x lat x lon
             fg,ax = subplots(4,2,sharex=True, figsize=(8,8))
-            fg.suptitle('{} alt.(km) {}\nAp={}  F10.7={}'.format(d.time.values,altkm,ap[0],f107))
+            fg.suptitle(datetime.fromtimestamp(d.time.item()/1e9, tz=UTC).strftime('%Y-%m-%dT%H:%M') +
+                        ' alt.(km) {}\nAp={}  F10.7={}'.format(altkm,ap[0],f107))
             ax=ax.ravel(); i = 0 #don't use enumerate b/c of skip
 
             #iterate over species
@@ -41,7 +44,7 @@ def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon,rodir):
                 if thisspecies != 'Total':
                     a = ax[i]
 
-                    hi = a.imshow(s.values, aspect='auto', interpolation='none',
+                    hi = a.imshow(s.values, aspect='auto', interpolation='none',cmap='viridis',
                              extent=(glon[0,0],glon[0,-1],glat[0,0],glat[-1,0]))
                     fg.colorbar(hi,ax=a, format=sfmt)
 
@@ -62,11 +65,10 @@ def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon,rodir):
                 thisofn = rodir / '{:.1f}_{:03d}.png'.format(altkm[0],k)
                 print('writing {}'.format(thisofn))
                 fg.savefig(str(thisofn),dpi=100,bbox_inches='tight')
-                if dtime.size>8:
-                    close()
+                close()
     else:
-        print('densities' + str(dens))
-        print('temperatures ' + str(temp))
+        print('densities  {}'.format(dens))
+        print('temperatures {}'.format(temp))
 
 def plot1d(dens,temp,glat,glon,ap,f107):
     footer = '\n({},{})  Ap {}  F10.7 {}'.format(glat,glon,ap[0],f107)
