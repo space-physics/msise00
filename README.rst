@@ -23,9 +23,10 @@ Installation
 
 Example Usage:
 --------------
-::
+This outputs a series of PNGs to your temp directory::
 
   python demo_msis.py
+
 
 
 Reference
