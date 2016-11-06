@@ -5,7 +5,7 @@ from pytz import UTC
 from numpy import array
 from numpy.testing import run_module_suite
 #
-from msise00.runmsis import rungtd1d
+from msise00 import rungtd1d
 
 def test_gtd1d():
     t=datetime(2013,3,31,12,tzinfo=UTC)
