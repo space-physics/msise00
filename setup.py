@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 import setuptools #enables develop
-import subprocess
-
 try:
-    subprocess.call(['conda','install','--file','requirements.txt'])
+    import conda.cli
+    conda.cli.main('install','--file','requirements.txt')
 except Exception as e:
-    pass
+    print(e)
 
 #%%
 from numpy.distutils.core import setup,Extension
@@ -16,9 +15,6 @@ ext = Extension(name='gtd7',
 
 #%% install
 setup(name='msise00',
-	  description='Python wrapper for MSIS-E00 atmosphere model',
-	  author='Michael Hirsch',
-	  url='https://github.com/scienceopen/msise00',
 	  install_requires=['pymap3d','histutils'],
       dependency_links = ['https://github.com/scienceopen/pymap3d/tarball/master#egg=pymap3d',
                           'https://github.com/scienceopen/histutils/tarball/master#egg=histutils'
