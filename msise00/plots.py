@@ -1,4 +1,4 @@
-from . import Path
+from pathlib import Path
 from pytz import UTC
 from numpy import atleast_1d
 from datetime import datetime
