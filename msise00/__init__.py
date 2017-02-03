@@ -1,9 +1,3 @@
-try:
-    from pathlib import Path
-    Path().expanduser()
-except (ImportError,AttributeError):
-    from pathlib2 import Path
-#
 """
 Please do basic sanity checks of output.
 Quick demo of calling NRL MSISE-00 using f2py from Python
