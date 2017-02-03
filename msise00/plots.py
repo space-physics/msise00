@@ -1,4 +1,4 @@
-from . import Path
+from pathlib import Path
 from pytz import UTC
 from numpy import atleast_1d
 from datetime import datetime
@@ -35,7 +35,7 @@ def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon,rodir):
         for k,d in enumerate(dens): #dens is a 4-D array  time x species x lat x lon
             fg,ax = subplots(4,2,sharex=True, figsize=(8,8))
             fg.suptitle(datetime.fromtimestamp(d.time.item()/1e9, tz=UTC).strftime('%Y-%m-%dT%H:%M') +
-                        ' alt.(km) {}\nAp={}  F10.7={}'.format(altkm,ap[0],f107))
+                        f' alt.(km) {altkm}\nAp={ap[0]}  F10.7={f107}')
             ax=ax.ravel(); i = 0 #don't use enumerate b/c of skip
 
             #iterate over species
@@ -51,7 +51,7 @@ def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon,rodir):
                     a.plot(slon[k],slat[k],linestyle='none',
                                         marker='o',markersize=5,color='w')
 
-                    a.set_title('Density: {}'.format(thisspecies))
+                    a.set_title(f'Density: {thisspecies}')
                     a.set_xlim(-180,180)
                     a.set_ylim(-90,90)
                     a.autoscale(False)
@@ -63,12 +63,12 @@ def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon,rodir):
 
             if rodir:
                 thisofn = rodir / '{:.1f}_{:03d}.png'.format(altkm[0],k)
-                print('writing {}'.format(thisofn))
+                print(f'writing {thisofn}')
                 fg.savefig(str(thisofn),dpi=100,bbox_inches='tight')
                 close()
     else:
-        print('densities  {}'.format(dens))
-        print('temperatures {}'.format(temp))
+        print(f'densities  {dens}')
+        print(f'temperatures {temp}')
 
 def plot1d(dens,temp,glat,glon,ap,f107):
     footer = '\n({},{})  Ap {}  F10.7 {}'.format(glat,glon,ap[0],f107)
