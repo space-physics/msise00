@@ -27,10 +27,9 @@ setup(name='msise00',
       'Topic :: Scientific/Engineering :: Atmospheric Science',
       'Programming Language :: Python :: 3.6',
       ],
-	  install_requires=['pymap3d',
-                        'histutils','gridaurora'],
+	  install_requires=['pymap3d','sciencedates'
+                        ,'gridaurora'],
       dependency_links = [
-        'https://github.com/scienceopen/histutils/tarball/master#egg=histutils',
         'https://github.com/scienceopen/gridaurora/tarball/master#egg=gridaurora'
                             ],
       ext_modules=[ext],

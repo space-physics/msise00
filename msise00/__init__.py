@@ -11,7 +11,7 @@ from datetime import datetime
 from xarray import DataArray
 from numpy import empty, atleast_1d,atleast_2d,array,repeat
 #
-from histutils.fortrandates import datetime2gtd
+from sciencedates import datetime2gtd
 #
 import gtd7
 #
