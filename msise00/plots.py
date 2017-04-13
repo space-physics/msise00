@@ -9,7 +9,7 @@ from matplotlib.ticker import ScalarFormatter
 #
 from pymap3d import aer2geodetic
 
-def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon,rodir):
+def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon,rodir=None):
 #
     if rodir:
         rodir = Path(rodir).expanduser()
@@ -71,6 +71,7 @@ def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon,rodir):
         print(f'temperatures {temp}')
 
 def plot1d(dens,temp,glat,glon,ap,f107):
+    ap = atleast_1d(ap)
     footer = '\n({},{})  Ap {}  F10.7 {}'.format(glat,glon,ap[0],f107)
 
     z=dens.altkm.values
@@ -94,7 +95,7 @@ def plot1d(dens,temp,glat,glon,ap,f107):
     ax.set_title('Total Mass Density from MSISE-00'+footer)
 
     ax = figure().gca()
-    ax.plot(temp.loc[:,'heretemp'], z)
+    ax.plot(temp.loc[:,'Tn'], z)
     ax.set_xlabel('Temperature')
     ax.set_ylabel('altitude [km]')
     ax.grid(True)

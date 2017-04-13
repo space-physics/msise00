@@ -23,9 +23,6 @@ if __name__ == '__main__':
     p.add_argument('--f107a',help=' 81 day AVERAGE OF F10.7 FLUX (centered on day DDD)',type=float,default=150)
     p.add_argument('--f107',help='DAILY F10.7 FLUX FOR PREVIOUS DAY',type=float,default=150)
     p.add_argument('--ap',help='daily ap, 0-3hr, 3-6hr, 6-9hr, 9-12hr,12-33hr, 36-57hr',type=float,nargs=7,default=[4,4,4,4,4,4,4])
-    p.add_argument('--mass',help=('MASS NUMBER (ONLY DENSITY FOR SELECTED GAS IS ' +
-                       'CALCULATED.  MASS 0 IS TEMPERATURE.  MASS 48 FOR ALL. '+
-                         'MASS 17 IS Anomalous O ONLY.'),type=float,default=48)
     p.add_argument('-o','--odir',help='directory to write plots to',default=gettempdir())
     p = p.parse_args()
 
@@ -50,9 +47,9 @@ if __name__ == '__main__':
         glat,glon = latlonworldgrid()
 
     altkm = atleast_1d(altkm)
-    print('using altitudes from {:.1f} to {:.1f} km'.format(altkm[0],altkm[-1]))
+    print(f'using altitudes from {altkm[0]:.1f} to {altkm[-1]:.1f} km')
 
-    dens,temp = rungtd7(dtime,altkm,glat,glon,p.f107a,p.f107,p.ap,p.mass)
+    dens,temp = rungtd7(dtime,altkm,glat,glon,p.f107a,p.f107,p.ap)
 
     plotgtd(dens,temp,dtime,altkm,p.ap,p.f107,glat,glon,p.odir)
     show()

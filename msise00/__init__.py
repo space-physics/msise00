@@ -6,7 +6,6 @@ Michael Hirsch
 Original fortran code from
 http://nssdcftp.gsfc.nasa.gov/models/atmospheric/msis/nrlmsise00/
 """
-import logging
 from datetime import datetime
 from xarray import DataArray
 from numpy import empty, atleast_1d,atleast_2d,array,repeat
@@ -15,9 +14,9 @@ from sciencedates import datetime2gtd
 #
 import gtd7
 #
-tselecopts = array([1,1,1,1,1,1,1,1,-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],float)
+TSELECOPS = array([1,1,1,1,1,1,1,1,-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],float)
 species = ['He','O','N2','O2','Ar','Total','H','N','AnomalousO']
-ttypes = ['exotemp','heretemp']
+ttypes = ['Texo','Tn']
 first=True
 
 def rungtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
@@ -27,7 +26,7 @@ def rungtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
     glat = atleast_2d(glat); glon=atleast_2d(glon) #has to be here
 #%% altitude 1-D
     if glat.size==1 and glon.size==1:
-        dens,temp = rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass,tselecopts)
+        dens,temp = rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass)
 #%% lat/lon grid at 1 altitude
     else:
        dens,temp = loopalt_gtd(dtime, glat,glon,altkm,f107a,f107,ap,mass)
@@ -52,22 +51,19 @@ def loopalt_gtd(dtime, glat,glon,altkm,f107a,f107,ap,mass):
 
     return dens,temp
 
-def rungtd1d(t,altkm,glat,glon,f107a,f107,ap,mass,tselecopts):
+def rungtd1d(t,altkm,glat,glon,f107a,f107,ap,tselecopts=None):
     """
     This is the "atomic" function looped by other functions
     """
-    altkm=atleast_1d(altkm)
+    mass = 48 # compute all parameters
+
+    if tselecopts is None:
+        tselecopts = TSELECOPS
+    altkm= atleast_1d(altkm)
     glon = atleast_1d(glon).squeeze()
     glat = atleast_1d(glat).squeeze()
 
     assert isinstance(t,(datetime,str))
-
-
-# Too hard to check?
-#assert isinstance(altkm[0],float)
-    #assert glat.dtype=='float64'
-    #assert glon.dtype=='float64'
-
     assert isinstance(f107a,(float,int))
     assert isinstance(f107,(float,int))
 # don't check ap, too complicated
@@ -79,20 +75,17 @@ def rungtd1d(t,altkm,glat,glon,f107a,f107,ap,mass,tselecopts):
         ap = repeat(ap,7)
 
     gtd7.tselec(tselecopts) #like the msis_driver example
-    #if first:
-        #logging.debug('tselec options used:   {}'.format(gtd7.csw.sw)) #don't use tretrv, it doesn't work
 
     iyd,utsec,stl = datetime2gtd(t,glon)
+    altkm         = atleast_1d(altkm)
 
-    altkm = atleast_1d(altkm)
-
-    dens = DataArray(data=empty((altkm.size,len(species))),
-                     coords=[altkm, species],dims=['altkm','species'])
-    temp = DataArray(data=empty((altkm.size,len(ttypes))),
-                      coords=[altkm, ttypes],dims=['altkm','temp'])
+    dens = DataArray(data=empty((altkm.size, len(species))),
+                     coords=[altkm, species],dims=['alt_km','species'])
+    temp = DataArray(data=empty((altkm.size, len(ttypes))),
+                      coords=[altkm, ttypes],dims=['alt_km','temp'])
 
     gtd7.meters(1) # makes output in m^-3 and kg/m^-3
     for i,a in enumerate(altkm):
-        dens[i,:],temp[i,:] = gtd7.gtd7(iyd,utsec,a,glat,glon,stl, f107a,f107, ap,mass)
+        dens[i,:],temp[i,:] = gtd7.gtd7(iyd,utsec,a, glat,glon,stl, f107a,f107, ap,mass)
 
     return dens,temp
