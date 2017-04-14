@@ -26,7 +26,7 @@ def rungtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
     glat = atleast_2d(glat); glon=atleast_2d(glon) #has to be here
 #%% altitude 1-D
     if glat.size==1 and glon.size==1:
-        dens,temp = rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass)
+        dens,temp = rungtd1d(dtime[0],altkm,glat,glon,f107a,f107,ap,mass)
 #%% lat/lon grid at 1 altitude
     else:
        dens,temp = loopalt_gtd(dtime, glat,glon,altkm,f107a,f107,ap,mass)
@@ -47,15 +47,15 @@ def loopalt_gtd(dtime, glat,glon,altkm,f107a,f107,ap,mass):
         print('computing {}'.format(t))
         for i in range(glat.shape[0]):
             for j in range(glat.shape[1]):
-                dens[k,:,i,j], temp[k,:,i,j] = rungtd1d(t,altkm,glat[i,j],glon[i,j],f107a,f107,ap,mass,tselecopts)
+                dens[k,:,i,j], temp[k,:,i,j] = rungtd1d(t,altkm,glat[i,j],glon[i,j],f107a,f107,ap,mass)
 
     return dens,temp
 
-def rungtd1d(t,altkm,glat,glon,f107a,f107,ap,tselecopts=None):
+def rungtd1d(t,altkm,glat,glon,f107a,f107,ap,mass,tselecopts=None):
     """
     This is the "atomic" function looped by other functions
     """
-    mass = 48 # compute all parameters
+    #mass = 48 # compute all parameters
 
     if tselecopts is None:
         tselecopts = TSELECOPS
