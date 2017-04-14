@@ -26,7 +26,7 @@ def rungtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
     glat = atleast_2d(glat); glon=atleast_2d(glon) #has to be here
 #%% altitude 1-D
     if glat.size==1 and glon.size==1:
-        dens,temp = rungtd1d(dtime[0],altkm,glat,glon,f107a,f107,ap,mass)
+        dens,temp = rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass)
 #%% lat/lon grid at 1 altitude
     else:
        dens,temp = loopalt_gtd(dtime, glat,glon,altkm,f107a,f107,ap,mass)
