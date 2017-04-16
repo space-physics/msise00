@@ -20,7 +20,6 @@ Installation
 
   python setup.py install
 
-
 Example Usage:
 --------------
 This outputs a series of PNGs to your temp directory::
