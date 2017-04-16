@@ -14,6 +14,7 @@ from sciencedates import datetime2gtd
 #
 import gtd7
 #
+MASS = 48 # compute all parameters
 TSELECOPS = array([1,1,1,1,1,1,1,1,-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],float)
 species = ['He','O','N2','O2','Ar','Total','H','N','AnomalousO']
 ttypes = ['Texo','Tn']
@@ -26,14 +27,14 @@ def rungtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
     glat = atleast_2d(glat); glon=atleast_2d(glon) #has to be here
 #%% altitude 1-D
     if glat.size==1 and glon.size==1:
-        dens,temp = rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap,mass)
+        dens,temp = rungtd1d(dtime,altkm,glat,glon,f107a,f107,ap)
 #%% lat/lon grid at 1 altitude
     else:
-       dens,temp = loopalt_gtd(dtime, glat,glon,altkm,f107a,f107,ap,mass)
+       dens,temp = loopalt_gtd(dtime, glat,glon,altkm,f107a,f107,ap)
 
     return dens,temp
 
-def loopalt_gtd(dtime, glat,glon,altkm,f107a,f107,ap,mass):
+def loopalt_gtd(dtime, glat,glon,altkm,f107a,f107,ap):
     dtime = atleast_1d(dtime) #keep for code reuse
 
     dens = DataArray(data=empty((dtime.size,len(species),glat.shape[0],glat.shape[1])),
@@ -47,34 +48,32 @@ def loopalt_gtd(dtime, glat,glon,altkm,f107a,f107,ap,mass):
         print('computing {}'.format(t))
         for i in range(glat.shape[0]):
             for j in range(glat.shape[1]):
-                dens[k,:,i,j], temp[k,:,i,j] = rungtd1d(t,altkm,glat[i,j],glon[i,j],f107a,f107,ap,mass,tselecopts)
+                dens[k,:,i,j], temp[k,:,i,j] = rungtd1d(t,altkm,glat[i,j],glon[i,j],f107a,f107,ap)
 
     return dens,temp
 
-def rungtd1d(t,altkm,glat,glon,f107a,f107,ap,tselecopts=None):
+def rungtd1d(t,altkm,glat,glon,f107a,f107,ap):
     """
     This is the "atomic" function looped by other functions
     """
-    mass = 48 # compute all parameters
-
-    if tselecopts is None:
-        tselecopts = TSELECOPS
+#%%
     altkm= atleast_1d(altkm)
     glon = atleast_1d(glon).squeeze()
     glat = atleast_1d(glat).squeeze()
 
-    assert isinstance(t,(datetime,str))
+    assert isinstance(t,(datetime,str)),'if you have multiple times, for loop over them'
+
     assert isinstance(f107a,(float,int))
     assert isinstance(f107,(float,int))
 # don't check ap, too complicated
-    assert isinstance(mass,(float,int))
-    assert len(tselecopts)==25
+    assert isinstance(MASS,(float,int))
+    assert len(TSELECOPS)==25
 #%%
     ap = atleast_1d(ap)
     if ap.size==1:
         ap = repeat(ap,7)
 
-    gtd7.tselec(tselecopts) #like the msis_driver example
+    gtd7.tselec(TSELECOPS) #like the msis_driver example
 
     iyd,utsec,stl = datetime2gtd(t,glon)
     altkm         = atleast_1d(altkm)
@@ -86,6 +85,6 @@ def rungtd1d(t,altkm,glat,glon,f107a,f107,ap,tselecopts=None):
 
     gtd7.meters(1) # makes output in m^-3 and kg/m^-3
     for i,a in enumerate(altkm):
-        dens[i,:],temp[i,:] = gtd7.gtd7(iyd,utsec,a, glat,glon,stl, f107a,f107, ap,mass)
+        dens[i,:],temp[i,:] = gtd7.gtd7(iyd,utsec,a, glat,glon,stl, f107a,f107, ap,MASS)
 
     return dens,temp

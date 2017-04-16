@@ -50,7 +50,7 @@ if __name__ == '__main__':
     print(f'using altitudes from {altkm[0]:.1f} to {altkm[-1]:.1f} km')
 
     dens,temp = rungtd7(dtime,altkm,glat,glon,p.f107a,p.f107,p.ap)
-
+#%%
     plotgtd(dens,temp,dtime,altkm,p.ap,p.f107,glat,glon,p.odir)
     show()
 

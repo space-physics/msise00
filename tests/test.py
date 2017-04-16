@@ -12,9 +12,8 @@ def test_gtd1d():
     altkm=150.
     glat=65.; glon=-148.
     f107a=100; f107=100; ap=4
-    tselecopts = array([1,1,1,1,1,1,1,1,-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],float)
-
-    dens,temp = rungtd1d(t,altkm,glat,glon,f107a,f107,ap,tselecopts)
+ 
+    dens,temp = rungtd1d(t,altkm,glat,glon,f107a,f107,ap)
 
     assert_allclose(dens.values[0,:-1],[1.19930062e+13, 1.25792119e+16, 2.92461331e+16,
                                  2.75184702e+15, 6.24779497e+13,1.84406768e-09,
