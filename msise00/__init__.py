@@ -47,15 +47,15 @@ def loopalt_gtd(dtime, glat,glon,altkm,f107a,f107,ap,mass):
         print('computing {}'.format(t))
         for i in range(glat.shape[0]):
             for j in range(glat.shape[1]):
-                dens[k,:,i,j], temp[k,:,i,j] = rungtd1d(t,altkm,glat[i,j],glon[i,j],f107a,f107,ap,mass,tselecopts)
+                dens[k,:,i,j], temp[k,:,i,j] = rungtd1d(t,altkm,glat[i,j],glon[i,j],f107a,f107,ap,mass)
 
     return dens,temp
 
-def rungtd1d(t,altkm,glat,glon,f107a,f107,ap,tselecopts=None):
+def rungtd1d(t,altkm,glat,glon,f107a,f107,ap,mass,tselecopts=None):
     """
     This is the "atomic" function looped by other functions
     """
-    mass = 48 # compute all parameters
+    #mass = 48 # compute all parameters
 
     if tselecopts is None:
         tselecopts = TSELECOPS

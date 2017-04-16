@@ -74,7 +74,7 @@ def plot1d(dens,temp,glat,glon,ap,f107):
     ap = atleast_1d(ap)
     footer = '\n({},{})  Ap {}  F10.7 {}'.format(glat,glon,ap[0],f107)
 
-    z=dens.altkm.values
+    z=dens.alt_km.values
     ax = figure().gca()
     for s in dens.T:
         thisspecies = s.species.values
