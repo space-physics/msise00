@@ -20,7 +20,7 @@ species = ['He','O','N2','O2','Ar','Total','H','N','AnomalousO']
 ttypes = ['Texo','Tn']
 first=True
 
-def rungtd7(dtime,altkm,glat,glon,f107a,f107,ap,mass):
+def rungtd7(dtime,altkm,glat,glon,f107a,f107,ap):
     """
     loops the rungtd1d function below. Figure it's easier to troubleshoot in Python than Fortran.
     """
