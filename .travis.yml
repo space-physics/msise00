@@ -36,6 +36,7 @@ install:
     - conda create -n test python=$pyv
     - source activate test
     - pip -q install coveralls
+    - conda install numpy scipy astropy matplotlib xarray seaborn
     - python setup.py develop
 
 script: coverage run tests/test.py -v
