@@ -1,19 +1,23 @@
 #!/usr/bin/env python
+req = ['nose','python-dateutil','pytz','numpy','scipy','pandas','xarray','h5py','astropy','matplotlib','seaborn',]
+pipreq=['pymap3d','sciencedates','gridaurora']
+# %%
+import pip
+try:
+    import conda.cli
+    conda.cli.main('install',*req)
+except Exception as e:    
+    pip.main(['install',*req])
+pip.main(['install',*pipreq])
+# %%
 import setuptools #enables develop
 from numpy.distutils.core import setup,Extension
 
-req = ['nose','python-dateutil','pytz','numpy','scipy','pandas','xarray','h5py','astropy','matplotlib','seaborn',
-    'pymap3d','sciencedates','gridaurora']
-
-ext = Extension(name='gtd7',
-                sources=['fortran/nrlmsise00_sub.for'],
-                f2py_options=['--quiet'])
-
-#%% install
 setup(name='msise00',
+      packages=['msise00'],
       description='Python API for Fortran MSISE-00 neutral atmosphere model.',
-      author = 'Michael Hirsch',
-      version = '0.9',
+      author='Michael Hirsch, Ph.D.',
+      version='0.9.0',
       url='https://github.com/scivision/msise00',
       classifiers=[
       'Intended Audience :: Science/Research',
@@ -22,8 +26,8 @@ setup(name='msise00',
       'Topic :: Scientific/Engineering :: Atmospheric Science',
       'Programming Language :: Python :: 3.6',
       ],
-	  install_requires=req,
-      ext_modules=[ext],
-      packages=['msise00']
+      ext_modules=[Extension(name='gtd7',
+                sources=['fortran/nrlmsise00_sub.for'],
+                f2py_options=['--quiet'])],
 	  )
 
