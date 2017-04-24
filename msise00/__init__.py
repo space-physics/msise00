@@ -1,7 +1,6 @@
 """
-Please do basic sanity checks of output.
 Quick demo of calling NRL MSISE-00 using f2py from Python
-Michael Hirsch
+Michael Hirsch, Ph.D.
 
 Original fortran code from
 http://nssdcftp.gsfc.nasa.gov/models/atmospheric/msis/nrlmsise00/
