@@ -1,6 +1,7 @@
+.. image:: https://zenodo.org/badge/32971905.svg
+   :target: https://zenodo.org/badge/latestdoi/32971905
 .. image:: https://travis-ci.org/scivision/msise00.svg
     :target: https://travis-ci.org/scivision/msise00
-
 .. image:: https://coveralls.io/repos/scivision/msise00/badge.svg?branch=master&service=github 
    :target: https://coveralls.io/github/scivision/msise00?branch=master 
 
