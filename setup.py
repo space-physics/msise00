@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 req = ['nose','python-dateutil','pytz','numpy','scipy','pandas','xarray','h5py','astropy','matplotlib','seaborn','pathlib2']
-pipreq=['pymap3d','sciencedates','gridaurora']
+pipreq=['pymap3d','sciencedates','gridaurora','future-fstrings']
 # %%
 import pip
 try:
