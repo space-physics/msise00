@@ -1,3 +1,4 @@
+# -*- coding: future_fstrings -*-
 from pathlib import Path
 from pytz import UTC
 from numpy import atleast_1d
@@ -44,7 +45,8 @@ def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon,rodir=None):
                 if thisspecies != 'Total':
                     a = ax[i]
 
-                    hi = a.imshow(s.values, aspect='auto', interpolation='none',cmap='viridis',
+                    hi = a.imshow(s.values, aspect='auto',
+                            interpolation='none',cmap='viridis',
                              extent=(glon[0,0],glon[0,-1],glat[0,0],glat[-1,0]))
                     fg.colorbar(hi,ax=a, format=sfmt)
 
@@ -62,17 +64,17 @@ def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon,rodir=None):
                 ax[i].set_xlabel('longitude (deg)')
 
             if rodir:
-                thisofn = rodir / '{:.1f}_{:03d}.png'.format(altkm[0],k)
-                print(f'writing {thisofn}')
+                thisofn = rodir / f'{altkm[0]:.1f}_{k:03d}.png'
+                print('writing',thisofn)
                 fg.savefig(str(thisofn),dpi=100,bbox_inches='tight')
                 close()
     else:
-        print(f'densities  {dens}')
-        print(f'temperatures {temp}')
+        print('densities',dens)
+        print('temperatures',temp)
 
 def plot1d(dens,temp,glat,glon,ap,f107):
     ap = atleast_1d(ap)
-    footer = '\n({},{})  Ap {}  F10.7 {}'.format(glat,glon,ap[0],f107)
+    footer = f'\n({glat},{glon})  Ap {ap[0]}  F10.7 {f107}'
 
     z=dens.altkm.values
     ax = figure().gca()

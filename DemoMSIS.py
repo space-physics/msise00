@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: future_fstrings -*-
 from tempfile import gettempdir
 from pytz import UTC
 from dateutil.parser import parse
