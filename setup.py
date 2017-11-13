@@ -1,14 +1,6 @@
 #!/usr/bin/env python
-req = ['nose','python-dateutil','pytz','numpy','scipy','pandas','xarray','h5py','astropy','matplotlib','seaborn','pathlib2']
-pipreq=['pymap3d','sciencedates','gridaurora','future-fstrings']
-# %%
-import pip
-try:
-    import conda.cli
-    conda.cli.main('install',*req)
-except Exception as e:
-    pip.main(['install']+req)
-pip.main(['install']+pipreq)
+req = ['nose','python-dateutil','pytz','numpy','scipy','pandas','xarray','h5py','astropy','matplotlib','seaborn',
+       'pymap3d','sciencedates','gridaurora','future-fstrings']
 # %%
 import setuptools #enables develop
 from numpy.distutils.core import setup,Extension
@@ -30,5 +22,7 @@ setup(name='msise00',
       ext_modules=[Extension(name='gtd7',
                 sources=['fortran/nrlmsise00_sub.for'],
                 f2py_options=['--quiet'])],
+      install_requires=req,
+      python_requires='>=3.6',
 	  )
 
