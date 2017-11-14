@@ -24,6 +24,6 @@ setup(name='msise00',
       install_requires=req,
       python_requires='>=3.6',
       extras_require={'plot':['matplotlib','seaborn'],
-                      'io':['pandas','astropy','pymap3d','gridaurora'},
+                      'io':['pandas','astropy','pymap3d','gridaurora'],},
 	  )
 
