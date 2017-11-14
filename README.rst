@@ -6,11 +6,17 @@
     
 .. image:: https://coveralls.io/repos/scivision/msise00/badge.svg?branch=master&service=github 
    :target: https://coveralls.io/github/scivision/msise00?branch=master 
+   
+.. image:: https://api.codeclimate.com/v1/badges/f6f206d6f6605bcf435d/maintainability
+   :target: https://codeclimate.com/github/scivision/msise00/maintainability
+   :alt: Maintainability
+
 
 ==========
 msise-00
 ==========
-NRL MSISE-00 atmospheric model.  Said to be valid from altitude z = 0 - 1000 km.
+NRL MSISE-00 atmospheric model.  
+Valid from altitude z = 0 - 1000 km.
 
 The plot immediately below shows a slice at 200km on a world-wide grid.
 The yellow ball represents the sun footprint on Earth.
@@ -19,13 +25,21 @@ The yellow ball represents the sun footprint on Earth.
 
 Install
 =======
-::
+If you don't already have Numpy::
+
+    pip install numpy
+    
+* Mac: ``brew install gcc``
+* Linux: ``apt install gfortran``
+* `Windows <https://www.scivision.co/windows-gcc-gfortran-cmake-make-install/>`_
+    
+And then ::
 
   pip install -e .
 
-Example Usage:
---------------
-This outputs a series of PNGs to your temp directory::
+Examples:
+---------
+Output time series of PNGs to your temp directory::
 
   python DemoMSIS.py
 

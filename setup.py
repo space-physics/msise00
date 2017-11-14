@@ -1,8 +1,7 @@
 #!/usr/bin/env python
-req = ['nose','python-dateutil','pytz','numpy','scipy','pandas','xarray','h5py','astropy','matplotlib','seaborn',
-       'pymap3d','sciencedates','gridaurora','future-fstrings']
+req = ['nose','python-dateutil','pytz','numpy','xarray',
+       'sciencedates']
 # %%
-import setuptools #enables develop
 from numpy.distutils.core import setup,Extension
 
 setup(name='msise00',
@@ -24,5 +23,7 @@ setup(name='msise00',
                 f2py_options=['--quiet'])],
       install_requires=req,
       python_requires='>=3.6',
+      extras_require={'plot':['matplotlib','seaborn'],
+                      'io':['pandas','astropy','pymap3d','gridaurora'},
 	  )
 
