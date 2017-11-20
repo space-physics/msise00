@@ -2,10 +2,11 @@
 req = ['nose','python-dateutil','pytz','numpy','xarray',
        'sciencedates']
 # %%
+from setuptools import find_packages
 from numpy.distutils.core import setup,Extension
 
 setup(name='msise00',
-      packages=['msise00'],
+      packages=find_packages(),
       description='Python API for Fortran MSISE-00 neutral atmosphere model.',
       author='Michael Hirsch, Ph.D.',
       version='1.0.0',
