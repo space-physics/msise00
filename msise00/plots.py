@@ -35,7 +35,7 @@ def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon,rodir=None):
         #iterate over time
         for k,d in enumerate(dens): #dens is a 4-D array  time x species x lat x lon
             fg,ax = subplots(4,2,sharex=True, figsize=(8,8))
-            fg.suptitle(datetime.fromtimestamp(d.time.item()/1e9, tz=UTC).strftime('%Y-%m-%dT%H:%M') +
+            fg.suptitle(datetime.fromtimestamp(d.time.item()/1e9, tz=UTC).isoformat(timespec='minutes') +
                         f' alt.(km) {altkm}\nAp={ap[0]}  F10.7={f107}')
             ax=ax.ravel(); i = 0 #don't use enumerate b/c of skip
 
@@ -66,7 +66,7 @@ def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon,rodir=None):
             if rodir:
                 thisofn = rodir / f'{altkm[0]:.1f}_{k:03d}.png'
                 print('writing',thisofn)
-                fg.savefig(str(thisofn),dpi=100,bbox_inches='tight')
+                fg.savefig(str(thisofn), dpi=100, bbox_inches='tight')
                 close()
     else:
         print('densities',dens)

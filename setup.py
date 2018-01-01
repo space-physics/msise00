@@ -1,6 +1,7 @@
 #!/usr/bin/env python
-req = ['nose','python-dateutil','pytz','numpy','xarray',
+install_requires= ['python-dateutil','pytz','numpy','xarray',
        'sciencedates']
+tests_require = ['nose','coveralls']
 # %%
 from setuptools import find_packages
 from numpy.distutils.core import setup,Extension
@@ -22,9 +23,11 @@ setup(name='msise00',
       ext_modules=[Extension(name='gtd7',
                 sources=['fortran/nrlmsise00_sub.for'],
                 f2py_options=['--quiet'])],
-      install_requires=req,
+      install_requires=install_requires,
+      tests_require=tests_require,
       python_requires='>=3.6',
       extras_require={'plot':['matplotlib','seaborn'],
-                      'io':['pandas','astropy','pymap3d','gridaurora'],},
+                      'io':['pandas','astropy','pymap3d','gridaurora'],
+                      'tests':tests_require},
 	  )
 
