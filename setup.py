@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 install_requires= ['python-dateutil','pytz','numpy','xarray',
        'sciencedates']
-tests_require = ['nose','coveralls']
+tests_require = ['pytest','nose','coveralls']
 # %%
 from setuptools import find_packages
 from numpy.distutils.core import setup,Extension

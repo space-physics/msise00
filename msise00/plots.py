@@ -66,7 +66,7 @@ def plotgtd(dens,temp,dtime,altkm, ap, f107,glat,glon,rodir=None):
             if rodir:
                 thisofn = rodir / f'{altkm[0]:.1f}_{k:03d}.png'
                 print('writing',thisofn)
-                fg.savefig(str(thisofn), dpi=100, bbox_inches='tight')
+                fg.savefig(thisofn, dpi=100, bbox_inches='tight')
                 close()
     else:
         print('densities',dens)
