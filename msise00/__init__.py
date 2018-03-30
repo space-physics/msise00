@@ -26,7 +26,7 @@ def run(time, altkm:float, glat:float, glon:float) -> xarray.Dataset:
     """
     glat = np.atleast_2d(glat); glon=np.atleast_2d(glon) #has to be here
 #%% altitude 1-D
-    if glat.size==1 and glon.size==1:
+    if glat.size==1 and glon.size==1 and time.size==1:
         atmos = rungtd1d(time, altkm,glat,glon)
 #%% lat/lon grid at 1 altitude
     else:

@@ -6,13 +6,10 @@ function msise00()
 glat = 65.1;
 glon = -147.5;
 alt_km = 10:10:1000;
-t = '2015-12-13T10'; 
+t = '2015-12-13T10';
 
-f107a=100.;
-f107=100.;
-ap=4;
 
-dt = py.msise00.rungtd7(t,alt_km,glat,glon,f107a,f107,ap);
+dt = py.msise00.rungtd7(t,alt_km,glat,glon);
 
 dens = xarray2mat(dt(1));
 temp = xarray2mat(dt(2));
@@ -24,11 +21,11 @@ end
 function plotmsis(alt_km,dens,temp,species,t,glat,glon)
   figure(1), clf(1)
   ax = axes('nextplot','add');
-   
+
   for i = 1:size(dens,2)
     semilogx(ax,dens(:,i), alt_km, 'DisplayName',species{i})
   end
-  
+
   set(ax,'xscale','log')
   title({[t,' deg.  (',num2str(glat),',', num2str(glon),')']})
   xlabel('Density [m^-3]')
@@ -37,18 +34,18 @@ function plotmsis(alt_km,dens,temp,species,t,glat,glon)
   xlim([1e6,1e20])
   grid('on')
   legend('show')
-    
+
 end
 
 function V = xarray2mat(V)
   % convert xarray 2-D array to Matlab matrix
 
-  
-V= V{1}.values; 
+
+V= V{1}.values;
 S = V.shape;
 V = cell2mat(cell(V.ravel('F').tolist()));
 V = reshape(V,[int64(S{1}), int64(S{2})]);
-    
+
 end
 
 function I = xarrayind2vector(V,key)
@@ -60,5 +57,5 @@ if iscellstr(C) || any(class(C{1})=='py.str')
 else
     I = cell2mat();
 end % if
-    
+
 end % function

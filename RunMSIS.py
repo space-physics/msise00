@@ -22,15 +22,20 @@ from gridaurora.worldgrid import latlonworldgrid
 if __name__ == '__main__':
     from argparse import ArgumentParser
     p = ArgumentParser(description='calls MSISE-00 from Python, a basic demo')
-    p.add_argument('time',help='time of simulation (default over 24 hours from today', nargs='?')
+    p.add_argument('-t','--time',help='time of simulation (default over 24 hours from today', nargs='+')
     p.add_argument('-c','--latlon',help='geodetic latitude/longitude (deg)',metavar=('lat','lon'),type=float,nargs=2)
     p.add_argument('-a','--altkm',help='altitude (km) (start,stop,step)',metavar=('start','stop','step'),type=float,nargs=3)
     p.add_argument('-o','--odir',help='directory to write plots to',default=gettempdir())
     p.add_argument('-w',help='NetCDF4 .nc filename to write')
     p = p.parse_args()
 
-
-    time =  np.arange('2017-08-21','2017-08-22',dtype='datetime64[h]') if not p.time else parse(p.time)
+    if p.time is not None:
+        if len(p.time) == 2: # hour range
+            time = np.arange(*p.time, dtype='datetime64[h]')
+        elif len(p.time) == 1:
+            time = parse(p.time[0])
+    else:
+        time =  np.arange('2017-08-21','2017-08-22',dtype='datetime64[h]')
 #%% altitude 1-D mode
     if p.latlon is not None:
         print('entering single location mode')
@@ -54,6 +59,7 @@ if __name__ == '__main__':
 #%%
     if p.w:
         ncfn = Path(p.w).expanduser()
+        print('saving',ncfn)
         atmos.to_netcdf(ncfn)
 
     plotgtd(atmos, p.odir)
