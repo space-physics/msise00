@@ -10,7 +10,7 @@ setup(name='msise00',
       packages=find_packages(),
       description='Python API for Fortran MSISE-00 neutral atmosphere model.',
       author='Michael Hirsch, Ph.D.',
-      version='1.1.1',
+      version='1.1.1a',
       url='https://github.com/scivision/msise00',
       classifiers=[
       'Intended Audience :: Science/Research',
