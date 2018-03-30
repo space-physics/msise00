@@ -24,8 +24,9 @@ before_install:
 install: pip -q install -e .[tests]
 
 script: 
-  - pytest
-  - coverage run tests/test_all.py -v
+  - pytest -v
 
-after_success: coveralls
+after_success: 
+  - coverage run tests/test_all.py
+  - coveralls
 

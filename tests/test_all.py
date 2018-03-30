@@ -2,25 +2,31 @@
 from numpy.testing import assert_allclose
 from datetime import datetime
 from pytz import UTC
-from numpy import array
 from numpy.testing import run_module_suite
 #
-from msise00 import rungtd1d
+import msise00
 
 def test_gtd1d():
-    t=datetime(2013,3,31,12,tzinfo=UTC)
+    t = datetime(2013,3,31,12,tzinfo=UTC)
     altkm=150.
     glat=65.; glon=-148.
-    f107a=100; f107=100; ap=4
- 
-    dens,temp = rungtd1d(t,altkm,glat,glon,f107a,f107,ap)
 
-    assert_allclose(dens.values[0,:-1],[1.19930062e+13, 1.25792119e+16, 2.92461331e+16,
-                                 2.75184702e+15, 6.24779497e+13,1.84406768e-09,
-                                 8.54530523e+11, 8.42101896e+12])
-    assert (dens.species.values == ['He', 'O', 'N2', 'O2', 'Ar', 'Total', 'H', 'N', 'AnomalousO']).all()
+    atmos = msise00.rungtd1d(t,altkm,glat,glon)
 
-    assert_allclose(temp.values[0,:],[ 848.71148682,  645.71972656])
+    assert_allclose(atmos['He'], 1.05781626142e+13)
+    assert_allclose(atmos['O'],  1.184932e+16)
+    assert_allclose(atmos['N2'], 3.13963956173e+16)
+    assert_allclose(atmos['O2'],  2.9984524976e+15)
+    assert_allclose(atmos['Ar'],  7.899407869e+13)
+    assert_allclose(atmos['Total'], 1.938796678757e-09)
+    assert_allclose(atmos['N'],  7.743147081728e+12)
+    assert_allclose(atmos['AnomalousO'],5.001278932e-15)
+
+    assert atmos.species == ['He', 'O', 'N2', 'O2', 'Ar', 'Total', 'H', 'N', 'AnomalousO']
+
+    assert_allclose(atmos['Tn'],  687.578613)
+    assert_allclose(atmos['Texo'],958.463623)
+
 
 if __name__ == '__main__':
     run_module_suite()

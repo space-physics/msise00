@@ -11,23 +11,40 @@ from matplotlib.pyplot import figure,show
 #
 from pymap3d import aer2geodetic
 
-midnight=Time('2014-12-21T00:00:00Z')
-delta_midnight = np.linspace(0, 180,1000)*u.day
-times = midnight + delta_midnight
+obslla = (0,0,0)
 
-obs = EarthLocation(0,0) #center of Earth
-sun = get_sun(time=times)
-aaf = AltAz(obstime=times,location=obs)
+midnight=Time('2015-01-01T00:00')
+delta_midnight = np.linspace(0, 365,1000)*u.day
+time = midnight + delta_midnight
+
+obs = EarthLocation(lat=obslla[0],lon=obslla[1], height=obslla[2])
+sun = get_sun(time=time)
+aaf = AltAz(obstime=time,location=obs)
 sloc = sun.transform_to(aaf)
+# %%
+time = time.to_datetime()
+
+fg = figure()
+ax = fg.subplots(2,1,sharex=True)
+ax[0].plot(time,sloc.alt)
+ax[0].set_title('sun elevation')
+ax[0].set_ylabel('elevation [deg]')
+
+ax[1].plot(time, sloc.az)
+ax[1].set_title('sun azimuth')
+ax[1].set_ylabel('azimuth [deg]')
+ax[1].set_xlabel('time')
+
+fg.suptitle(f'sun over 1 year @ lat,lon,alt: {obslla}')
+
+# %%
+
+lat,lon,alt = aer2geodetic(sloc.az.value, sloc.alt.value, sloc.distance.value, *obslla)
 
 ax = figure().gca()
-ax.plot(sloc.alt,label='el')
-ax.plot(sloc.az,label='az')
-ax.legend()
-
-lat,lon,alt = aer2geodetic(sloc.az.value, sloc.alt.value, sloc.distance.value,0,0,0)
-
-ax = figure().gca()
-ax.plot(lon,lat)
+ax.plot(time,lat)
+ax.set_title('subsolar latitude vs. time')
+ax.set_ylabel('latitude [deg]')
+ax.set_xlabel('time')
 
 show()

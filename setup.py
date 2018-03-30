@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 install_requires= ['python-dateutil','pytz','numpy','xarray',
-       'sciencedates']
+                   'sciencedates','gridaurora']
 tests_require = ['pytest','nose','coveralls']
 # %%
 from setuptools import find_packages
@@ -10,7 +10,7 @@ setup(name='msise00',
       packages=find_packages(),
       description='Python API for Fortran MSISE-00 neutral atmosphere model.',
       author='Michael Hirsch, Ph.D.',
-      version='1.0.0',
+      version='1.1.0',
       url='https://github.com/scivision/msise00',
       classifiers=[
       'Intended Audience :: Science/Research',
@@ -27,7 +27,9 @@ setup(name='msise00',
       tests_require=tests_require,
       python_requires='>=3.6',
       extras_require={'plot':['matplotlib','seaborn'],
-                      'io':['pandas','astropy','pymap3d','gridaurora'],
+                      'io':['astropy','pymap3d'],
                       'tests':tests_require},
+      script=['PlotMSIS.py'],
+      include_package_data=True,
 	  )
 
