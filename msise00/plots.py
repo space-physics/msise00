@@ -20,7 +20,7 @@ def plotgtd(atmos:xarray.Dataset, rodir=None):
 
     if atmos['N2'].squeeze().ndim==1: #altitude 1-D
         plot1d(atmos)
-    elif atmos['N2'].ndim==4: #lat/lon grid
+    elif atmos['N2'].squeeze().ndim==4: #lat/lon grid
 #%% sun lat/lon
         time = Time(str(atmos.time[0].values))
         obs = EarthLocation(0,0) # geodetic lat,lon = 0,0 arbitrary
@@ -34,7 +34,7 @@ def plotgtd(atmos:xarray.Dataset, rodir=None):
             fg = figure(figsize=(8,8))
             ax = fg.subplots(4,2,sharex=True)
             fg.suptitle(str(t.values)[:-13] +
-                        f' alt.(km) {atmos.alt_km[0].item()}\n'
+                        f' alt.(km) {atmos.alt_km[0]}\n'
                         f'Ap={atmos.Ap[0]}  F10.7={atmos.f107.item()}')
             ax=ax.ravel()
 
