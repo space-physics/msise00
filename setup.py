@@ -10,7 +10,7 @@ setup(name='msise00',
       packages=find_packages(),
       description='Python API for Fortran MSISE-00 neutral atmosphere model.',
       author='Michael Hirsch, Ph.D.',
-      version='1.1.0',
+      version='1.1.1',
       url='https://github.com/scivision/msise00',
       classifiers=[
       'Intended Audience :: Science/Research',
@@ -29,7 +29,7 @@ setup(name='msise00',
       extras_require={'plot':['matplotlib','seaborn'],
                       'io':['astropy','pymap3d'],
                       'tests':tests_require},
-      script=['PlotMSIS.py'],
+      script=['RunMSIS.py'],
       include_package_data=True,
 	  )
 
