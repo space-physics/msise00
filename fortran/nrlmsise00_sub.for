@@ -142,7 +142,7 @@ C
 
       Real DS(9),TS(2)
       real ZN3(5),ZN2(4),SV(25)
-      
+
       COMMON/GTS3C/TLB,S,DB04,DB16,DB28,DB32,DB40,DB48,DB01,ZA,T0,Z0
      & ,G0,RL,DD,DB14,TR12
       COMMON/MESO7/TN1(5),TN2(4),TN3(5),TGN1(2),TGN2(2),TGN3(2)
@@ -458,8 +458,8 @@ C         New altitude estimate using scale height
       IF(L.EQ.LTEST) WRITE(6,100) PRESS,DIFF
   100 FORMAT(1X,29HGHP7 NOT CONVERGING FOR PRESS, 1PE12.2,E12.2)
       ALT=Z
-      RETURN
-      END
+
+      END SUBROUTINE GHP7
 C-----------------------------------------------------------------------
       SUBROUTINE GLATF(LAT,GV,REFF)
 C      CALCULATE LATITUDE VARIABLE GRAVITY (GV) AND EFFECTIVE
