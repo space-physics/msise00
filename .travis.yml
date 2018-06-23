@@ -17,16 +17,17 @@ addons:
     packages:
       - gfortran
 
-before_install:
-  # this is temporary for pip < 9.1
-  - pip -q install numpy
-
-install: pip -q install -e .[tests]
+install: pip install -e .[tests]
 
 script: 
-  - pytest -v
+  - pytest -sv
+  - flake8
+  - mypy . --ignore-missing-imports
 
 after_success: 
-  - coverage run tests/test_all.py
-  - coveralls
+  - if [[ $TRAVIS_PYTHON_VERSION == 3.6* ]]; then
+    coverage run tests/test_all.py;
+    coveralls;
+    fi
+    
 
