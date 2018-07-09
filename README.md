@@ -36,19 +36,19 @@ The data variables are 4-D (time, altitude, lat, lon), and are indexed like `atm
 
 at a single time:
 
-    python RunMSIS.py -t 2017-08-21T20:48 -c 40 -90
+    msis00 -t 2017-08-21T20:48 -c 40 -90
 
 ### Alt. profile time-range
 
 with hourly time step (let me know if you want other options):
 
-    python RunMSIS.py -t 2017-08-21 2017-08-22 -c 40 -90
+    msis00 -t 2017-08-21 2017-08-22 -c 40 -90
 
 ### Grid: time,lat,lon
 
 This example takes several minutes, and generates the plots in the README:
 
-    python RunMSIS.py
+    msis00
 
 ## Reference
 

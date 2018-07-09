@@ -40,7 +40,8 @@ def run(time: Union[datetime, np.ndarray], altkm: float,
     return atmos
 
 
-def loopalt_gtd(time: Union[datetime, np.ndarray], glat: np.ndarray, glon: np.ndarray, altkm: float) -> xarray.Dataset:
+def loopalt_gtd(time: Union[datetime, np.ndarray],
+                glat: np.ndarray, glon: np.ndarray, altkm: float) -> xarray.Dataset:
     time = np.atleast_1d(time)  # keep for code reuse
 
     atmos = xarray.Dataset()
@@ -56,7 +57,8 @@ def loopalt_gtd(time: Union[datetime, np.ndarray], glat: np.ndarray, glon: np.nd
     return atmos
 
 
-def rungtd1d(time: datetime, altkm: np.ndarray, glat: np.ndarray, glon: np.ndarray) -> xarray.Dataset:
+def rungtd1d(time: datetime, altkm: np.ndarray,
+             glat: np.ndarray, glon: np.ndarray) -> xarray.Dataset:
     """
     This is the "atomic" function looped by other functions
     """

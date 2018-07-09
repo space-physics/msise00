@@ -6,21 +6,19 @@ from pathlib import Path
 from tempfile import gettempdir
 from dateutil.parser import parse
 import numpy as np
+import msise00
+from argparse import ArgumentParser
+import msise00.plots as msplots
+from gridaurora.worldgrid import latlonworldgrid
 from matplotlib.pyplot import show
 try:
     import seaborn as sns
     sns.set_style('ticks')
 except ImportError:
     pass
-#
-import msise00
-from msise00.plots import plotgtd
-#
-from gridaurora.worldgrid import latlonworldgrid
 
 
-if __name__ == '__main__':
-    from argparse import ArgumentParser
+def main():
     p = ArgumentParser(description='calls MSISE-00 from Python, a basic demo')
     p.add_argument('-t', '--time', help='time of simulation (default over 24 hours from today', nargs='+')
     p.add_argument('-c', '--latlon', help='geodetic latitude/longitude (deg)', metavar=('lat', 'lon'), type=float, nargs=2)
@@ -62,5 +60,9 @@ if __name__ == '__main__':
         print('saving', ncfn)
         atmos.to_netcdf(ncfn)
 
-    plotgtd(atmos, P.odir)
+    msplots.plotgtd(atmos, P.odir)
     show()
+
+
+if __name__ == '__main__':
+    main()

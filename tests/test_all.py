@@ -2,7 +2,6 @@
 from numpy.testing import assert_allclose
 from datetime import datetime
 import pytest
-#
 import msise00
 
 
