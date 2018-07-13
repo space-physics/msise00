@@ -8,7 +8,7 @@
 
 # MSISE-00 in Python
 
-NRL MSISE-00 atmospheric model.
+NRL MSISE-00 atmospheric model for Python &g3; 3.6, also accessible via Matlab &ge; R2014b.
 Valid from altitude z = 0..1000 km.
 
 The plot immediately below shows a slice at 200km on a world-wide grid.

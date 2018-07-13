@@ -1,2 +1,2 @@
-include LICENSE
+include LICENSE tests/msise00_demo.gif
 recursive-include tests *.py *.nc
