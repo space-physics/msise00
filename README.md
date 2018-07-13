@@ -8,7 +8,7 @@
 
 # MSISE-00 in Python
 
-NRL MSISE-00 atmospheric model for Python &g3; 3.6, also accessible via Matlab &ge; R2014b.
+NRL MSISE-00 atmospheric model for Python &ge; 3.6, also accessible via Matlab.
 Valid from altitude z = 0..1000 km.
 
 The plot immediately below shows a slice at 200km on a world-wide grid.
@@ -29,7 +29,7 @@ And then:
 
 ## Examples
 
-MSISE00 can be used from the command line, as an imported module, and even from Matlab &ge; R2014b.
+MSISE00 can be used from the command line, as an imported module, and even from Matlab.
 
 ### import module
 
@@ -70,6 +70,13 @@ This example takes several minutes, and generates the plots in the README:
 A single time lat/lon can be plotted:
 
     msise00 -t 2017-01-02T12
+    
+### Matlab
+Matlab &ge; R2014b can interface directly with most Python modules, for example:
+
+```matlab
+atmos = py.msise00.run(time,altkm,glat,glon)
+```
 
 ## Reference
 
