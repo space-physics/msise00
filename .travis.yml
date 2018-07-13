@@ -9,7 +9,7 @@ git:
 
 python:
   - 3.6
-  - 3.7
+#  - 3.7  FIXME:  netcdf py37 manylinux1 wheels not yet ready https://pypi.org/project/netCDF4/#files
 
 os:
   - linux

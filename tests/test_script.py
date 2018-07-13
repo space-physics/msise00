@@ -4,6 +4,7 @@ import tempfile
 import subprocess
 import pytest
 import xarray
+import xarray.tests
 
 R = Path(__file__).parent
 

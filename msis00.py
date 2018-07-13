@@ -3,7 +3,6 @@
 Poker Flat Research Range altitude profile:   ./PlotMSIS.py 2018-01-01 -c 65 -148
 """
 from pathlib import Path
-from tempfile import gettempdir
 from dateutil.parser import parse
 from datetime import datetime, timedelta
 import numpy as np
