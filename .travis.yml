@@ -9,7 +9,7 @@ git:
 
 python:
   - 3.6
-#  - 3.7  # FIMXE: waiting wheels
+  - 3.7
 
 os:
   - linux

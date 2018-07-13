@@ -7,6 +7,7 @@ import xarray
 
 R = Path(__file__).parent
 
+
 def test_blank():
     """current time, gridded over world, one altitude
        specified -gs 90 90 just to speed up on CI
@@ -32,7 +33,7 @@ def test_one_time():
 
         dat = xarray.open_dataset(fn)
         ref = xarray.open_dataset(R/'ref2.nc')
-        assert ref.equals(dat)
+        xarray.tests.assert_allclose(ref, dat)
 
 
 def test_one_alt():
@@ -58,7 +59,7 @@ def test_one_alt_one_time():
 
         dat = xarray.open_dataset(fn)
         ref = xarray.open_dataset(R/'ref3.nc')
-        assert ref.equals(dat)
+        xarray.tests.assert_allclose(ref, dat)
 
 
 def test_time_range():
@@ -69,7 +70,7 @@ def test_time_range():
 
         dat = xarray.open_dataset(fn)
         ref = xarray.open_dataset(R/'ref4.nc')
-        assert ref.equals(dat)
+        xarray.tests.assert_allclose(ref, dat)
 
 
 def test_one_loc():
@@ -94,7 +95,7 @@ def test_one_loc_one_time():
 
         dat = xarray.open_dataset(fn)
         ref = xarray.open_dataset(R/'ref6.nc')
-        assert ref.equals(dat)
+        xarray.tests.assert_allclose(ref, dat)
 
 
 def test_one_alt_one_time_one_loc():
@@ -105,7 +106,7 @@ def test_one_alt_one_time_one_loc():
 
         dat = xarray.open_dataset(fn)
         ref = xarray.open_dataset(R/'ref5.nc')
-        assert ref.equals(dat)
+        xarray.tests.assert_allclose(ref, dat)
 
 
 if __name__ == '__main__':

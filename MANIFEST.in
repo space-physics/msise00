@@ -1,2 +1,2 @@
 include LICENSE
-recursive-include tests *.py
+recursive-include tests *.py *.nc
