@@ -73,5 +73,5 @@ A single time lat/lon can be plotted:
 
 ## Reference
 
-* Original fortran [code](http://nssdcftp.gsfc.nasa.gov/models/atmospheric/msis/nrlmsise00/)
+* Original fortran [code](https://ccmc.gsfc.nasa.gov/pub/modelweb/atmospheric/msis/)
 * 1200+ citations 2002 [paper](http://onlinelibrary.wiley.com/doi/10.1029/2002JA009430/pdf)
