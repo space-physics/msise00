@@ -8,7 +8,7 @@
 
 # MSISE-00 in Python
 
-NRL MSISE-00 atmospheric model. 
+NRL MSISE-00 atmospheric model.
 Valid from altitude z = 0..1000 km.
 
 The plot immediately below shows a slice at 200km on a world-wide grid.
@@ -29,27 +29,47 @@ And then:
 
 ## Examples
 
+MSISE00 can be used from the command line, as an imported module, and even from Matlab &ge; R2014b.
+
+### import module
+
+```python
+import msise00
+from datetime import datetime
+
+atmos = msise00.rungtd1d(time=datetime(2013, 3, 31, 12), altkm=150., glat=65., glon=-148.)
+```
+
+atmos is an [xarray.Dataset](http://xarray.pydata.org/en/stable/generated/xarray.Dataset.html) containing all the simulation output values.
+`atmos` is 4-D: (time, altitude, lat, lon), and indexed like `atmos['N2']`
+
+
+### Command Line
+
 Write NetCDF4 output (HDF5 compatible) with command line argument `-w filename.nc`.
 
-The data variables are 4-D (time, altitude, lat, lon), and are indexed like `atmos['N2']`
 
-### Altitude Profile
+#### Altitude Profile
 
 at a single time:
 
     msis00 -t 2017-08-21T20:48 -c 40 -90
 
-### Alt. profile time-range
+#### Alt. profile time-range
 
-with hourly time step (let me know if you want other options):
+with hourly time step:
 
     msis00 -t 2017-08-21 2017-08-22 -c 40 -90
 
-### Grid: time,lat,lon
+#### Grid: time,lat,lon
 
 This example takes several minutes, and generates the plots in the README:
 
     msis00
+
+A single time lat/lon can be plotted:
+
+    msise00 -t 2017-01-02T12
 
 ## Reference
 

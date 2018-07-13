@@ -47,12 +47,15 @@ def loopalt_gtd(time: Union[datetime, np.ndarray],
     atmos = xarray.Dataset()
 
     for k, t in enumerate(time):
-        print(f'computing {t}')
+        print('computing', t)
         for i in range(glat.shape[0]):
             for j in range(glat.shape[1]):
                 # atmos = xarray.concat((atmos, rungtd1d(t, altkm, glat[i,j], glon[i,j])),
                 #                      data_vars='minimal',coords='minimal',dim='lon')
-                atmos = xarray.merge((atmos, rungtd1d(t, altkm, glat[i, j], glon[i, j])))
+                atm = rungtd1d(t, altkm, glat[i, j], glon[i, j])
+                atmos = xarray.merge((atmos, atm))
+
+    atmos.attrs = atm.attrs
 
     return atmos
 
@@ -72,6 +75,7 @@ def rungtd1d(time: datetime, altkm: np.ndarray,
     glon = np.atleast_1d(glon).squeeze()
     glat = np.atleast_1d(glat).squeeze()
 
+    time = np.asarray(time).squeeze()[()]
     assert isinstance(time, (np.datetime64, datetime, str)), 'if you have multiple times, for loop over them'
 
 # don't check ap, too complicated
