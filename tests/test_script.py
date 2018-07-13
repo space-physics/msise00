@@ -1,130 +1,111 @@
 #!/usr/bin/env python
 from pathlib import Path
 import tempfile
-import os
 import subprocess
 import pytest
+import xarray
 
-CI = bool(os.environ['CI']) if 'CI' in os.environ else False
-if not CI:
-    import imageio
-    from matplotlib.pyplot import figure, show
-
+R = Path(__file__).parent
 
 def test_blank():
     """current time, gridded over world, one altitude
        specified -gs 90 90 just to speed up on CI
     """
     with tempfile.TemporaryDirectory() as d:
-        subprocess.check_call(['msis00', '-o', str(d), '-gs', '90', '90'])
-        olist = list(Path(d).glob('*.png'))
-        fcount = len(olist)
-        assert fcount == 1
+        fn = Path(d) / 'test.nc'
+        subprocess.check_call(['msis00', '-q', '-w', str(fn), '-gs', '90', '90'])
 
-        if not CI:
-            for f in olist:
-                ax = figure().gca()
-                ax.imshow(imageio.imread(f))
-                ax.axis('off')
-
-            show()
+        dat = xarray.open_dataset(fn)
+        ref = xarray.open_dataset(R/'ref1.nc')
+        assert ref.species == dat.species
+        assert ref.alt_km == dat.alt_km
+        assert ref.lat.equals(dat.lat)
+        assert ref.lon.equals(dat.lon)
 
 
 def test_one_time():
     """ same as test_blank """
     with tempfile.TemporaryDirectory() as d:
-        subprocess.check_call(['msis00', '-o', str(d), '-gs', '90', '90',
+        fn = Path(d) / 'test.nc'
+        subprocess.check_call(['msis00', '-q', '-w', str(fn), '-gs', '90', '90',
                                '-t', '2017-03-21T12'])
-        olist = list(Path(d).glob('*.png'))
-        fcount = len(olist)
-        assert fcount == 1
 
-        if not CI:
-            for f in olist:
-                ax = figure().gca()
-                ax.imshow(imageio.imread(f))
-                ax.axis('off')
-
-            show()
+        dat = xarray.open_dataset(fn)
+        ref = xarray.open_dataset(R/'ref2.nc')
+        assert ref.equals(dat)
 
 
 def test_one_alt():
     """ same as test_blank """
     with tempfile.TemporaryDirectory() as d:
-        subprocess.check_call(['msis00', '-o', str(d), '-gs', '90', '90',
+        fn = Path(d) / 'test.nc'
+        subprocess.check_call(['msis00', '-q', '-w', str(fn), '-gs', '90', '90',
                                '-a', '200'])
-        olist = list(Path(d).glob('*.png'))
-        fcount = len(olist)
-        assert fcount == 1
 
-        if not CI:
-            for f in olist:
-                ax = figure().gca()
-                ax.imshow(imageio.imread(f))
-                ax.axis('off')
-
-            show()
+        dat = xarray.open_dataset(fn)
+        ref = xarray.open_dataset(R/'ref1.nc')
+        assert ref.species == dat.species
+        assert ref.alt_km == dat.alt_km
+        assert ref.lat.equals(dat.lat)
+        assert ref.lon.equals(dat.lon)
 
 
 def test_one_alt_one_time():
     """ same as test_blank """
     with tempfile.TemporaryDirectory() as d:
-        subprocess.check_call(['msis00', '-o', str(d), '-a', '200', '-t', '2017-03-01T12'])
-        olist = list(Path(d).glob('*.png'))
-        fcount = len(olist)
-        assert fcount == 1
+        fn = Path(d) / 'test.nc'
+        subprocess.check_call(['msis00', '-q', '-w', str(fn), '-a', '200', '-t', '2017-03-01T12'])
 
-        if not CI:
-            for f in olist:
-                ax = figure().gca()
-                ax.imshow(imageio.imread(f))
-                ax.axis('off')
-
-            show()
+        dat = xarray.open_dataset(fn)
+        ref = xarray.open_dataset(R/'ref3.nc')
+        assert ref.equals(dat)
 
 
 def test_time_range():
     with tempfile.TemporaryDirectory() as d:
-        subprocess.check_call(['msis00', '-o', str(d), '-gs', '90', '90',
+        fn = Path(d) / 'test.nc'
+        subprocess.check_call(['msis00', '-q', '-w', str(fn), '-gs', '90', '90',
                                '-t', '2017-03-01T12', '2017-03-01T14'])
-        olist = sorted(Path(d).glob('*.png'))
-        fcount = len(olist)
-        assert fcount == 2
 
-        if not CI:
-            for f in olist:
-                ax = figure().gca()
-                ax.imshow(imageio.imread(f))
-                ax.axis('off')
-
-            show()
+        dat = xarray.open_dataset(fn)
+        ref = xarray.open_dataset(R/'ref4.nc')
+        assert ref.equals(dat)
 
 
 def test_one_loc():
     with tempfile.TemporaryDirectory() as d:
-        subprocess.check_call(['msis00', '-o', str(d),
+        fn = Path(d) / 'test.nc'
+        subprocess.check_call(['msis00', '-q', '-w', str(fn),
                                '-c', '65', '-148'])
-        olist = list(Path(d).glob('*.png'))
-        fcount = len(olist)
-        assert fcount == 0
+
+        dat = xarray.open_dataset(fn)
+        ref = xarray.open_dataset(R/'ref6.nc')
+        assert ref.species == dat.species
+        assert ref.alt_km == dat.alt_km
+        assert ref.lat.equals(dat.lat)
+        assert ref.lon.equals(dat.lon)
 
 
 def test_one_loc_one_time():
     with tempfile.TemporaryDirectory() as d:
-        subprocess.check_call(['msis00', '-o', str(d),
+        fn = Path(d) / 'test.nc'
+        subprocess.check_call(['msis00', '-q', '-w', str(fn),
                                '-t', '2017-03-01T12', '-c', '65', '-148'])
-        olist = list(Path(d).glob('*.png'))
-        fcount = len(olist)
-        assert fcount == 0
+
+        dat = xarray.open_dataset(fn)
+        ref = xarray.open_dataset(R/'ref6.nc')
+        assert ref.equals(dat)
 
 
 def test_one_alt_one_time_one_loc():
     with tempfile.TemporaryDirectory() as d:
-        subprocess.check_call(['msis00', '-o', str(d),
+        fn = Path(d) / 'test.nc'
+        subprocess.check_call(['msis00', '-q', '-w', str(fn),
                                '-a', '100', '-t', '2017-03-01T12', '-c', '65', '-148'])
-        olist = list(Path(d).glob('*.png'))
-        fcount = len(olist)
-        assert fcount == 0
+
+        dat = xarray.open_dataset(fn)
+        ref = xarray.open_dataset(R/'ref5.nc')
+        assert ref.equals(dat)
 
 
 if __name__ == '__main__':

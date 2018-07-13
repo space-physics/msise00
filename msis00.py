@@ -30,11 +30,11 @@ def main():
     p.add_argument('-c', '--latlon', help='geodetic latitude/longitude (deg)',
                    metavar=('lat', 'lon'),
                    type=float, nargs=2)
-    p.add_argument('-o', '--odir', help='directory to write plots to',
-                   default=gettempdir())
+    p.add_argument('-o', '--odir', help='directory to write plots to')
     p.add_argument('-w', help='NetCDF4 .nc filename to write')
     p.add_argument('-gs', help='geographic grid spacing (lat, lon)',
                    nargs=2, type=float, default=(10, 10))
+    p.add_argument('-q','--quiet',help='disable plotting',action='store_true')
     P = p.parse_args()
 
 # %% time
@@ -69,7 +69,7 @@ def main():
         print('saving', ncfn)
         atmos.to_netcdf(ncfn)
 # %% plot
-    if msplots is not None:
+    if msplots is not None and not P.quiet:
         msplots.plotgtd(atmos, P.odir)
         show()
     else:
