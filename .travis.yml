@@ -9,7 +9,7 @@ git:
 
 python:
   - 3.6
-#  - 3.7  FIXME:  netcdf py37 manylinux1 wheels not yet ready https://pypi.org/project/netCDF4/#files
+  - 3.7
 
 os:
   - linux
@@ -22,7 +22,7 @@ addons:
 install: pip install -e .[tests]
 
 script:
-  - pytest -sv
+  - pytest -xsv
   - flake8
   - mypy . --ignore-missing-imports
 

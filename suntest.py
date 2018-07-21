@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 """
 understanding sun apparent position over Earth in geodetic lat,lon
-there must be a better way to do this!
 """
 from astropy.time import Time
 from astropy.coordinates import get_sun, AltAz, EarthLocation
 import astropy.units as u
 import numpy as np
 from matplotlib.pyplot import figure, show
-#
 from pymap3d import aer2geodetic
 
 obslla = (0, 0, 0)

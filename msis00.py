@@ -1,9 +1,14 @@
 #!/usr/bin/env python
 """
-Poker Flat Research Range altitude profile:   ./PlotMSIS.py 2018-01-01 -c 65 -148
+Run MSISE00, save to NetCDF4 (HDF5) and/or plot.
+
+Example:
+Poker Flat Research Range altitude profile:
+
+PlotMSIS.py 2018-01-01 -c 65 -148
+
 """
 from pathlib import Path
-from dateutil.parser import parse
 from datetime import datetime, timedelta
 import numpy as np
 import msise00
@@ -20,7 +25,7 @@ except ImportError as e:
 
 
 def main():
-    p = ArgumentParser(description='calls MSISE-00 from Python, a basic demo')
+    p = ArgumentParser(description='calls MSISE-00 from Python, save to NetCDF4 and/or plot')
     p.add_argument('-t', '--time',
                    help='time: (single time or START STOP (1 hour time step) or list of times)',
                    nargs='+', default=[str(datetime.now()-timedelta(days=180))])
@@ -36,15 +41,6 @@ def main():
     p.add_argument('-q', '--quiet', help='disable plotting', action='store_true')
     P = p.parse_args()
 
-# %% time
-    if len(P.time) == 1:
-        time = parse(P.time[0])
-    elif len(P.time) == 2:
-        time = np.arange(P.time[0], P.time[1], dtype='datetime64[h]')
-    else:  # assume list of times
-        time = map(parse, P.time)
-
-    time = np.atleast_1d(time)
 # %% altitude
     if len(P.altkm) == 1:
         altkm = np.atleast_1d(P.altkm[0])
@@ -61,7 +57,7 @@ def main():
         print(f'auto whole-world grid mode at {altkm[0]} km altitude')
         glat, glon = latlonworldgrid(*P.gs)
 # %% run
-    atmos = msise00.run(time, altkm, glat, glon)
+    atmos = msise00.run(P.time, altkm, glat, glon)
 # %% save
     if P.w:
         ncfn = Path(P.w).expanduser()

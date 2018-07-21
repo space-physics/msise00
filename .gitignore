@@ -1,3 +1,4 @@
+bin/
 .mypy_cache/
 .pytest_cache/
 

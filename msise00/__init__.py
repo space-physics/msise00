@@ -1,5 +1,5 @@
 """
-Quick demo of calling NRL MSISE-00 using f2py from Python
+Call NRL MSISE-00 using f2py from Python (and Matlab >= R2014b)
 Michael Hirsch, Ph.D.
 
 Original fortran code from
@@ -8,15 +8,15 @@ http://nssdcftp.gsfc.nasa.gov/models/atmospheric/msis/nrlmsise00/
 from datetime import datetime
 import xarray
 import numpy as np
-from typing import Union
+from typing import Union, List
 #
 from sciencedates import datetime2gtd
-from gridaurora import readmonthlyApF107
+from gridaurora import getApF107
 #
 import gtd7
 #
 MASS = 48  # compute all parameters
-TSELECOPS = np.array([1, 1, 1, 1, 1, 1, 1, 1, -1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], float)
+TSELECOPS = np.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], float)
 species = ['He', 'O', 'N2', 'O2', 'Ar', 'Total', 'H', 'N', 'AnomalousO']
 ttypes = ['Texo', 'Tn']
 first = True
@@ -27,7 +27,7 @@ def run(time: Union[datetime, np.ndarray], altkm: float,
     """
     loops the rungtd1d function below. Figure it's easier to troubleshoot in Python than Fortran.
     """
-    time = np.atleast_1d(time)
+    time = todt64(time)
     glat = np.atleast_2d(glat)
     glon = np.atleast_2d(glon)  # has to be here
 # %% altitude 1-D
@@ -41,8 +41,22 @@ def run(time: Union[datetime, np.ndarray], altkm: float,
 
 
 def loopalt_gtd(time: Union[datetime, np.ndarray],
-                glat: np.ndarray, glon: np.ndarray, altkm: float) -> xarray.Dataset:
-    time = np.atleast_1d(time)  # keep for code reuse
+                glat: Union[float, np.ndarray], glon: Union[float, np.ndarray],
+                altkm: Union[float, List[float], np.ndarray]) -> xarray.Dataset:
+    """
+    loop over location and time
+
+    time: datetime, numpy.datetime64, or list or 1-D np.ndarray thereof
+    glat: float or 2-D np.ndarray
+    glon: float or 2-D np.ndarray
+    altkm: float or list or 1-D np.ndarray
+    """
+    time = todt64(time)
+    glat = np.atleast_2d(glat)
+    glon = np.atleast_2d(glon)
+
+    assert glat.ndim == glon.ndim == 2
+    assert time.ndim == 1
 
     atmos = xarray.Dataset()
 
@@ -60,37 +74,39 @@ def loopalt_gtd(time: Union[datetime, np.ndarray],
     return atmos
 
 
-def rungtd1d(time: datetime, altkm: np.ndarray,
-             glat: np.ndarray, glon: np.ndarray) -> xarray.Dataset:
+def rungtd1d(time: Union[datetime, str, np.ndarray],
+             altkm: np.ndarray,
+             glat: float, glon: float) -> xarray.Dataset:
     """
     This is the "atomic" function looped by other functions
     """
+    time = todt64(time)
     # %% get solar parameters for date
-    f107Ap = readmonthlyApF107(time)
+    f107Ap = getApF107(time, smoothdays=81)
     f107a = f107Ap['f107s'].item()
-    f107 = f107Ap['f107o'].item()
-    Ap = np.atleast_1d((f107Ap['Apo'].item(),)*7)
-# %%
+    f107 = f107Ap['f107'].item()
+    Ap = f107Ap['Ap'].item()
+# %% dimensions
     altkm = np.atleast_1d(altkm)
-    glon = np.atleast_1d(glon).squeeze()
-    glat = np.atleast_1d(glat).squeeze()
-
-    time = np.asarray(time).squeeze()[()]
-    assert isinstance(time, (np.datetime64, datetime, str)), 'if you have multiple times, for loop over them'
+    assert altkm.ndim == 1
+    assert isinstance(glon, float)
+    assert isinstance(glat, float)
+    assert isinstance(time, np.datetime64) or (time.size == 1 and isinstance(
+        time[0], np.datetime64)), 'if you have multiple times, for loop over them'
 
 # don't check ap, too complicated
     assert isinstance(MASS, (float, int))
     assert len(TSELECOPS) == 25
 # %%
-    if Ap.size == 1:
-        Ap = np.repeat(Ap, 7)
-
     gtd7.tselec(TSELECOPS)  # like the msis_driver example
 
     iyd, utsec, stl = datetime2gtd(time, glon)
     altkm = np.atleast_1d(altkm)
 
     gtd7.meters(1)  # makes output in m^-3 and kg/m^-3
+# %%
+    if isinstance(Ap, (float, int)):
+        Ap = [Ap]*7  # even if SW(9) == 1 due to f2py needs for array
 
     dens = np.empty((altkm.size, len(species)))
     temp = np.empty((altkm.size, len(ttypes)))
@@ -107,3 +123,14 @@ def rungtd1d(time: datetime, altkm: np.ndarray,
                                   'species': species})
 
     return atmos
+
+
+def todt64(time: Union[str, datetime, np.datetime64, list, np.ndarray]) -> np.ndarray:
+    time = np.atleast_1d(time)
+
+    if time.size == 1:
+        time = np.datetime64(time[0])
+    elif time.size == 2:
+        time = np.arange(time[0], time[1], dtype='datetime64[h]')
+
+    return time

@@ -13,19 +13,24 @@ def test_gtd1d():
 
     atmos = msise00.rungtd1d(t, altkm, glat, glon)
 
-    assert_allclose(atmos['He'], 1.05781626142e+13)
-    assert_allclose(atmos['O'],  1.184932e+16)
-    assert_allclose(atmos['N2'], 3.13963956173e+16)
-    assert_allclose(atmos['O2'],  2.9984524976e+15)
-    assert_allclose(atmos['Ar'],  7.899407869e+13)
-    assert_allclose(atmos['Total'], 1.938796678757e-09)
-    assert_allclose(atmos['N'],  7.743147081728e+12)
-    assert_allclose(atmos['AnomalousO'], 5.001278932e-15)
+    assert atmos['He'].ndim == 4
+    assert atmos['He'].size == 1
+    dims = list(atmos.dims)
+    assert ['alt_km', 'lat', 'lon', 'time'] == dims
+
+    assert_allclose(atmos['He'], 11908118740992.0)
+    assert_allclose(atmos['O'],  1.306165589835776e+16)
+    assert_allclose(atmos['N2'], 3.051389580214272e+16)
+    assert_allclose(atmos['O2'],  2664322295660544.0)
+    assert_allclose(atmos['Ar'],  67772830711808.0)
+    assert_allclose(atmos['Total'], 1.9115256044699436e-09)
+    assert_allclose(atmos['N'],  9171036536832.0)
+    assert_allclose(atmos['AnomalousO'], 5.380620096337701e-15)
 
     assert atmos.species == ['He', 'O', 'N2', 'O2', 'Ar', 'Total', 'H', 'N', 'AnomalousO']
 
-    assert_allclose(atmos['Tn'],  687.578613)
-    assert_allclose(atmos['Texo'], 958.463623)
+    assert_allclose(atmos['Tn'],   681.584167)
+    assert_allclose(atmos['Texo'], 941.289246)
 
 
 if __name__ == '__main__':
