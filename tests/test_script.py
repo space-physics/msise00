@@ -5,10 +5,15 @@ import subprocess
 import pytest
 import xarray
 import xarray.tests
+try:
+    import scipy
+except ImportError:
+    scipy = None
 
 R = Path(__file__).parent
 
 
+@pytest.mark.skipif(scipy is None, reason='no netcdf')
 def test_one_alt_one_time():
     """
     Regenerate ref3.nc by:
@@ -23,6 +28,7 @@ def test_one_alt_one_time():
         xarray.tests.assert_allclose(ref, dat)
 
 
+@pytest.mark.skipif(scipy is None, reason='no netcdf')
 def test_time_range():
     """
     Regenerate ref4.nc by:
@@ -39,6 +45,7 @@ def test_time_range():
         xarray.tests.assert_allclose(ref, dat)
 
 
+@pytest.mark.skipif(scipy is None, reason='no netcdf')
 def test_one_loc_one_time():
     """
     regenererate ref6.nc by:
@@ -54,6 +61,7 @@ def test_one_loc_one_time():
         xarray.tests.assert_allclose(ref, dat)
 
 
+@pytest.mark.skipif(scipy is None, reason='no netcdf')
 def test_one_alt_one_time_one_loc():
     """
     regenerate ref5.nc by:
