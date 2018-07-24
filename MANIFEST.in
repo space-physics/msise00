@@ -1,2 +1,2 @@
-include LICENSE tests/msise00_demo.gif
+include LICENSE tests/msise00_demo.gif tests/msis_matlab.png
 recursive-include tests *.py *.nc
