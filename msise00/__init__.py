@@ -11,7 +11,7 @@ import numpy as np
 from typing import Union, List
 #
 from sciencedates import datetime2gtd
-from gridaurora import getApF107
+import gridaurora as ga
 #
 import gtd7
 #
@@ -82,7 +82,7 @@ def rungtd1d(time: Union[datetime, str, np.ndarray],
     """
     time = todt64(time)
     # %% get solar parameters for date
-    f107Ap = getApF107(time, smoothdays=81)
+    f107Ap = ga.getApF107(time, smoothdays=81)
     f107a = f107Ap['f107s'].item()
     f107 = f107Ap['f107'].item()
     Ap = f107Ap['Ap'].item()

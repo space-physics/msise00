@@ -59,7 +59,7 @@ def main():
         ncfn = Path(P.w).expanduser()
         print('saving', ncfn)
         # NOTE: .squeeze() avoids ValueError: unsupported dtype for netCDF4 variable: datetime64[ns]
-        atmos.squeeze().to_netcdf(ncfn, format='netcdf4')
+        atmos.squeeze().to_netcdf(ncfn)
 # %% plot
     if msplots is not None and not P.quiet:
         msplots.plotgtd(atmos, P.odir)
