@@ -17,7 +17,7 @@ The yellow ball represents the sun footprint on Earth.
 
 ![MSIS global time animation](tests/msise00_demo.gif)
 
-This plot is from Matlab:
+This plot is from [Matlab](tests/test_msise00_matlab.m) calling the Python MSISE00:
 
 ![MSISE00 Matlab](tests/msis_matlab.png)
 
