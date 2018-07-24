@@ -8,6 +8,7 @@ import xarray.tests
 
 R = Path(__file__).parent
 
+
 def test_one_alt_one_time():
     """
     Regenerate ref3.nc by:
@@ -30,7 +31,7 @@ def test_time_range():
     with tempfile.TemporaryDirectory() as d:
         fn = Path(d) / 'test.nc'
         subprocess.check_call(['msis00', '-q', '-w', str(fn),
-                               '-gs', '90', '90', '-a','200',
+                               '-gs', '90', '90', '-a', '200',
                                '-t', '2017-03-01T12', '2017-03-01T14'])
 
         dat = xarray.open_dataset(fn)
@@ -45,7 +46,7 @@ def test_one_loc_one_time():
     """
     with tempfile.TemporaryDirectory() as d:
         fn = Path(d) / 'test.nc'
-        subprocess.check_call(['msis00', '-q', '-w', str(fn), '-a','200',
+        subprocess.check_call(['msis00', '-q', '-w', str(fn), '-a', '200',
                                '-t', '2017-03-01T12', '-c', '65', '-148'])
 
         dat = xarray.open_dataset(fn)
