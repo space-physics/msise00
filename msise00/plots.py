@@ -4,8 +4,11 @@ from astropy.time import Time
 from astropy.coordinates import get_sun, EarthLocation, AltAz
 from matplotlib.pyplot import figure, close
 from matplotlib.ticker import ScalarFormatter
-#
-from pymap3d import aer2geodetic
+try:
+    from pymap3d import aer2geodetic
+except ImportError as e:
+    print(e)
+    aer2geodetic = None
 
 sfmt = ScalarFormatter(useMathText=True)  # for 10^3 instead of 1e3
 sfmt.set_powerlimits((-2, 2))
@@ -24,6 +27,8 @@ def plotgtd(atmos: xarray.Dataset, rodir: Path=None):
     if tmp.ndim == 1:
         if 'alt_km' in tmp.dims:
             plot1dalt(atmos)
+        elif 'time' in tmp.dims:
+            plot1dtime(atmos)
         else:
             raise NotImplementedError('didnt handle this plotting case yet. Should be straightforward.')
     elif tmp.ndim == 2:
@@ -36,12 +41,14 @@ def plotgtd(atmos: xarray.Dataset, rodir: Path=None):
             raise NotImplementedError('didnt handle this plotting case yet. Should be straightforward.')
     elif tmp.ndim in (3, 4):  # lat/lon grid vs. time
         plot4d(atmos, rodir)
-
-    else:
+    else:  # single point
         print(atmos)
 
 
 def plot4d(atmos: xarray.Dataset, rodir: Path=None):
+    if aer2geodetic is None:
+        return
+
     for i, t in enumerate(atmos.time):
         time = Time(str(t.values))
         obs = EarthLocation(0, 0)  # geodetic lat,lon = 0,0 arbitrary
@@ -137,8 +144,58 @@ def plot1dalt(atmos: xarray.Dataset, odir: Path=None):
     fg = figure()
     ax = fg.gca()
     ax.plot(atmos['Tn'].squeeze(), z)
-    ax.set_xlabel('Temperature')
+    ax.set_xlabel('Temperature [K]')
     ax.set_ylabel('altitude [km]')
+    ax.grid(True)
+    ax.set_title('Temperature from MSISE-00' + footer)
+
+    if odir:
+        ofn = odir / (f'temperature_'+str(atmos.time.values.squeeze())[:-13]+'.png')
+        writeplot(fg, ofn)
+
+
+def plot1dtime(atmos: xarray.Dataset, odir: Path=None):
+
+    footer = f'\n({atmos.lat.item()},{atmos.lon.item()})  alt: {atmos.alt_km.item()} km,  Ap {atmos.Ap[0]}  F10.7 {atmos.f107}'
+
+    t = atmos.time.values
+
+# %% number density
+    fg = figure()
+    ax = fg.gca()
+    for s in atmos.species:
+        if s == 'Total':
+            continue
+        ax.plot(t, atmos[s].squeeze(), label=s)
+    ax.legend(loc='best')
+    ax.set_xlim(left=1e3)
+    ax.set_ylabel('density [m$^{-3}$]')
+    ax.set_xlabel('time [UTC]')
+    ax.grid(True)
+    ax.set_title('Number Density from MSISE-00' + footer)
+    if odir:
+        ofn = odir / (f'number-density_'+str(atmos.time.values.squeeze())[:-13]+'.png')
+        writeplot(fg, ofn)
+
+# %% total mass
+    fg = figure()
+    ax = fg.gca()
+    ax.plot(t, atmos['Total'].squeeze())
+    ax.set_ylabel('Total Mass Density [kg m$^{-3}$]')
+    ax.set_xlabel('time [UTC]')
+    ax.grid(True)
+    ax.set_title('Total Mass Density from MSISE-00'+footer)
+
+    if odir:
+        ofn = odir / (f'total-density_'+str(atmos.time.values.squeeze())[:-13]+'.png')
+        writeplot(fg, ofn)
+
+# %% temperature
+    fg = figure()
+    ax = fg.gca()
+    ax.plot(t, atmos['Tn'].squeeze())
+    ax.set_ylabel('Temperature [K]')
+    ax.set_xlabel('time [UTC]')
     ax.grid(True)
     ax.set_title('Temperature from MSISE-00' + footer)
 

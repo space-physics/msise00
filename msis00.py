@@ -9,7 +9,6 @@ PlotMSIS.py 2018-01-01 -c 65 -148
 
 """
 from pathlib import Path
-from datetime import datetime, timedelta
 import numpy as np
 import msise00
 from argparse import ArgumentParser
@@ -28,9 +27,9 @@ def main():
     p = ArgumentParser(description='calls MSISE-00 from Python, save to NetCDF4 and/or plot')
     p.add_argument('-t', '--time',
                    help='time: (single time or START STOP (1 hour time step) or list of times)',
-                   nargs='+', default=[str(datetime.now()-timedelta(days=180))])
+                   nargs='+', required=True)
     p.add_argument('-a', '--altkm', help='altitude (km). scalar, or (start,stop,step) or list of alts.',
-                   type=float, nargs='+', default=[200.])
+                   type=float, nargs='+', required=True)
     p.add_argument('-c', '--latlon', help='geodetic latitude/longitude (deg)',
                    metavar=('lat', 'lon'),
                    type=float, nargs=2)
@@ -43,18 +42,15 @@ def main():
 
 # %% altitude
     if len(P.altkm) == 1:
-        altkm = np.atleast_1d(P.altkm[0])
+        altkm = P.altkm[0]
     elif len(P.altkm) == 3:
         altkm = np.arange(*P.altkm)
     else:
-        altkm = np.asarray(P.altkm)
-
-    print(f'using altitudes from {altkm[0]:.1f} to {altkm[-1]:.1f} km')
+        altkm = P.altkm
 # %% latlon
     if P.latlon is not None:
         glat, glon = P.latlon
     else:
-        print(f'auto whole-world grid mode at {altkm[0]} km altitude')
         glat, glon = latlonworldgrid(*P.gs)
 # %% run
     atmos = msise00.run(P.time, altkm, glat, glon)
@@ -62,7 +58,8 @@ def main():
     if P.w:
         ncfn = Path(P.w).expanduser()
         print('saving', ncfn)
-        atmos.to_netcdf(ncfn)
+        # NOTE: .squeeze() avoids ValueError: unsupported dtype for netCDF4 variable: datetime64[ns]
+        atmos.squeeze().to_netcdf(ncfn, format='netcdf4')
 # %% plot
     if msplots is not None and not P.quiet:
         msplots.plotgtd(atmos, P.odir)

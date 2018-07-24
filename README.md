@@ -66,12 +66,12 @@ with hourly time step:
 
 This example takes several minutes, and generates the plots in the README:
 
-    msis00
+    msis00 -t 2016-09-20 2016-09-21
 
 A single time lat/lon can be plotted:
 
     msise00 -t 2017-01-02T12
-    
+
 ### Matlab
 Matlab &ge; R2014b can interface directly with most Python modules, for example:
 

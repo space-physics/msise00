@@ -32,7 +32,7 @@ def run(time: Union[datetime, np.ndarray], altkm: float,
     glon = np.atleast_2d(glon)  # has to be here
 # %% altitude 1-D
     if glat.size == 1 and glon.size == 1 and time.size == 1:
-        atmos = rungtd1d(time, altkm, glat, glon)
+        atmos = rungtd1d(time, altkm, glat.squeeze()[()], glon.squeeze()[()])
 # %% lat/lon grid at 1 altitude
     else:
         atmos = loopalt_gtd(time, glat, glon, altkm)
@@ -118,7 +118,7 @@ def rungtd1d(time: Union[datetime, str, np.ndarray],
                 'Texo': (('time', 'alt_km', 'lat', 'lon'), temp[:, 0][None, :, None, None])})
 
     atmos = xarray.Dataset(dsf,
-                           coords={'time': [time], 'alt_km': altkm, 'lat': [glat], 'lon': [glon], },
+                           coords={'time': time.astype(datetime), 'alt_km': altkm, 'lat': [glat], 'lon': [glon], },
                            attrs={'Ap': Ap, 'f107': f107, 'f107a': f107a,
                                   'species': species})
 
@@ -129,8 +129,10 @@ def todt64(time: Union[str, datetime, np.datetime64, list, np.ndarray]) -> np.nd
     time = np.atleast_1d(time)
 
     if time.size == 1:
-        time = np.datetime64(time[0])
+        time = np.atleast_1d(np.datetime64(time[0], dtype='datetime64[us]'))
     elif time.size == 2:
         time = np.arange(time[0], time[1], dtype='datetime64[h]')
+    else:
+        pass
 
     return time

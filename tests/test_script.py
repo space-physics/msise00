@@ -8,52 +8,11 @@ import xarray.tests
 
 R = Path(__file__).parent
 
-
-def test_blank():
-    """current time, gridded over world, one altitude
-       specified -gs 90 90 just to speed up on CI
-    """
-    with tempfile.TemporaryDirectory() as d:
-        fn = Path(d) / 'test.nc'
-        subprocess.check_call(['msis00', '-q', '-w', str(fn), '-gs', '90', '90'])
-
-        dat = xarray.open_dataset(fn)
-        ref = xarray.open_dataset(R/'ref1.nc')
-        assert ref.species == dat.species
-        assert ref.alt_km == dat.alt_km
-        assert ref.lat.equals(dat.lat)
-        assert ref.lon.equals(dat.lon)
-
-
-def test_one_time():
-    """ same as test_blank """
-    with tempfile.TemporaryDirectory() as d:
-        fn = Path(d) / 'test.nc'
-        subprocess.check_call(['msis00', '-q', '-w', str(fn), '-gs', '90', '90',
-                               '-t', '2017-03-21T12'])
-
-        dat = xarray.open_dataset(fn)
-        ref = xarray.open_dataset(R/'ref2.nc')
-        xarray.tests.assert_allclose(ref, dat)
-
-
-def test_one_alt():
-    """ same as test_blank """
-    with tempfile.TemporaryDirectory() as d:
-        fn = Path(d) / 'test.nc'
-        subprocess.check_call(['msis00', '-q', '-w', str(fn), '-gs', '90', '90',
-                               '-a', '200'])
-
-        dat = xarray.open_dataset(fn)
-        ref = xarray.open_dataset(R/'ref1.nc')
-        assert ref.species == dat.species
-        assert ref.alt_km == dat.alt_km
-        assert ref.lat.equals(dat.lat)
-        assert ref.lon.equals(dat.lon)
-
-
 def test_one_alt_one_time():
-    """ same as test_blank """
+    """
+    Regenerate ref3.nc by:
+        ./msis00.py -q -w ref3.nc -a 200 -t 2017-03-01T12
+    """
     with tempfile.TemporaryDirectory() as d:
         fn = Path(d) / 'test.nc'
         subprocess.check_call(['msis00', '-q', '-w', str(fn), '-a', '200', '-t', '2017-03-01T12'])
@@ -64,9 +23,14 @@ def test_one_alt_one_time():
 
 
 def test_time_range():
+    """
+    Regenerate ref4.nc by:
+        ./msis00.py -q -w ref4.nc -gs 90 90 -t 2017-03-01T12 2017-03-01T14
+    """
     with tempfile.TemporaryDirectory() as d:
         fn = Path(d) / 'test.nc'
-        subprocess.check_call(['msis00', '-q', '-w', str(fn), '-gs', '90', '90',
+        subprocess.check_call(['msis00', '-q', '-w', str(fn),
+                               '-gs', '90', '90', '-a','200',
                                '-t', '2017-03-01T12', '2017-03-01T14'])
 
         dat = xarray.open_dataset(fn)
@@ -74,24 +38,14 @@ def test_time_range():
         xarray.tests.assert_allclose(ref, dat)
 
 
-def test_one_loc():
-    with tempfile.TemporaryDirectory() as d:
-        fn = Path(d) / 'test.nc'
-        subprocess.check_call(['msis00', '-q', '-w', str(fn),
-                               '-c', '65', '-148'])
-
-        dat = xarray.open_dataset(fn)
-        ref = xarray.open_dataset(R/'ref6.nc')
-        assert ref.species == dat.species
-        assert ref.alt_km == dat.alt_km
-        assert ref.lat.equals(dat.lat)
-        assert ref.lon.equals(dat.lon)
-
-
 def test_one_loc_one_time():
+    """
+    regenererate ref6.nc by:
+        ./msis00.py -q -w ref6.nc -t 2017-03-01T12 -c 65 -148
+    """
     with tempfile.TemporaryDirectory() as d:
         fn = Path(d) / 'test.nc'
-        subprocess.check_call(['msis00', '-q', '-w', str(fn),
+        subprocess.check_call(['msis00', '-q', '-w', str(fn), '-a','200',
                                '-t', '2017-03-01T12', '-c', '65', '-148'])
 
         dat = xarray.open_dataset(fn)
@@ -100,6 +54,10 @@ def test_one_loc_one_time():
 
 
 def test_one_alt_one_time_one_loc():
+    """
+    regenerate ref5.nc by:
+        ./msis00.py -q -w ref5.nc -a 100 -t 2017-03-01T12 -c 65 -148
+    """
     with tempfile.TemporaryDirectory() as d:
         fn = Path(d) / 'test.nc'
         subprocess.check_call(['msis00', '-q', '-w', str(fn),

@@ -18,7 +18,7 @@ init:
 
 install:
 - cd bin
-- cmd: cmake -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ..
+- cmd: cmake -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ../src
 - sh: cmake ../src
 - cmake --build .
   
