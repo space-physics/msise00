@@ -1,4 +1,7 @@
 function test_msise00_matlab()
+
+if verLessThan('matlab','9.3'), warning('Matlab >= R2017b required for Python 3.6'), end
+
 time = {'2013-03-31', '2013-04-01'}; 
 altkm = 150.;
 glat = 65;
