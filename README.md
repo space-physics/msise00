@@ -7,7 +7,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/f6f206d6f6605bcf435d/maintainability)](https://codeclimate.com/github/scivision/msise00/maintainability)
 [![PyPi Download stats](http://pepy.tech/badge/msise00)](http://pepy.tech/project/msise00)
 
-# MSISE-00 in Python
+# MSISE-00 in Python and Matlab
 
 NRL MSISE-00 atmospheric model for Python &ge; 3.6, also accessible via Matlab.
 Valid from altitude z = 0..1000 km.
@@ -22,6 +22,8 @@ This plot is from [Matlab](tests/test_msise00_matlab.m) calling the Python MSISE
 ![MSISE00 Matlab](tests/msis_matlab.png)
 
 ## Install
+
+This process is used for the Python and Matlab access to MSIS.
 
 -   Mac: `brew install gcc`
 -   Linux: `apt install gfortran`
