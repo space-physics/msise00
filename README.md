@@ -23,7 +23,7 @@ This plot is from [Matlab](tests/test_msise00_matlab.m) calling the Python MSISE
 
 ## Install
 
-This process is used for the Python and Matlab access to MSIS.
+This process is used for the Python and [Matlab](README_matlab.md) access to MSIS.
 
 -   Mac: `brew install gcc`
 -   Linux: `apt install gfortran`
