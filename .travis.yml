@@ -22,7 +22,7 @@ addons:
 install: pip install -e .[tests]
 
 script:
-  - pytest -xsv
+  - pytest -xrsv
   - flake8
   - mypy . --ignore-missing-imports
 
