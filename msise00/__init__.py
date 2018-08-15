@@ -89,8 +89,8 @@ def rungtd1d(time: Union[datetime, str, np.ndarray],
 # %% dimensions
     altkm = np.atleast_1d(altkm)
     assert altkm.ndim == 1
-    assert isinstance(glon, float)
-    assert isinstance(glat, float)
+    assert isinstance(glon, (int, float))
+    assert isinstance(glat, (int, float))
     assert isinstance(time, np.datetime64) or (time.size == 1 and isinstance(
         time[0], np.datetime64)), 'if you have multiple times, for loop over them'
 
