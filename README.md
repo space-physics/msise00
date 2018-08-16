@@ -31,8 +31,16 @@ This process is used for the Python and [Matlab](README_matlab.md) access to MSI
     or use [Windows Subsystem for Linux](https://www.scivision.co/install-windows-subsystem-for-linux/).
 
 And then:
+```sh
+pip install -e .
+```
 
-    pip install -e .
+### Windows
+If you get ImportError on Windows for the Fortran module, try from the `msise00` directory:
+```posh
+del *.pyd
+python setup.py build_ext --inplace --compiler=mingw32
+```
 
 ## Examples
 
@@ -56,28 +64,23 @@ atmos is an [xarray.Dataset](http://xarray.pydata.org/en/stable/generated/xarray
 Write NetCDF4 output (HDF5 compatible) with command line argument `-w filename.nc`.
 
 
-#### Altitude Profile
-
-at a single time:
-
-    msis00 -t 2017-08-21T20:48 -c 40 -90
-
-#### Alt. profile time-range
-
-with hourly time step:
-
-    msis00 -t 2017-08-21 2017-08-22 -c 40 -90
-
-#### Grid: time,lat,lon
-
-This example takes several minutes, and generates the plots in the README:
-
-    msis00 -t 2016-09-20 2016-09-21
-
-A single time lat/lon can be plotted:
-
-    msise00 -t 2017-01-02T12
-
+* Altitude Profile at a single time:
+  ```sh
+  msis00 -t 2017-08-21T20:48 -c 40 -90
+  ```
+* Alt. profile time-range with hourly time step:
+  ```sh
+  msis00 -t 2017-08-21 2017-08-22 -c 40 -90
+  ```
+* Grid: time,lat,lon: generates the plots in the README:
+  ```sh
+  msis00 -t 2016-09-20 2016-09-21
+  ```
+* single time lat/lon can be plotted:
+  ```sh
+  msise00 -t 2017-01-02T12
+  ```
+  
 ### Matlab
 Matlab &ge; R2014b can interface directly with most Python modules, for example:
 
