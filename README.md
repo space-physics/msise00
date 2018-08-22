@@ -2,9 +2,9 @@
 [![Travis-CI](https://travis-ci.org/scivision/msise00.svg)](https://travis-ci.org/scivision/msise00)
 [![Coverage](https://coveralls.io/repos/scivision/msise00/badge.svg?branch=master&service=github)](https://coveralls.io/github/scivision/msise00?branch=master)
 [![Build status](https://ci.appveyor.com/api/projects/status/g58w79defiiiu6j6?svg=true)](https://ci.appveyor.com/project/scivision/msise00)
+[![Maintainability](https://api.codeclimate.com/v1/badges/f6f206d6f6605bcf435d/maintainability)](https://codeclimate.com/github/scivision/msise00/maintainability)
 [![Python versions (PyPI)](https://img.shields.io/pypi/pyversions/msise00.svg)](https://pypi.python.org/pypi/msise00)
 [![Distribution format (PyPI)](https://img.shields.io/pypi/format/msise00.svg)](https://pypi.python.org/pypi/msise00)
-[![Maintainability](https://api.codeclimate.com/v1/badges/f6f206d6f6605bcf435d/maintainability)](https://codeclimate.com/github/scivision/msise00/maintainability)
 [![PyPi Download stats](http://pepy.tech/badge/msise00)](http://pepy.tech/project/msise00)
 
 # MSISE-00 in Python and Matlab
@@ -87,6 +87,19 @@ Matlab &ge; R2014b can interface directly with most Python modules, for example:
 ```matlab
 atmos = py.msise00.run(time,altkm,glat,glon)
 ```
+
+Many Python programs--including MSISE-00--are readily accessible from Matlab.
+Here's what's you'll need:
+
+1. Python &ge; 3.6.  Check which Python version you have simply by typing from Terminal/Command Prompt (not in Matlab)
+   ```sh
+   python3
+   ```
+   If you need to install Python, consider [Miniconda](https://conda.io/miniconda.html) as it's a small install (normally, use the 64-bit version).
+2. Matlab &ge; R2017b, as this is when Python 3.6 was enabled. 
+   If you're stuck with older Matlab &lt; R2017b, you can try to [force-enable Python 3.6](https://www.scivision.co/matlab-python-user-module-import/)
+3. The function `msise00.m` gives some examples of what you can do (run, plot) MSISE-00 from Matlab calling Python (and ultimately the original Fortran code).
+   The functions in that file `xarrayind2vector()` and `xarray2mat()` translate Python's advanced Xarray N-D data structures to Matlab arrays.
 
 ## Reference
 

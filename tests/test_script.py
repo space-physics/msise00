@@ -78,4 +78,4 @@ def test_one_alt_one_time_one_loc():
 
 
 if __name__ == '__main__':
-    pytest.main(['-x', __file__])
+    pytest.main(['-xv', __file__])
