@@ -16,7 +16,7 @@ sfmt.set_scientific(True)
 sfmt.set_useOffset(False)
 
 
-def plotgtd(atmos: xarray.Dataset, rodir: Path=None):
+def plotgtd(atmos: xarray.Dataset, rodir: Path = None):
     #
     if rodir:
         rodir = Path(rodir).expanduser()
@@ -45,7 +45,7 @@ def plotgtd(atmos: xarray.Dataset, rodir: Path=None):
         print(atmos)
 
 
-def plot4d(atmos: xarray.Dataset, rodir: Path=None):
+def plot4d(atmos: xarray.Dataset, rodir: Path = None):
     if aer2geodetic is None:
         return
 
@@ -60,8 +60,8 @@ def plot4d(atmos: xarray.Dataset, rodir: Path=None):
         plot2dlatlon(atmos.sel(time=t), rodir, slat, slon)
 
 
-def plot2dlatlon(atmos: xarray.Dataset, rodir: Path=None,
-                 slat: float=None, slon: float=None):
+def plot2dlatlon(atmos: xarray.Dataset, rodir: Path = None,
+                 slat: float = None, slon: float = None):
 
     fg = figure(figsize=(8, 8))
     ax = fg.subplots(4, 2, sharex=True).ravel()
@@ -104,7 +104,7 @@ def plot2dlatlon(atmos: xarray.Dataset, rodir: Path=None,
         writeplot(fg, ofn)
 
 
-def plot1dalt(atmos: xarray.Dataset, odir: Path=None):
+def plot1dalt(atmos: xarray.Dataset, odir: Path = None):
 
     footer = f'\n({atmos.lat.item()},{atmos.lon.item()})  Ap {atmos.Ap[0]}  F10.7 {atmos.f107}'
 
@@ -154,7 +154,7 @@ def plot1dalt(atmos: xarray.Dataset, odir: Path=None):
         writeplot(fg, ofn)
 
 
-def plot1dtime(atmos: xarray.Dataset, odir: Path=None):
+def plot1dtime(atmos: xarray.Dataset, odir: Path = None):
 
     footer = f'\n({atmos.lat.item()},{atmos.lon.item()})  alt: {atmos.alt_km.item()} km,  Ap {atmos.Ap[0]}  F10.7 {atmos.f107}'
 

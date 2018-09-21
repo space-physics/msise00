@@ -1,13 +1,15 @@
 function msise00()
-%% call MSISE00 model from Matlab.
+% quick demo calling MSISE00 model from Matlab.
 % https://www.scivision.co/matlab-python-user-module-import/
-assert(~verLessThan('matlab', '9.5'), 'Matlab >= R2018b required')
+
+assert(~verLessThan('matlab', '8.4'), 'Matlab >= R2014b required')
 
 % geographic WGS84 lat,lon,alt
 glat = 65.1;
 glon = -147.5;
 alt_km = 10:10:1000;
 t = '2015-12-13T10';
+
 
 atmos = py.msise00.run(t, alt_km, glat, glon);
 
@@ -41,8 +43,15 @@ function plotmsis(atmos)
 
 end
 
-function M = xarray2mat(V)
-M = double(py.numpy.asfortranarray(V));
+function V = xarray2mat(V)
+  % convert xarray 2-D array to Matlab matrix
+
+
+V = V.values;
+S = V.shape;
+V = cell2mat(cell(V.ravel('F').tolist()));
+V = reshape(V,[int64(S{1}), int64(S{2})]);
+
 end
 
 function I = xarrayind2vector(V, key)

@@ -1,6 +1,5 @@
 function test_msise00_matlab()
-
-if verLessThan('matlab','9.3'), warning('Matlab >= R2017b required for Python 3.6'), end
+assert(~verLessThan('matlab', '9.5'), 'Matlab >= R2018b required')
 
 time = {'2013-03-31', '2013-04-01'}; 
 altkm = 150.;
@@ -14,9 +13,9 @@ t = datetime(xarrayInd2vector(atmos, 'time') / 1e9, 'convertfrom', 'posixtime');
 
 assert(t(1) == datetime(time{1}))
 %% extract values
-He = xarrayDataArray2mat(atmos{'He'});
-N2 = xarrayDataArray2mat(atmos{'N2'});
-O = xarrayDataArray2mat(atmos{'O'});
+He = xarray2mat(atmos{'He'});
+N2 = xarray2mat(atmos{'N2'});
+O = xarray2mat(atmos{'O'});
 
 assert_allclose(N2(13), 3.051389580214272e16)
 %% plot
@@ -28,15 +27,8 @@ title('N_2 vs. time')
 end
 
 
-function V = xarrayDataArray2mat(V)
-  % convert xarray DataArray to Matlab matrix
-
-  
-V= V.values; 
-S = V.shape;
-V = cell2mat(cell(V.ravel('F').tolist()));
-V = reshape(V,[int64(S{1}), int64(S{2})]);
-    
+function M = xarray2mat(V)
+M = double(py.numpy.asfortranarray(V));
 end
 
 function I = xarrayInd2vector(V,key)
