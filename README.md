@@ -4,7 +4,6 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/g58w79defiiiu6j6?svg=true)](https://ci.appveyor.com/project/scivision/msise00)
 [![Maintainability](https://api.codeclimate.com/v1/badges/f6f206d6f6605bcf435d/maintainability)](https://codeclimate.com/github/scivision/msise00/maintainability)
 [![Python versions (PyPI)](https://img.shields.io/pypi/pyversions/msise00.svg)](https://pypi.python.org/pypi/msise00)
-[![Distribution format (PyPI)](https://img.shields.io/pypi/format/msise00.svg)](https://pypi.python.org/pypi/msise00)
 [![PyPi Download stats](http://pepy.tech/badge/msise00)](http://pepy.tech/project/msise00)
 
 # MSISE-00 in Python and Matlab
@@ -28,7 +27,6 @@ This process is used for the Python and [Matlab](README_matlab.md) access to MSI
 -   Mac: `brew install gcc`
 -   Linux: `apt install gfortran`
 -   [Windows](https://www.scivision.co/windows-gcc-gfortran-cmake-make-install/)
-    or use [Windows Subsystem for Linux](https://www.scivision.co/install-windows-subsystem-for-linux/).
 
 And then:
 ```sh
@@ -96,9 +94,7 @@ Here's what's you'll need:
    python3
    ```
    If you need to install Python, consider [Miniconda](https://conda.io/miniconda.html) as it's a small install (normally, use the 64-bit version).
-2. Matlab &ge; R2014b
-3. The function `msise00.m` gives some examples of what you can do (run, plot) MSISE-00 from Matlab calling Python (and ultimately the original Fortran code).
-   The functions in that file `xarrayind2vector()` and `xarray2mat()` translate Python's advanced Xarray N-D data structures to Matlab arrays.
+2. The function `msise00.m` gives some examples of what you can do (run, plot) MSISE-00 from Matlab calling Python (and ultimately the original Fortran code).
 
 ## Reference
 
