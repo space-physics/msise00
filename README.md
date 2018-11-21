@@ -14,15 +14,15 @@ Valid from altitude z = 0..1000 km.
 The plot immediately below shows a slice at 200km on a world-wide grid.
 The yellow ball represents the sun footprint on Earth.
 
-![MSIS global time animation](tests/msise00_demo.gif)
+![MSIS global time animation](./tests/msise00_demo.gif)
 
-This plot is from [Matlab](tests/test_msise00_matlab.m) calling the Python MSISE00:
+This plot is from [Matlab](./tests/test_msise00_matlab.m) calling the Python MSISE00:
 
-![MSISE00 Matlab](tests/msis_matlab.png)
+![MSISE00 Matlab](./tests/msis_matlab.png)
 
 ## Install
 
-This process is used for the Python and [Matlab](README_matlab.md) access to MSIS.
+This process is used for the Python and [Matlab](#matlab) access to MSIS.
 
 -   Mac: `brew install gcc`
 -   Linux: `apt install gfortran`
@@ -80,22 +80,20 @@ Write NetCDF4 output (HDF5 compatible) with command line argument `-w filename.n
   ```
   
 ### Matlab
-Matlab can interface directly with most Python modules, for example:
 
-```matlab
-atmos = py.msise00.run(time,altkm,glat,glon)
-```
+Matlab users can seamlessly access Python modules, as demonstrated in 
+[RunMSISE00.m](./matlab/RunMSISE00.m) and 
+[msise00.m](./matlab/msise00.m).
 
-Many Python programs--including MSISE-00--are readily accessible from Matlab.
 Here's what's you'll need:
 
-1. Python &ge; 3.6.  Check which Python version you have simply by typing from Terminal/Command Prompt (not in Matlab)
-   ```sh
-   python3
+1. [Setup Python &harr; Matlab interface](https://www.scivision.co/matlab-python-user-module-import/).
+2. Install MSISe00 in Python as at the top of this Readme.
+3. From Matlab, verify everything is working by from the `msise00/` directory:
+   ```matlab
+   runtests('tests')
    ```
-   If you need to install Python, consider [Miniconda](https://conda.io/miniconda.html) as it's a small install (normally, use the 64-bit version).
-2. The function `msise00.m` gives some examples of what you can do (run, plot) MSISE-00 from Matlab calling Python (and ultimately the original Fortran code).
-
+   
 ## Reference
 
 * Original fortran [code](https://ccmc.gsfc.nasa.gov/pub/modelweb/atmospheric/msis/)
