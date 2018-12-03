@@ -1,29 +1,15 @@
-%% environment
-assert(~verLessThan('matlab', '9.5'), 'Matlab >= R2018b required')
-v = ver('matlab');
-mv = v.Version;
-pv = pyversion;
-switch(mv)
-  case '9.5', assert(pv=="3.6", 'Matlab <-> Python version mismatch')
-end
-
 %% simple
+time = datenum(2015,12,13,10,0,0);
+glat = 65.1;
+glon = -147.5;
+f107a = 150.;
+f107 = 150.;
+Ap = 4;
+altkm = 400.;
+
 cwd = fileparts(mfilename('fullpath'));
-addpath([cwd,'/../matlab'])
+addpath([cwd, filesep, '..', filesep, 'matlab'])
 
-time = {'2013-03-31', '2013-04-01'}; 
-altkm = 150.;
-glat = 65;
-glon = -148.;
+atmo = msise00(time, glat, glon, f107a, f107, Ap, altkm);
 
-atmos = py.msise00.run(time, altkm, glat, glon);
-
-t = xarrayind2vector(atmos, 'time');
-
-assert(t(1) == datetime(time{1}))
-
-He = xarray2mat(atmos{'He'});
-N2 = xarray2mat(atmos{'N2'});
-O = xarray2mat(atmos{'O'});
-
-assert_allclose(N2(13), 3.051389580214272e16)
+assert(abs(atmo.nN2 - 1900827.88) < 1e5, 'Ne error excessive')

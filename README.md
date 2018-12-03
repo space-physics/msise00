@@ -82,7 +82,7 @@ Write NetCDF4 output (HDF5 compatible) with command line argument `-w filename.n
 ### Matlab
 
 Matlab and GNU Octave users can seamlessly access Python modules, as demonstrated in 
-[RunMSISE00.m](./matlab/RunMSISE00.m) and 
+[AltitudeProfile.m](./matlab/AlitudeProfile.m) and 
 [msise00.m](./matlab/msise00.m).
 
 1. Install MSISe00 by running [setup_msise00.m](./matlab/setup_msise00.m)
