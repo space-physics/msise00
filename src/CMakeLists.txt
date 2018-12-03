@@ -13,4 +13,3 @@ add_executable(test_msise00 nrlmsise00_sub.for reference/nrlmsise00_driver.for)
 target_compile_options(test_msise00 PRIVATE ${FFLAGS})
 add_test(NAME MSISprint COMMAND test_msise00)
 
-

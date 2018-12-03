@@ -15,4 +15,6 @@ elseif(CMAKE_Fortran_COMPILER_ID STREQUAL PGI)
 
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL Flang)
   list(APPEND FFLAGS -Mallocatable=03)
+elseif(CMAKE_Fortran_COMPILER_ID STREQUAL NAG)
+
 endif()

@@ -1,17 +1,24 @@
 program msise00
 
+use, intrinsic:: iso_fortran_env, only: stderr=>error_unit
+
 implicit none
 
-real :: iyd=172  ! day of year
-real :: utsec=29000. ! UTC second of day
-real :: alt_km=400.  ! altitude [km]
-real :: glat = 60. ! geodetic latitude [deg]
-real :: glon = -70. ! geodetic longitude [deg]
+! ./msise00 172 8 0 0 60. -70. 150. 150. 4. 400
+
+integer :: doy  ! day of year
+real :: utsec ! UTC second of day
+real :: alt_km  ! altitude [km]
+real :: glat, glon ! geodetic latitude, longitude [deg]
 
 real :: lst ! local solar time
-real :: f107a = 150.
-real :: f107 = 150
-real :: ap = 4.
+real :: f107a
+real :: f107
+real :: Ap
+
+real :: hour, minute, second
+integer :: i
+character(1000) :: argv
 
 ! output variables
 real :: Density(9)
@@ -21,10 +28,50 @@ real :: Temperature(2)
 real, parameter :: SW(25)=[1.,1.,1.,1.,1.,1.,1.,1.,-1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.]
 
 
+! --- command line input
+if (command_argument_count() < 10) then
+  write(stderr,*) 'need input parameters: DayOfYear hour minute second glat glon f107a f107 ap alt_km'
+  stop 1
+endif
+
+call get_command_argument(1, argv)
+read(argv,'(i3)') doy
+
+call get_command_argument(2, argv)
+read(argv,*) hour
+
+call get_command_argument(3, argv)
+read(argv,*) minute
+
+call get_command_argument(4, argv)
+read(argv,*) second
+
+call get_command_argument(5, argv)
+read(argv,*) glat
+
+call get_command_argument(6, argv)
+read(argv,*) glon
+
+call get_command_argument(7, argv)
+read(argv,*) f107a
+
+call get_command_argument(8, argv)
+read(argv,*) f107
+
+call get_command_argument(9, argv)
+read(argv,*) Ap
+
+call get_command_argument(10, argv)
+read(argv,*) alt_km
+
+
+! --- execute program
+utsec = hour*3600. + minute*60. + second
+
 lst = utsec/3600. + glon/15.
 
 
-CALL GTD7(iyd, utsec, alt_km, glat, glon, lst, f107a, f107, ap,48, Density, Temperature)
+CALL GTD7(doy, utsec, alt_km, glat, glon, lst, f107a, f107, ap,48, Density, Temperature)
 
 print *,Density
 print *,Temperature
