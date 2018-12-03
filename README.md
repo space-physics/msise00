@@ -16,7 +16,7 @@ The yellow ball represents the sun footprint on Earth.
 
 ![MSIS global time animation](./tests/msise00_demo.gif)
 
-This plot is from [Matlab](./tests/test_msise00_matlab.m) calling the Python MSISE00:
+This plot is from [Matlab](./tests/test_msise00_matlab.m) calling MSISE00:
 
 ![MSISE00 Matlab](./tests/msis_matlab.png)
 
@@ -81,15 +81,12 @@ Write NetCDF4 output (HDF5 compatible) with command line argument `-w filename.n
   
 ### Matlab
 
-Matlab users can seamlessly access Python modules, as demonstrated in 
+Matlab and GNU Octave users can seamlessly access Python modules, as demonstrated in 
 [RunMSISE00.m](./matlab/RunMSISE00.m) and 
 [msise00.m](./matlab/msise00.m).
 
-Here's what's you'll need:
-
-1. [Setup Python &harr; Matlab interface](https://www.scivision.co/matlab-python-user-module-import/).
-2. Install MSISe00 in Python as at the top of this Readme.
-3. From Matlab, verify everything is working by from the `msise00/` directory:
+1. Install MSISe00 by running [setup_msise00.m](./matlab/setup_msise00.m)
+2. From Matlab, verify everything is working by from the `msise00/` directory:
    ```matlab
    runtests('tests')
    ```
