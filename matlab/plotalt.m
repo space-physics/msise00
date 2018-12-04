@@ -21,7 +21,7 @@ semilogx(ax, [atmos.nH], altkm, 'DisplayName', 'N_H')
 semilogx(ax, [atmos.nN], altkm, 'DisplayName', 'N_N')
 
 title(ax, 'Number Densities')
-xlabel(ax, 'Density [m^-3]')
+xlabel(ax, 'Density [cm^-3]')
 ylabel(ax, 'altitude [km]')
 xlim(ax, [1,1e17])
 
