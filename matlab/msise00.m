@@ -1,11 +1,11 @@
 function iono = msise00(time, glat, glon, f107a, f107, Ap, altkm)
-
-validateattributes(glat, {'numeric'}, {'scalar'})
-validateattributes(glon, {'numeric'}, {'scalar'})
-validateattributes(f107a, {'numeric'}, {'positive','scalar'})
-validateattributes(f107, {'numeric'}, {'positive','scalar'})
-validateattributes(Ap, {'numeric'}, {'positive','scalar'})
-validateattributes(altkm, {'numeric'}, {'positive', 'scalar'})
+%% run MSIS E00
+validateattributes(glat, {'numeric'}, {'scalar'}, mfilename, 'geodetic latitude',2)
+validateattributes(glon, {'numeric'}, {'scalar'}, mfilename, 'geodetic longitude',3)
+validateattributes(f107a, {'numeric'}, {'positive','scalar'},mfilename, '81 day AVERAGE OF F10.7 FLUX (centered on day)',4)
+validateattributes(f107, {'numeric'}, {'positive','scalar'},mfilename, 'DAILY F10.7 FLUX FOR PREVIOUS DAY', 5)
+validateattributes(Ap, {'numeric'}, {'positive','scalar'}, mfilename, 'MAGNETIC INDEX(DAILY)',6)
+validateattributes(altkm, {'numeric'}, {'positive', 'scalar'},mfilename, 'altitude [km]',7)
 %% binary MSISe00
 cwd = fileparts(mfilename('fullpath'));
 exe = [cwd,filesep,'..', filesep, 'bin', filesep, 'msise00_driver'];

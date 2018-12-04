@@ -1,5 +1,5 @@
 """
-Call NRL MSISE-00 using f2py from Python (and Matlab >= R2014b)
+Call NRL MSISE-00 using f2py from Python
 Michael Hirsch, Ph.D.
 
 Original fortran code from
