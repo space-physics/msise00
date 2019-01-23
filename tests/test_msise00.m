@@ -12,7 +12,6 @@ addpath([cwd, filesep, '..', filesep, 'matlab'])
 
 atmo = msise00(time, glat, glon, f107a, f107, Ap, altkm);
 
-%% validate vs. CCMC
 fid = fopen([cwd,filesep,'ccmc.log']);
 while ~feof(fid)
   d = fgetl(fid);

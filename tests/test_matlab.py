@@ -2,17 +2,15 @@
 from pathlib import Path
 import subprocess
 import pytest
+import shutil
 
 R = Path(__file__).parent
 
-
+@pytest.mark.skipif(not bool(shutil.which('matlab')), reason="Matlab not available")
 def test_matlab_api():
-    try:
-        subprocess.check_call(['matlab', '-nojvm', '-r',
-                               'r=runtests(); exit(any([r.Failed]))'],
-                              cwd=R, timeout=60)
-    except FileNotFoundError as e:
-        pytest.skip(f'Matlab not available  {e}')
+    subprocess.check_call(['matlab', '-nojvm', '-r',
+                           'r=runtests(); exit(any([r.Failed]))'],
+                           cwd=R, timeout=60)
 
 
 if __name__ == '__main__':
