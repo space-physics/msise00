@@ -40,14 +40,14 @@ def test_time_range(tmp_path):
     xarray.tests.assert_allclose(ref, dat)
 
 
-def test_one_loc_one_time():
+def test_one_loc_one_time(tmp_path):
     """
     regenererate ref6.nc by:
         ./msis00.py -q -w ref6.nc -t 2017-03-01T12 -c 65 -148
     """
     pytest.importorskip('netCDF4')
 
-    tmp_path / 'test.nc'
+    fn = tmp_path / 'test.nc'
     subprocess.check_call(['msis00', '-q', '-w', str(fn), '-a', '200',
                            '-t', '2017-03-01T12', '-c', '65', '-148'])
 
@@ -56,14 +56,14 @@ def test_one_loc_one_time():
     xarray.tests.assert_allclose(ref, dat)
 
 
-def test_one_alt_one_time_one_loc():
+def test_one_alt_one_time_one_loc(tmp_path):
     """
     regenerate ref5.nc by:
         ./msis00.py -q -w ref5.nc -a 100 -t 2017-03-01T12 -c 65 -148
     """
     pytest.importorskip('netCDF4')
 
-    tmp_path / 'test.nc'
+    fn = tmp_path / 'test.nc'
     subprocess.check_call(['msis00', '-q', '-w', str(fn),
                            '-a', '100', '-t', '2017-03-01T12', '-c', '65', '-148'])
 
