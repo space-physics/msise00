@@ -91,6 +91,15 @@ Matlab and GNU Octave users can seamlessly access Python modules, as demonstrate
    runtests('tests')
    ```
    
+## Fortran source
+
+The MSISE00 Fortran source code may also be used directly.
+We have provided for easy code reuse in
+[CMake](./src/CMakeLists.txt)
+and
+[Meson](./src/meson.build)
+projects.
+   
 ## Reference
 
 * Original fortran [code](https://ccmc.gsfc.nasa.gov/pub/modelweb/atmospheric/msis/)
