@@ -1,22 +1,25 @@
-%% setup MSISE00 using Fortran compiler
+%% setup MSISE00 using CMake+Fortran compiler
 
-if ispc
-  ccmd = ['cmake -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ..\src'];
-else
-  ccmd = ['cmake ../src'];
-end
+system('cmake --version')
 
 cwd = fileparts(mfilename('fullpath'));
-cd([cwd,filesep,'..',filesep,'bin'])
+
+srcdir =   [cwd, filesep,'..',filesep,'src'];
+builddir = [cwd, filesep,'..',filesep,'build'];
+tail = [' -S ', srcdir, ' -B ', builddir];
+
+if ispc
+  ccmd = ['cmake -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ', tail];
+else
+  ccmd = ['cmake ',tail];
+end
 
 [status, ret] = system(ccmd);
 if status~=0, error(ret), end
 disp(ret)
 
-[status, ret] = system('cmake --build .');
+[status, ret] = system(['cmake --build ',builddir,' -j']);
 if status~=0, error(ret), end
 disp(ret)
-
-cd(cwd)
 
 disp('Fortran compilation complete')
