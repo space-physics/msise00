@@ -12,7 +12,7 @@ from pathlib import Path
 import numpy as np
 import msise00
 from argparse import ArgumentParser
-from gridaurora.worldgrid import latlonworldgrid
+from msise00.worldgrid import latlonworldgrid
 try:
     from matplotlib.pyplot import show
     import msise00.plots as msplots
