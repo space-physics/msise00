@@ -1,5 +1,6 @@
 from pathlib import Path
 import xarray
+from datetime import datetime
 from astropy.time import Time
 from astropy.coordinates import get_sun, EarthLocation, AltAz
 from matplotlib.pyplot import figure, close
@@ -68,7 +69,7 @@ def plot2dlatlon(atmos: xarray.Dataset, rodir: Path = None,
 
     fg.suptitle(str(atmos.time.values.squeeze())[:-13] +
                 f' alt.(km) {atmos.alt_km.item()}\n'
-                f'Ap={atmos.Ap[0]}  F10.7={atmos.f107}')
+                f'Ap={atmos.Ap}  F10.7={atmos.f107}')
 
     j = 0
 
@@ -106,7 +107,7 @@ def plot2dlatlon(atmos: xarray.Dataset, rodir: Path = None,
 
 def plot1dalt(atmos: xarray.Dataset, odir: Path = None):
 
-    footer = f'\n({atmos.lat.item()},{atmos.lon.item()})  Ap {atmos.Ap[0]}  F10.7 {atmos.f107}'
+    footer = f'\n({atmos.lat.item()},{atmos.lon.item()})  Ap {atmos.Ap}  F10.7 {atmos.f107}'
 
     z = atmos.alt_km.values
 
@@ -156,9 +157,9 @@ def plot1dalt(atmos: xarray.Dataset, odir: Path = None):
 
 def plot1dtime(atmos: xarray.Dataset, odir: Path = None):
 
-    footer = f'\n({atmos.lat.item()},{atmos.lon.item()})  alt: {atmos.alt_km.item()} km,  Ap {atmos.Ap[0]}  F10.7 {atmos.f107}'
+    footer = f'\n({atmos.lat.item()},{atmos.lon.item()})  alt: {atmos.alt_km.item()} km,  Ap {atmos.Ap}  F10.7 {atmos.f107}'
 
-    t = atmos.time.values
+    t = atmos.time.values.astype('datetime64[us]').astype(datetime)
 
 # %% number density
     fg = figure()
@@ -168,7 +169,6 @@ def plot1dtime(atmos: xarray.Dataset, odir: Path = None):
             continue
         ax.plot(t, atmos[s].squeeze(), label=s)
     ax.legend(loc='best')
-    ax.set_xlim(left=1e3)
     ax.set_ylabel('density [m$^{-3}$]')
     ax.set_xlabel('time [UTC]')
     ax.grid(True)

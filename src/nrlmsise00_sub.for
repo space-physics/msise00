@@ -162,6 +162,9 @@ C
       DATA MN2/4/,ZN2/72.5,55.,45.,32.5/
       DATA ZMIX/62.5/,ALAST/99999./,MSSL/-999/
       DATA SV/25*1./
+      
+      call meters(.true.)
+      
       IF(ISW.NE.64999) CALL TSELEC(SV)
 C      Put identification data into common/datime/
       DO 1 I=1,3
@@ -356,7 +359,7 @@ C        T(2) - TEMPERATURE AT ALT
       Real,Intent(In)  :: SEC,ALT,GLAT,GLONG,STL,F107A,F107,AP(7)
       Integer,Intent(In):: IYD,MASS
 
-      Integer IMR      
+      Integer IMR
 
       COMMON/METSEL/IMR
       CALL GTD7(IYD,SEC,ALT,GLAT,GLONG,STL,F107A,F107,AP,MASS,D,T)
@@ -471,7 +474,7 @@ C      RADIUS (REFF)
       real,parameter :: DGTR=1.74533E-2
 
       SAVE
-      
+
       C2 = COS(2.*DGTR*LAT)
       GV = 980.616*(1.-.0026373*C2)
       REFF = 2.*GV/(3.085462E-6 + 2.27E-9*C2)*1.E-5
@@ -986,9 +989,9 @@ C       CALCULATE G(L) FUNCTION
 C       Upper Thermosphere Parameters
       Real,Intent(IN) :: YRD,SEC,LAT, LONG,TLOC,F107A,F107,AP(*)
 !     inout since P modified in function
-      Real,Intent(inout) :: P(*)  
+      Real,Intent(inout) :: P(*)
 
-      
+
       Real SV(25)
       COMMON/TTEST/TINF,GB,ROUT,T(15)
       COMMON/CSW/SW(25),ISW,SWC(25)

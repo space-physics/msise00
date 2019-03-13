@@ -13,12 +13,15 @@ addpath([cwd, filesep, '..', filesep, 'matlab'])
 atmo = msise00(time, glat, glon, f107a, f107, Ap, altkm);
 
 fid = fopen([cwd,filesep,'ccmc.log']);
-while ~feof(fid)
-  d = fgetl(fid);
-  if ~isempty(d), dat = d; end
-end
 
-A = cell2mat(textscan(dat, '%f %f %f %f %f %f %f %f %f %f %f %f', 1, 'ReturnOnError', false));
+A = cell2mat(textscan(fid, '%f %f %f %f %f %f %f %f %f %f %f %f', 1, ...
+  'ReturnOnError', false, 'HeaderLines', 25));
+
+A(2:4) = A(2:4) * 1e6;  % cm^-3 => m^-3
+A(5) = A(5) * 1000; % gram cm^-3 => kg m^-3
+A(8:end) = A(8:end) * 1e6; 
+
+fclose(fid);
 
 assert(abs(atmo.altkm - A(1)) < 0.1, 'wrong altitude?')
 assert(abs(atmo.nO - A(2)) < A(2)*0.005, 'O error')

@@ -1,6 +1,6 @@
 %% setup MSISE00 using CMake+Fortran compiler
 
-system('cmake --version')
+system('cmake --version');
 
 cwd = fileparts(mfilename('fullpath'));
 

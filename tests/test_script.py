@@ -1,4 +1,12 @@
 #!/usr/bin/env python
+"""
+Regenerate test data:
+
+./msis00.py -q -w tests/ref3.nc -a 200 -t 2017-03-01T12
+./msis00.py -q -w tests/ref4.nc -a 200 -gs 90 90 -t 2017-03-01T12 2017-03-01T14
+./msis00.py -q -w tests/ref6.nc -a 200 -t 2017-03-01T12 -c 65 -148
+./msis00.py -q -w tests/ref5.nc -a 100 -t 2017-03-01T12 -c 65 -148
+"""
 from pathlib import Path
 import subprocess
 import pytest
@@ -9,10 +17,7 @@ R = Path(__file__).parent
 
 
 def test_one_alt_one_time(tmp_path):
-    """
-    Regenerate ref3.nc by:
-        ./msis00.py -q -w ref3.nc -a 200 -t 2017-03-01T12
-    """
+
     pytest.importorskip('netCDF4')
 
     fn = tmp_path / 'test.nc'
@@ -24,10 +29,6 @@ def test_one_alt_one_time(tmp_path):
 
 
 def test_time_range(tmp_path):
-    """
-    Regenerate ref4.nc by:
-        ./msis00.py -q -w ref4.nc -gs 90 90 -t 2017-03-01T12 2017-03-01T14
-    """
     pytest.importorskip('netCDF4')
 
     fn = tmp_path / 'test.nc'
@@ -41,10 +42,6 @@ def test_time_range(tmp_path):
 
 
 def test_one_loc_one_time(tmp_path):
-    """
-    regenererate ref6.nc by:
-        ./msis00.py -q -w ref6.nc -t 2017-03-01T12 -c 65 -148
-    """
     pytest.importorskip('netCDF4')
 
     fn = tmp_path / 'test.nc'
@@ -57,10 +54,6 @@ def test_one_loc_one_time(tmp_path):
 
 
 def test_one_alt_one_time_one_loc(tmp_path):
-    """
-    regenerate ref5.nc by:
-        ./msis00.py -q -w ref5.nc -a 100 -t 2017-03-01T12 -c 65 -148
-    """
     pytest.importorskip('netCDF4')
 
     fn = tmp_path / 'test.nc'

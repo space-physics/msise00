@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 import setuptools  # noqa: F401
+from pathlib import Path
+import subprocess
+import os
+
 setuptools.setup()
 # from numpy.distutils.core import setup, Extension
-# import os
-# from pathlib import Path
 
 
 # if os.name == 'nt':
@@ -16,3 +18,30 @@ setuptools.setup()
 
 # setup(ext_modules=[Extension(name='gtd7',
 #                             sources=['src/nrlmsise00_sub.for'])])
+
+R = Path(__file__).resolve().parent
+BINDIR = R / 'build'
+SRCDIR = R / 'src'
+
+
+def cmake_setup():
+    if os.name == 'nt':
+        subprocess.check_call(['cmake', '-G', 'MinGW Makefiles',
+                               '-DCMAKE_SH="CMAKE_SH-NOTFOUND', str(SRCDIR)],
+                              cwd=BINDIR)
+    else:
+        subprocess.check_call(['cmake', str(SRCDIR)],
+                              cwd=BINDIR)
+
+    subprocess.check_call(['cmake', '--build', str(BINDIR), '-j'])
+
+
+def meson_setup():
+    subprocess.check_call(['meson', str(SRCDIR)], cwd=BINDIR)
+    subprocess.check_call(['ninja'], cwd=BINDIR)
+
+
+try:
+    meson_setup()
+except Exception:
+    cmake_setup()

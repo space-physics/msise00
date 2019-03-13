@@ -16,7 +16,7 @@ def test_matlab_api():
 
 @pytest.mark.skipif(not shutil.which('octave'), reason='octave not found')
 def test_octave_api():
-    subprocess.check_call(['octave', '-q', '--eval="exit(test_iri2016)"'],
+    subprocess.check_call(['octave', '-q', '--eval="exit(test_mod)"'],
                           cwd=R, timeout=60)
 
 

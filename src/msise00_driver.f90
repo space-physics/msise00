@@ -17,7 +17,7 @@ real :: f107
 real :: Ap
 
 real :: hour, minute, second
-integer :: i
+
 character(1000) :: argv
 
 ! output variables
@@ -69,7 +69,6 @@ read(argv,*) alt_km
 utsec = hour*3600. + minute*60. + second
 
 lst = utsec/3600. + glon/15.
-
 
 CALL GTD7(doy, utsec, alt_km, glat, glon, lst, f107a, f107, ap,48, Density, Temperature)
 
