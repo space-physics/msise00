@@ -1,2 +1,4 @@
 include LICENSE tests/msise00_demo.gif tests/msis_matlab.png
-recursive-include tests *.py *.nc
+recursive-include tests *.py *.nc *.m
+recursive-include *.py
+recursive-include matlab *.m
