@@ -1,36 +1,63 @@
 #!/usr/bin/env python
 from datetime import datetime
+import numpy as np
 import pytest
 from pytest import approx
-import msise00.base as mb
+import msise00
+from pathlib import Path
+
+R = Path(__file__).parent
+reffn = R / 'ccmc.log'
 
 
-def test_gtd1d():
+def test_ccmc():
+    t = datetime(2001, 2, 2, 8, 0, 0)
+    glat = 60.
+    glon = -70.
+    altkm = 400.
+    f107a = 163.6666
+    f107 = 146.7
+    Ap = 7
+
+    A = np.loadtxt(reffn, skiprows=25)
+
+    atmos = msise00.run(t, altkm, glat, glon, f107a=f107a, f107=f107, Ap=Ap)
+
+    assert A[0] == approx(altkm)
+    assert A[1] == approx(atmos['O'].item()/1e6, rel=0.05)
+    assert A[2] == approx(atmos['N2'].item()/1e6, rel=0.3)
+    assert A[3] == approx(atmos['O2'].item()/1e6, rel=0.35)
+
+
+def test_past():
     t = datetime(2013, 3, 31, 12)
     altkm = 150.
     glat = 65.
     glon = -148.
 
-    atmos = mb.rungtd1d(t, altkm, glat, glon)
+    try:
+        atmos = msise00.run(t, altkm, glat, glon)
+    except ConnectionError:
+        pytest.xfail('unable to download RecentIndices.txt')
 
     assert atmos['He'].ndim == 4
     assert atmos['He'].size == 1
     dims = list(atmos.dims)
     assert ['alt_km', 'lat', 'lon', 'time'] == dims
 
-    assert atmos['He'].item() == approx(11932380700000.0)
-    assert atmos['O'].item() == approx(1.3053125e+16)
-    assert atmos['N2'].item() == approx(3.05005836e+16)
-    assert atmos['O2'].item() == approx(2662636520000000.0)
-    assert atmos['Ar'].item() == approx(67714152400000.0)
-    assert atmos['Total'].item() == approx(1.91058636e-09)
-    assert atmos['N'].item() == approx(9148033930000.0)
+    assert atmos['He'].item() == approx(4200180480000.0)
+    assert atmos['O'].item() == approx(9338048100000000.0)
+    assert atmos['N2'].item() == approx(3.23984781e+16)
+    assert atmos['O2'].item() == approx(2413811350000000.0)
+    assert atmos['Ar'].item() == approx(81071685200000.0)
+    assert atmos['Total'].item() == approx(1.88774951e-09)
+    assert atmos['N'].item() == approx(9310465690000.0)
     assert atmos['AnomalousO'].item() == approx(5.3806201e-15)
 
     assert atmos.species == ['He', 'O', 'N2', 'O2', 'Ar', 'Total', 'H', 'N', 'AnomalousO']
 
-    assert atmos['Tn'].item() == approx(680.611206)
-    assert atmos['Texo'].item() == approx(936.991211)
+    assert atmos['Tn'].item() == approx(699.021362)
+    assert atmos['Texo'].item() == approx(1000.51257)
 
 
 def test_forecast():
@@ -39,26 +66,26 @@ def test_forecast():
     glat = 65.
     glon = -148.
 
-    atmos = mb.rungtd1d(t, altkm, glat, glon)
+    atmos = msise00.run(t, altkm, glat, glon)
 
     assert atmos['He'].ndim == 4
     assert atmos['He'].size == 1
     dims = list(atmos.dims)
     assert ['alt_km', 'lat', 'lon', 'time'] == dims
 
-    assert atmos['He'].item() == approx(4392053900000.0)
-    assert atmos['O'].item() == approx(4572071070000000.0)
-    assert atmos['N2'].item() == approx(3.69985706e+16)
-    assert atmos['O2'].item() == approx(8123153790000000.0)
-    assert atmos['Ar'].item() == approx(335924592000000.0)
-    assert atmos['Total'].item() == approx(2.2950164e-09)
-    assert atmos['N'].item() == approx(2154703490000.0)
+    assert atmos['He'].item() == approx(1240641440000.0)
+    assert atmos['O'].item() == approx(3047968100000000.0)
+    assert atmos['N2'].item() == approx(3.597249e+16)
+    assert atmos['O2'].item() == approx(7343665540000000.0)
+    assert atmos['Ar'].item() == approx(334703983000000.0)
+    assert atmos['Total'].item() == approx(2.16534546e-09)
+    assert atmos['N'].item() == approx(2576280450000.0)
     assert atmos['AnomalousO'].item() == approx(8.75042368e-16)
 
     assert atmos.species == ['He', 'O', 'N2', 'O2', 'Ar', 'Total', 'H', 'N', 'AnomalousO']
 
-    assert atmos['Tn'].item() == approx(666.979004)
-    assert atmos['Texo'].item() == approx(922.03186)
+    assert atmos['Tn'].item() == approx(671.513672)
+    assert atmos['Texo'].item() == approx(883.342529)
 
 
 if __name__ == '__main__':

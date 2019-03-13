@@ -33,13 +33,6 @@ And then:
 pip install -e .
 ```
 
-### Windows
-If you get ImportError on Windows for the Fortran module, try from the `msise00` directory:
-```posh
-del *.pyd
-python setup.py build_ext --inplace --compiler=mingw32
-```
-
 ## Examples
 
 MSISE00 can be used from the command line, as an imported module, and even from Matlab.
@@ -50,7 +43,7 @@ MSISE00 can be used from the command line, as an imported module, and even from 
 import msise00
 from datetime import datetime
 
-atmos = msise00.rungtd1d(time=datetime(2013, 3, 31, 12), altkm=150., glat=65., glon=-148.)
+atmos = msise00.run(time=datetime(2013, 3, 31, 12), altkm=150., glat=65., glon=-148.)
 ```
 
 atmos is an [xarray.Dataset](http://xarray.pydata.org/en/stable/generated/xarray.Dataset.html) containing all the simulation output values.
@@ -60,6 +53,12 @@ atmos is an [xarray.Dataset](http://xarray.pydata.org/en/stable/generated/xarray
 ### Command Line
 
 Write NetCDF4 output (HDF5 compatible) with command line argument `-w filename.nc`.
+
+Simple examples include:
+
+* AltitudeProfile.py
+* TimeProfile.py
+* Worldgrid.py
 
 
 * Altitude Profile at a single time:
