@@ -1,0 +1,26 @@
+NRLMSISE-00 model listing
+Input parameters
+year= 2001, month= 2, day= 2, hour= 8.06,
+Time_type = Universal
+Coordinate_type = Geographic
+latitude= 60.00, longitude= 290.00, height= 400.00
+Prof. parameters: start= 400.00 stop= 400.00 step= 50.00
+
+Optional parameters: F10.7(daily) =146.7; F10.7(3-month avg) =163.6666; ap(daily) = 7.
+
+   Selected parameters are:
+1 Height, km
+2 O, cm-3
+3 N2, cm-3
+4 O2, cm-3
+5 Mass_density, g/cm-3
+6 Temperature_neutral, K
+7 Temperature_exospheric, K
+8 He, cm-3
+9 Ar, cm-3
+10 H, cm-3
+11 N, cm-3
+12 Anomalous_Oxygen, cm-3
+
+      1          2          3          4         5      6     7          8          9         10         11         12
+  400.0  9.118E+07  3.655E+06  8.660E+04 2.652E-15  917.8   918  6.763E+06  1.820E+02  1.126E+05  4.480E+05  3.263E+03
