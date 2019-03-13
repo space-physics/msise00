@@ -1,26 +1,15 @@
 """
-Call NRL MSISE-00 using f2py from Python
-Michael Hirsch, Ph.D.
-
-Original fortran code from
-http://nssdcftp.gsfc.nasa.gov/models/atmospheric/msis/nrlmsise00/
+coroutines and MSISE00
 """
+import asyncio
+from typing import Union, Sequence
 from datetime import datetime, date
-import xarray
 import numpy as np
-import subprocess
-from typing import Union, List
-from pathlib import Path
-from dateutil.parser import parse
+import xarray
 import io
 
+from .base import todatetime, SPECIES, TTYPES, EXE, rungtd1d
 import geomagindices as gi
-
-R = Path(__file__).resolve().parents[1] / 'build'
-EXE = R / 'msise00_driver'
-
-SPECIES = ['He', 'O', 'N2', 'O2', 'Ar', 'Total', 'H', 'N', 'AnomalousO']
-TTYPES = ['Texo', 'Tn']
 
 
 def run(time: datetime, altkm: float,
@@ -45,7 +34,7 @@ def run(time: datetime, altkm: float,
 
 def loopalt_gtd(time: datetime,
                 glat: Union[float, np.ndarray], glon: Union[float, np.ndarray],
-                altkm: Union[float, List[float], np.ndarray], *,
+                altkm: Union[float, Sequence[float], np.ndarray], *,
                 f107a: float = None, f107: float = None, Ap: int = None) -> xarray.Dataset:
     """
     loop over location and time
@@ -70,8 +59,8 @@ def loopalt_gtd(time: datetime,
             for j in range(glat.shape[1]):
                 # atmos = xarray.concat((atmos, rungtd1d(t, altkm, glat[i,j], glon[i,j])),
                 #                      data_vars='minimal',coords='minimal',dim='lon')
-                atm = rungtd1d(t, altkm, glat[i, j], glon[i, j],
-                               f107a=f107a, f107=f107, Ap=Ap)
+                atm = corogtd(t, altkm, glat[i, j], glon[i, j],
+                              f107a=f107a, f107=f107, Ap=Ap)
                 atmos = xarray.merge((atmos, atm))
 
     atmos.attrs = atm.attrs
@@ -79,12 +68,12 @@ def loopalt_gtd(time: datetime,
     return atmos
 
 
-def rungtd1d(time: datetime,
-             altkm: np.ndarray,
-             glat: float, glon: float, *,
-             f107a: float = None, f107: float = None, Ap: int = None) -> xarray.Dataset:
+async def corogtd(time: datetime,
+                  altkm: np.ndarray,
+                  glat: float, glon: float, *,
+                  f107a: float = None, f107: float = None, Ap: int = None) -> xarray.Dataset:
     """
-    This is the "atomic" function looped by other functions
+    This is the "atomic" connection to MSISE00 Fortran code via pipes
     """
     time = todatetime(time)
     # %% get solar parameters for date
@@ -113,9 +102,10 @@ def rungtd1d(time: datetime,
                str(glat), str(glon),
                str(f107a), str(f107), str(Ap), str(a)]
 
-        ret = subprocess.check_output(cmd,
-                                      universal_newlines=True,
-                                      stderr=subprocess.DEVNULL)
+        proc = await asyncio.create_subprocess_exec(*cmd)
+
+        ret = proc.wait()  # TODO
+
         f = io.StringIO(ret)
         dens[i, :] = np.genfromtxt(f, max_rows=1)
         temp[i, :] = np.genfromtxt(f, max_rows=1)
@@ -130,38 +120,3 @@ def rungtd1d(time: datetime,
                                   'species': SPECIES})
 
     return atmos
-
-
-def todt64(time: Union[str, datetime, np.datetime64, list, np.ndarray]) -> np.ndarray:
-    time = np.atleast_1d(time)
-
-    if time.size == 1:
-        time = np.atleast_1d(np.datetime64(time[0], dtype='datetime64[us]'))
-    elif time.size == 2:
-        time = np.arange(time[0], time[1], dtype='datetime64[h]')
-    else:
-        pass
-
-    return time
-
-
-def todatetime(time) -> datetime:
-
-    if isinstance(time, str):
-        dtime = parse(time)
-    elif isinstance(time, datetime):
-        dtime = time
-    elif isinstance(time, np.datetime64):
-        dtime = time.astype(datetime)
-    elif isinstance(time, (tuple, list, np.ndarray)):
-        if len(time) == 1:
-            dtime = todatetime(time[0])
-        else:
-            dtime = [todatetime(t) for t in time]
-    else:
-        raise TypeError(f'{type(time)} not allowed')
-
-    if not isinstance(dtime, datetime) and isinstance(dtime, date):
-        dtime = datetime.combine(dtime, datetime.min.time())
-
-    return dtime
