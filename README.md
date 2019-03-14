@@ -63,25 +63,25 @@ Simple examples include:
 
 * Altitude Profile at a single time:
   ```sh
-  msis00 -t 2017-08-21T20:48 -c 40 -90
+  msise00.py -t 2017-08-21T20:48 -c 40 -90
   ```
 * Alt. profile time-range with hourly time step:
   ```sh
-  msis00 -t 2017-08-21 2017-08-22 -c 40 -90
+  msise00.py -t 2017-08-21 2017-08-22 -c 40 -90
   ```
 * Grid: time,lat,lon: generates the plots in the README:
   ```sh
-  msis00 -t 2016-09-20 2016-09-21
+  msise00.py -t 2016-09-20 2016-09-21
   ```
 * single time lat/lon can be plotted:
   ```sh
-  msise00 -t 2017-01-02T12
+  msise00.py -t 2017-01-02T12
   ```
-  
+
 ### Matlab
 
-Matlab and GNU Octave users can seamlessly access Python modules, as demonstrated in 
-[AltitudeProfile.m](./matlab/AlitudeProfile.m) and 
+Matlab and GNU Octave users can seamlessly access Python modules, as demonstrated in
+[AltitudeProfile.m](./matlab/AlitudeProfile.m) and
 [msise00.m](./matlab/msise00.m).
 
 1. Install MSISe00 by running [setup_msise00.m](./matlab/setup_msise00.m)
@@ -89,7 +89,7 @@ Matlab and GNU Octave users can seamlessly access Python modules, as demonstrate
    ```matlab
    runtests('tests')
    ```
-   
+
 ## Fortran source
 
 The MSISE00 Fortran source code may also be used directly.
@@ -98,7 +98,7 @@ We have provided for easy code reuse in
 and
 [Meson](./src/meson.build)
 projects.
-   
+
 ## Reference
 
 * Original fortran [code](https://ccmc.gsfc.nasa.gov/pub/modelweb/atmospheric/msis/)
