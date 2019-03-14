@@ -24,14 +24,40 @@ This plot is from [Matlab](./tests/test_msise00_matlab.m) calling MSISE00:
 
 This process is used for the Python and [Matlab](#matlab) access to MSIS.
 
--   Mac: `brew install gcc`
--   Linux: `apt install gfortran`
--   [Windows](https://www.scivision.co/windows-gcc-gfortran-cmake-make-install/)
+1. Any Fortran compiler should work. Fortran compiler may be installed by
 
-And then:
+    * Mac: `brew install gcc`
+    * Linux: `apt install gfortran`
+    * [Windows](https://www.scivision.co/windows-gcc-gfortran-cmake-make-install/)
+
+2. get MSISE00 and install Python package
+
+    ```sh
+    git clone https://github.com/scivision/msise00
+
+    cd msise00
+
+    python3 -m pip install -e .
+    ```
+3. one-time compilation step requires either CMake or Meson (details below).
+
+    ```sh
+    python3 -c "import msise00; msise00.build()"
+    ```
+
+### CMake install
+
+* Linux: Download/build/install Cmake 3 using [cmake_setup.sh](https://github.com/scivision/cmake-utils)
+* Mac: `brew install cmake` or use [.dmg installer](https://cmake.org/download/)
+* Windows: use Windows [win64-x64 installer](https://cmake.org/download/)
+
+### Meson install
+
 ```sh
-pip install -e .
+python3 -m pip install meson
 ```
+
+extract [Ninja](https://github.com/ninja-build/ninja/releases) and put it on your system path.
 
 ## Examples
 
@@ -63,19 +89,19 @@ Simple examples include:
 
 * Altitude Profile at a single time:
   ```sh
-  msise00.py -t 2017-08-21T20:48 -c 40 -90
+  MSISE00.py -t 2017-08-21T20:48 -c 40 -90
   ```
 * Alt. profile time-range with hourly time step:
   ```sh
-  msise00.py -t 2017-08-21 2017-08-22 -c 40 -90
+  MSISE00.py -t 2017-08-21 2017-08-22 -c 40 -90
   ```
 * Grid: time,lat,lon: generates the plots in the README:
   ```sh
-  msise00.py -t 2016-09-20 2016-09-21
+  MSISE00.py -t 2016-09-20 2016-09-21
   ```
 * single time lat/lon can be plotted:
   ```sh
-  msise00.py -t 2017-01-02T12
+  MSISE00.py -t 2017-01-02T12
   ```
 
 ### Matlab
@@ -89,6 +115,13 @@ Matlab and GNU Octave users can seamlessly access Python modules, as demonstrate
    ```matlab
    runtests('tests')
    ```
+
+### Time Utiliies
+
+Time utilities of general interest include:
+
+* `msise00.todatetime`
+* `msise00.todt64`
 
 ## Fortran source
 

@@ -5,7 +5,7 @@ Run MSISE00, save to NetCDF4 (HDF5) and/or plot.
 Example:
 Poker Flat Research Range altitude profile:
 
-msis00.py -t 2018-01-01 -c 65 -148 -a 0.2
+MSISE00.py -t 2018-01-01 -c 65 -148 -a 0.2
 
 """
 from pathlib import Path
