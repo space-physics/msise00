@@ -110,7 +110,7 @@ Matlab and GNU Octave users can seamlessly access Python modules, as demonstrate
 [AltitudeProfile.m](./matlab/AlitudeProfile.m) and
 [msise00.m](./matlab/msise00.m).
 
-1. Install MSISe00 by running [setup_msise00.m](./matlab/setup_msise00.m)
+1. Install MSISe00 by running [setup.m](./matlab/setup.m) from within Matlab or Octave
 2. From Matlab, verify everything is working by from the `msise00/` directory:
    ```matlab
    runtests('tests')
