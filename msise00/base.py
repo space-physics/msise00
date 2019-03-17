@@ -12,6 +12,7 @@ import subprocess
 from typing import Union, List
 from pathlib import Path
 import io
+import os
 
 from .timeutils import todatetime
 from .build import build
@@ -20,6 +21,8 @@ import geomagindices as gi
 
 R = Path(__file__).resolve().parents[1] / 'build'
 EXE = R / 'msise00_driver'
+if os.name == 'nt':
+    EXE = EXE.with_suffix('.exe')
 if not EXE.is_file():
     build()
 

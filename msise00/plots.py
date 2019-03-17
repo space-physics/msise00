@@ -1,15 +1,18 @@
 from pathlib import Path
 import xarray
 from datetime import datetime
-from astropy.time import Time
-from astropy.coordinates import get_sun, EarthLocation, AltAz
 from matplotlib.pyplot import figure, close
 from matplotlib.ticker import ScalarFormatter
+
 try:
     from pymap3d import aer2geodetic
-except ImportError as e:
-    print(e)
+except ImportError:
     aer2geodetic = None
+try:
+    from astropy.time import Time
+    from astropy.coordinates import get_sun, EarthLocation, AltAz
+except ImportError:
+    Time = None
 
 sfmt = ScalarFormatter(useMathText=True)  # for 10^3 instead of 1e3
 sfmt.set_powerlimits((-2, 2))
@@ -47,18 +50,18 @@ def plotgtd(atmos: xarray.Dataset, rodir: Path = None):
 
 
 def plot4d(atmos: xarray.Dataset, rodir: Path = None):
-    if aer2geodetic is None:
-        return
 
     for i, t in enumerate(atmos.time):
-        time = Time(str(t.values))
-        obs = EarthLocation(0, 0)  # geodetic lat,lon = 0,0 arbitrary
-        sun = get_sun(time=time)
-        aaf = AltAz(obstime=time, location=obs)
-        sloc = sun.transform_to(aaf)
-        slat, slon = aer2geodetic(sloc.az.value, sloc.alt.value, sloc.distance.value, 0, 0, 0)[:2]
-
-        plot2dlatlon(atmos.sel(time=t), rodir, slat, slon)
+        if Time is not None and aer2geodetic is not None:
+            time = Time(str(t.values))
+            obs = EarthLocation(0, 0)  # geodetic lat,lon = 0,0 arbitrary
+            sun = get_sun(time=time)
+            aaf = AltAz(obstime=time, location=obs)
+            sloc = sun.transform_to(aaf)
+            slat, slon = aer2geodetic(sloc.az.value, sloc.alt.value, sloc.distance.value, 0, 0, 0)[:2]
+            plot2dlatlon(atmos.sel(time=t), rodir, slat, slon)
+        else:
+            plot2dlatlon(atmos.sel(time=t), rodir)
 
 
 def plot2dlatlon(atmos: xarray.Dataset, rodir: Path = None,
