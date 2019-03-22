@@ -19,7 +19,7 @@ A = cell2mat(textscan(fid, '%f %f %f %f %f %f %f %f %f %f %f %f', 1, ...
 
 A(2:4) = A(2:4) * 1e6;  % cm^-3 => m^-3
 A(5) = A(5) * 1000; % gram cm^-3 => kg m^-3
-A(8:end) = A(8:end) * 1e6; 
+A(8:end) = A(8:end) * 1e6;
 
 fclose(fid);
 

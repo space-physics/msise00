@@ -11,20 +11,19 @@ import shutil
 
 R = Path(__file__).parent
 
-OCTAVE = shutil.which('octave')
+OCTAVE = shutil.which('octave-cli')
 MATLAB = shutil.which('matlab')
 
 
 @pytest.mark.skipif(not MATLAB, reason="Matlab not available")
 def test_matlab_api():
-    subprocess.check_call([MATLAB, '-nojvm', '-r',
-                           'r=runtests(); exit(any([r.Failed]))'],
+    subprocess.check_call([MATLAB, '-batch', 'test_mod'],
                           cwd=R, timeout=60)
 
 
 @pytest.mark.skipif(not OCTAVE, reason='octave not found')
 def test_octave_api():
-    subprocess.check_call([OCTAVE, '-q', '--eval="exit(test_mod)"'],
+    subprocess.check_call([OCTAVE, 'test_mod.m'],
                           cwd=R, timeout=60)
 
 
