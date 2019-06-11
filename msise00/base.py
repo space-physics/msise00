@@ -12,18 +12,16 @@ import subprocess
 from typing import Union, List
 from pathlib import Path
 import io
-import os
+import shutil
 
 from .timeutils import todatetime
 from .build import build
 
 import geomagindices as gi
 
-R = Path(__file__).resolve().parents[1] / 'build'
-EXE = R / 'msise00_driver'
-if os.name == 'nt':
-    EXE = EXE.with_suffix('.exe')
-if not EXE.is_file():
+R = Path(__file__).resolve().parent
+EXE = shutil.which('msise00_driver', path=str(R))
+if not EXE:
     build()
 
 species = ['He', 'O', 'N2', 'O2', 'Ar', 'Total', 'H', 'N', 'AnomalousO']

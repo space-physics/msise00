@@ -162,9 +162,9 @@ C
       DATA MN2/4/,ZN2/72.5,55.,45.,32.5/
       DATA ZMIX/62.5/,ALAST/99999./,MSSL/-999/
       DATA SV/25*1./
-      
+
       call meters(.true.)
-      
+
       IF(ISW.NE.64999) CALL TSELEC(SV)
 C      Put identification data into common/datime/
       DO 1 I=1,3
@@ -1203,8 +1203,9 @@ C        UT,LONGITUDE MAGNETIC ACTIVITY
 C  PARMS NOT USED: 83, 90,100,140-150
    49 CONTINUE
       TINF=P(31)
-      DO 50 I = 1,NSW
-   50 TINF = TINF + ABS(SW(I))*T(I)
+      DO I = 1,NSW
+        TINF = TINF + ABS(SW(I))*T(I)
+      enddo
       GLOBE7 = TINF
       END FUNCTION GLOBE7
 C-----------------------------------------------------------------------
@@ -1329,8 +1330,9 @@ C        LONGITUDINAL
      $    )*SIN(DGTR*LONG))
    49 CONTINUE
       TT=0.
-      DO 50 I=1,14
-   50 TT=TT+ABS(SW(I))*T(I)
+      DO I=1,14
+        TT=TT+ABS(SW(I))*T(I)
+      enddo
       GLOB7S=TT
 
       END FUNCTION GLOB7S

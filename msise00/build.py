@@ -1,70 +1,28 @@
-"""
-A generic, clean way to build C/C++/Fortran code from setup.py or manually
-
-Michael Hirsch, Ph.D.
-https://www.scivision.dev
-"""
+import subprocess
 import shutil
 from pathlib import Path
-import subprocess
-import os
+from typing import List
 
-R = Path(__file__).resolve().parents[1]
-BINDIR = R / 'build'
-SRCDIR = R / 'src'
+R = Path(__file__).parent
+RS = R.parent / 'src'
+
+SOURCES = list(map(str, [RS/'nrlmsise00_sub.for', RS/'msise00_driver.f90']))
+EXE_OPT = ['-o', str(R/'msise00_driver')]
 
 
-def build():
+def build(sources: List[str] = SOURCES,
+          compiler: str = 'gfortran',
+          exe_opt: List[str] = EXE_OPT):
     """
-    attempts build with Meson or CMake
+    Attempt to compile code instead of using setup.py
     """
-    try:
-        meson_setup()
-    except (FileNotFoundError, RuntimeError):
-        cmake_setup()
+    if isinstance(sources, (str, Path)):
+        sources = [sources]
 
+    fc = shutil.which(compiler)
+    if not fc:
+        raise FileNotFoundError(fc)
 
-def cmake_setup():
-    """
-    attempt to build using CMake >= 3
-    """
-    cmake_exe = shutil.which('cmake')
-    if not cmake_exe:
-        raise FileNotFoundError('CMake not available')
+    sources = list(map(str, sources))
 
-    wopts = ['-G', 'MinGW Makefiles', '-DCMAKE_SH="CMAKE_SH-NOTFOUND'] if os.name == 'nt' else []
-
-    subprocess.check_call([cmake_exe] + wopts + [str(SRCDIR)],
-                          cwd=BINDIR)
-
-    ret = subprocess.run([cmake_exe, '--build', str(BINDIR)],
-                         stderr=subprocess.PIPE,
-                         universal_newlines=True)
-
-    result(ret)
-
-
-def meson_setup():
-    """
-    attempt to build with Meson + Ninja
-    """
-    meson_exe = shutil.which('meson')
-    ninja_exe = shutil.which('ninja')
-
-    if not meson_exe or not ninja_exe:
-        raise FileNotFoundError('Meson or Ninja not available')
-
-    if not (BINDIR / 'build.ninja').is_file():
-        subprocess.check_call([meson_exe, str(SRCDIR)], cwd=BINDIR)
-
-    ret = subprocess.run(ninja_exe, cwd=BINDIR, stderr=subprocess.PIPE,
-                         universal_newlines=True)
-
-    result(ret)
-
-
-def result(ret: subprocess.CompletedProcess):
-    if not ret.returncode:
-        print('\nBuild Complete!')
-    else:
-        raise RuntimeError(ret.stderr)
+    subprocess.check_call([str(fc)] + sources + EXE_OPT)

@@ -3,7 +3,7 @@ group: travis_latest
 dist: xenial
 
 git:
-  depth: 3
+  depth: 25
   quiet: true
 
 python:
@@ -18,15 +18,24 @@ addons:
 matrix:
   include:
   - os: linux
+    name: Integration install
+    python: 3.7
+    install:
+    - python setup.py install
+    - pip install $(basename $TRAVIS_REPO_SLUG)[tests,full]
+    script:
+    - cd $HOME
+    - python -m pytest $TRAVIS_BUILD_DIR/tests
+  - os: linux
+    name: PEP8 MyPy Coverage
     python: 3.7
     install: pip install -e .[tests,cov]
     script:
     - flake8
-    - mypy . --ignore-missing-imports
+    - mypy .
     after_success:
     - pytest --cov
     - coveralls
-    # travis osx image issue
 #  - os: osx
 #    language: minimal
 #    before_install: brew install gcc
