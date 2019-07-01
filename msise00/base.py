@@ -22,7 +22,9 @@ import geomagindices as gi
 R = Path(__file__).resolve().parent
 EXE = shutil.which('msise00_driver', path=str(R))
 if not EXE:
-    build()
+    EXE = build()
+if not EXE:
+    raise RuntimeError('could not compile or find msise00_driver')
 
 species = ['He', 'O', 'N2', 'O2', 'Ar', 'Total', 'H', 'N', 'AnomalousO']
 ttypes = ['Texo', 'Tn']
@@ -114,7 +116,7 @@ def rungtd1d(time: datetime,
     dens = np.empty((altkm.size, len(species)))
     temp = np.empty((altkm.size, len(ttypes)))
     for i, a in enumerate(altkm):
-        cmd = [str(EXE),
+        cmd = [EXE,
                iyd, str(time.hour), str(time.minute), str(time.second),
                str(glat), str(glon),
                str(f107a), str(f107), str(Ap), str(a)]

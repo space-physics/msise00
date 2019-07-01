@@ -7,7 +7,8 @@ R = Path(__file__).parent
 RS = R.parent / 'src'
 
 SOURCES = list(map(str, [RS/'nrlmsise00_sub.for', RS/'msise00_driver.f90']))
-EXE_OPT = ['-o', str(R/'msise00_driver')]
+EXE = R/'msise00_driver'
+EXE_OPT = ['-o', str(EXE)]
 
 
 def build(sources: List[str] = SOURCES,
@@ -26,3 +27,5 @@ def build(sources: List[str] = SOURCES,
     sources = list(map(str, sources))
 
     subprocess.check_call([str(fc)] + sources + EXE_OPT)
+
+    return shutil.which(EXE.name, path=str(R))

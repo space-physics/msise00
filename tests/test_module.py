@@ -45,19 +45,32 @@ def test_past():
     dims = list(atmos.dims)
     assert ['alt_km', 'lat', 'lon', 'time'] == dims
 
-    assert atmos['He'].item() == approx(4200180480000.0)
-    assert atmos['O'].item() == approx(9338048100000000.0)
-    assert atmos['N2'].item() == approx(3.23984781e+16)
-    assert atmos['O2'].item() == approx(2413811350000000.0)
-    assert atmos['Ar'].item() == approx(81071685200000.0)
-    assert atmos['Total'].item() == approx(1.88774951e-09)
-    assert atmos['N'].item() == approx(9310465690000.0)
-    assert atmos['AnomalousO'].item() == approx(5.3806201e-15)
+    try:  # daily resolution
+        assert atmos['He'].item() == approx(4365665440000.0)
+        assert atmos['O'].item() == approx(9612878760000000.0)
+        assert atmos['N2'].item() == approx(3.15052301e+16)
+        assert atmos['O2'].item() == approx(2312921490000000.0)
+        assert atmos['Ar'].item() == approx(71974164400000.0)
+        assert atmos['Total'].item() == approx(1.84757176e-09)
+        assert atmos['N'].item() == approx(9424203680000.0)
+        assert atmos['AnomalousO'].item() == approx(1.17317104e-14)
+
+        assert atmos['Tn'].item() == approx(682.538, abs=0.01)
+        assert atmos['Texo'].item() == approx(948.350, abs=0.01)
+    except AssertionError:  # monthly resolutio
+        assert atmos['He'].item() == approx(4200180480000.0)
+        assert atmos['O'].item() == approx(9338048100000000.0)
+        assert atmos['N2'].item() == approx(3.23984781e+16)
+        assert atmos['O2'].item() == approx(2413811350000000.0)
+        assert atmos['Ar'].item() == approx(81071685200000.0)
+        assert atmos['Total'].item() == approx(1.88774951e-09)
+        assert atmos['N'].item() == approx(9310465690000.0)
+        assert atmos['AnomalousO'].item() == approx(5.3806201e-15)
+
+        assert atmos['Tn'].item() == approx(699.021, abs=0.01)
+        assert atmos['Texo'].item() == approx(1000.513)
 
     assert atmos.species == ['He', 'O', 'N2', 'O2', 'Ar', 'Total', 'H', 'N', 'AnomalousO']
-
-    assert atmos['Tn'].item() == approx(699.021362)
-    assert atmos['Texo'].item() == approx(1000.51257)
 
 
 def test_forecast():

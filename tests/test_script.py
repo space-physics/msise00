@@ -17,7 +17,6 @@ R = Path(__file__).parent
 
 
 def test_one_alt_one_time(tmp_path):
-
     pytest.importorskip('netCDF4')
 
     fn = tmp_path / 'test.nc'
