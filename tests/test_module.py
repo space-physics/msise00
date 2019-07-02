@@ -68,7 +68,7 @@ def test_past():
         assert atmos['AnomalousO'].item() == approx(5.3806201e-15)
 
         assert atmos['Tn'].item() == approx(699.021, abs=0.01)
-        assert atmos['Texo'].item() == approx(1000.513)
+        assert atmos['Texo'].item() == approx(1000.513, abs=0.01)
 
     assert atmos.species == ['He', 'O', 'N2', 'O2', 'Ar', 'Total', 'H', 'N', 'AnomalousO']
 
