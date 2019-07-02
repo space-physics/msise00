@@ -1,7 +1,7 @@
 [![Zenodo DOI](https://zenodo.org/badge/32971905.svg)](https://zenodo.org/badge/latestdoi/32971905)
 
 [![Build Status](https://travis-ci.com/space-physics/msise00.svg?branch=master)](https://travis-ci.com/space-physics/msise00)
-[![Coverage](https://coveralls.io/repos/scivision/msise00/badge.svg?branch=master&service=github)](https://coveralls.io/github/scivision/msise00?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/space-physics/msise00/badge.svg?branch=master)](https://coveralls.io/github/space-physics/msise00?branch=master)
 [![Build status](https://ci.appveyor.com/api/projects/status/oje6aax4lx4tcryt?svg=true)](https://ci.appveyor.com/project/scivision/msise00)
 [![Python versions (PyPI)](https://img.shields.io/pypi/pyversions/msise00.svg)](https://pypi.python.org/pypi/msise00)
 [![PyPi Download stats](http://pepy.tech/badge/msise00)](http://pepy.tech/project/msise00)
