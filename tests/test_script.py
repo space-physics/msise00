@@ -20,7 +20,9 @@ def test_one_alt_one_time(tmp_path):
     pytest.importorskip('netCDF4')
 
     fn = tmp_path / 'test.nc'
-    subprocess.check_call(['MSISE00', '-q', '-w', str(fn), '-a', '200', '-t', '2017-03-01T12'])
+    cmd = ['MSISE00', '-q', '-w', str(fn), '-a', '200', '-t', '2017-03-01T12']
+    print(' '.join(cmd))
+    subprocess.check_call(cmd)
 
     dat = xarray.open_dataset(fn)
     ref = xarray.open_dataset(R/'ref3.nc')
