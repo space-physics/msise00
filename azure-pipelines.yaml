@@ -16,6 +16,28 @@ jobs:
   - script: pytest -r a -v
     displayName: 'PyTest'
 
+- job: UbuntuIntegrationInstall
+  pool:
+    vmImage: ubuntu-latest
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.6'
+      addToPath: true
+  - script: |
+      sudo apt install -yq --no-install-recommends gfortran
+      python setup.py install
+      pip install msise00[tests]
+    displayName: 'Install Prereqs'
+  - script: |
+      cd $HOME
+      python -m pytest $(Build.SourcesDirectory)/tests -r a -v
+    displayName: 'Build Python'
+  - script: pytest -r a -v
+    displayName: 'PyTest'
+
+
 - job: MacOS
   pool:
     vmImage: macOS-10.14
