@@ -16,7 +16,7 @@ ccmd = ['cmake ', wopts, ' -S ', srcdir, ' -B ', builddir];
 
 runcmd(ccmd)
 
-runcmd(['cmake --build ',builddir])
+runcmd(['cmake --build ',builddir, '--parallel'])
 
 disp('Build complete!')
 end

@@ -10,7 +10,6 @@ runcmd('meson --version')
 fprintf('Ninja: ')
 runcmd('ninja --version')
 
-
 if ~exist([builddir,filesep,'build.ninja'], 'file')
   runcmd(['meson setup ',builddir,' ',srcdir])
 end
