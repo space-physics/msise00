@@ -10,14 +10,31 @@ import pytest
 import shutil
 
 R = Path(__file__).parent
+Rcode = R.parent / 'matlab'
 
 OCTAVE = shutil.which('octave-cli')
 MATLAB = shutil.which('matlab')
 
 
+@pytest.mark.skipif(not OCTAVE, reason="GNU Octave not available")
+@pytest.mark.parametrize('build_sys', ['cmake', 'meson'])
+def test_octave_build(build_sys, tmp_path):
+    subprocess.check_call([OCTAVE, '--eval',
+                           f"build('{build_sys}', '{R.parent}', '{tmp_path}')"],
+                          cwd=Rcode, timeout=120)
+
+
+@pytest.mark.skipif(not MATLAB, reason="Matlab not available")
+@pytest.mark.parametrize('build_sys', ['cmake', 'meson'])
+def test_matlab_build(build_sys, tmp_path):
+    subprocess.check_call([MATLAB, '-batch',
+                           f"build('{build_sys}', '{R.parent}', '{tmp_path}')"],
+                          cwd=Rcode, timeout=120)
+
+
 @pytest.mark.skipif(not MATLAB, reason="Matlab not available")
 def test_matlab_api():
-    subprocess.check_call([MATLAB, '-batch', 'test_mod'],
+    subprocess.check_call([MATLAB, '-batch', 'runtests'],
                           cwd=R, timeout=60)
 
 
@@ -28,4 +45,4 @@ def test_octave_api():
 
 
 if __name__ == '__main__':
-    pytest.main(['-xrsv', __file__])
+    pytest.main(['-r', 'a', '-v', '-s', __file__])

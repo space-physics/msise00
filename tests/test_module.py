@@ -15,18 +15,28 @@ def test_ccmc():
     glat = 60.
     glon = -70.
     altkm = 400.
-    f107a = 163.6666
-    f107 = 146.7
-    Ap = 7
+    indices = {'f107s': 163.6666,
+               'f107': 146.7,
+               'Ap': 7}
 
     A = np.loadtxt(reffn, skiprows=25)
 
-    atmos = msise00.run(t, altkm, glat, glon, f107a=f107a, f107=f107, Ap=Ap)
-
+    atmos = msise00.run(t, altkm, glat, glon, indices)
+    assert atmos.f107s == approx(163.6666)
+    assert atmos.f107 == approx(146.7)
+    assert atmos.Ap == approx(7)
     assert A[0] == approx(altkm)
     assert A[1] == approx(atmos['O'].item()/1e6, rel=0.05)
     assert A[2] == approx(atmos['N2'].item()/1e6, rel=0.3)
     assert A[3] == approx(atmos['O2'].item()/1e6, rel=0.35)
+    assert A[7] == approx(atmos['He'].item()/1e6, rel=0.2)
+    assert A[8] == approx(atmos['Ar'].item()/1e6, rel=0.6)
+    assert A[9] == approx(atmos['H'].item()/1e6, rel=0.1)
+    assert A[10] == approx(atmos['N'].item()/1e6, rel=0.3)
+    assert A[11] == approx(atmos['AnomalousO'].item()/1e6, rel=0.3)
+
+    assert A[5] == approx(atmos['Tn'].item(), rel=0.1)
+    assert A[6] == approx(atmos['Texo'].item(), rel=0.1)
 
 
 def test_past():
@@ -57,7 +67,7 @@ def test_past():
 
         assert atmos['Tn'].item() == approx(682.538, abs=0.01)
         assert atmos['Texo'].item() == approx(948.350, abs=0.01)
-    except AssertionError:  # monthly resolutio
+    except AssertionError:  # monthly resolution
         assert atmos['He'].item() == approx(4200180480000.0)
         assert atmos['O'].item() == approx(9338048100000000.0)
         assert atmos['N2'].item() == approx(3.23984781e+16)

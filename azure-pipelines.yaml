@@ -1,0 +1,49 @@
+jobs:
+
+- job: Ubuntu
+  pool:
+    vmImage: ubuntu-latest
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.6'
+      addToPath: true
+  - script: sudo apt install -yq --no-install-recommends gfortran
+    displayName: 'Install Prereqs'
+  - script: pip install -e .[tests]
+    displayName: 'Build Python'
+  - script: pytest -r a -v
+    displayName: 'PyTest'
+
+- job: MacOS
+  pool:
+    vmImage: macOS-10.14
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.6'
+      addToPath: true
+  - script: brew install gcc octave
+    displayName: 'Install Prereqs'
+  - script: pip install -e .[tests]
+    displayName: 'Build Python'
+  - script: pytest -r a -v
+    displayName: 'PyTest'
+
+- job: WindowsMinGW
+  pool:
+    vmImage: windows-2019
+
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.6'
+      addToPath: true
+  - script: cinst -y mingw
+    displayName: 'Install Prereqs'
+  - script: pip install -e .[tests]
+    displayName: 'Build Python'
+  - script: pytest -r a -v
+    displayName: 'PyTest'

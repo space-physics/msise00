@@ -16,18 +16,19 @@ from msise00.worldgrid import latlonworldgrid
 try:
     from matplotlib.pyplot import show
     import msise00.plots as msplots
-    import seaborn as sns
-    sns.set_style('ticks')
 except ImportError as e:
     print(e)
     msplots = None  # type: ignore
+try:
+    import seaborn as sns
+    sns.set_style('ticks')
+except ImportError:
+    pass
 
 
 def main():
     p = ArgumentParser(description='calls MSISE-00 from Python, save to NetCDF4 and/or plot')
-    p.add_argument('-t', '--time',
-                   help='time: (single time or START STOP (1 hour time step) or list of times)',
-                   nargs='+', required=True)
+    p.add_argument('-t', '--time', help='time or times', nargs='+', required=True)
     p.add_argument('-a', '--altkm', help='altitude (km). scalar, or (start,stop,step) or list of alts.',
                    type=float, nargs='+', required=True)
     p.add_argument('-c', '--latlon', help='geodetic latitude/longitude (deg)',

@@ -1,10 +1,12 @@
 from dateutil.parser import parse
 import numpy as np
 from datetime import datetime, date
-from typing import Union
+import typing
+
+TIME_FMTS = typing.Union[str, datetime, np.datetime64]
 
 
-def todt64(time: Union[str, datetime, np.datetime64, list, np.ndarray]) -> np.ndarray:
+def todt64(time: TIME_FMTS) -> np.ndarray:
     time = np.atleast_1d(time)
 
     if time.size == 1:
@@ -17,7 +19,7 @@ def todt64(time: Union[str, datetime, np.datetime64, list, np.ndarray]) -> np.nd
     return time
 
 
-def todatetime(time) -> datetime:
+def todatetime(time: TIME_FMTS) -> datetime:
 
     if isinstance(time, str):
         dtime = parse(time)
@@ -25,11 +27,6 @@ def todatetime(time) -> datetime:
         dtime = time
     elif isinstance(time, np.datetime64):
         dtime = time.astype(datetime)
-    elif isinstance(time, (tuple, list, np.ndarray)):
-        if len(time) == 1:
-            dtime = todatetime(time[0])
-        else:
-            dtime = [todatetime(t) for t in time]
     else:
         raise TypeError(f'{type(time)} not allowed')
 

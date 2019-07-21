@@ -9,7 +9,7 @@ from datetime import datetime, date
 import xarray
 import numpy as np
 import subprocess
-from typing import Union, List
+import typing
 from pathlib import Path
 import io
 import shutil
@@ -31,9 +31,11 @@ ttypes = ['Texo', 'Tn']
 first = True
 
 
-def run(time: datetime, altkm: float,
-        glat: Union[float, np.ndarray], glon: Union[float, np.ndarray], *,
-        f107a: float = None, f107: float = None, Ap: int = None) -> xarray.Dataset:
+def run(time: datetime,
+        altkm: float,
+        glat: typing.Union[float, np.ndarray],
+        glon: typing.Union[float, np.ndarray],
+        indices: typing.Dict[str, typing.Any] = {}) -> xarray.Dataset:
     """
     loops the rungtd1d function below. Figure it's easier to troubleshoot in Python than Fortran.
     """
@@ -41,20 +43,19 @@ def run(time: datetime, altkm: float,
     glon = np.atleast_2d(glon)  # has to be here
 # %% altitude 1-D
     if glat.size == 1 and glon.size == 1 and isinstance(time, (str, date, datetime, np.datetime64)):
-        atmos = rungtd1d(time, altkm, glat.squeeze()[()], glon.squeeze()[()],
-                         f107a=f107a, f107=f107, Ap=Ap)
+        atmos = rungtd1d(time, altkm, glat.squeeze()[()], glon.squeeze()[()], indices)
 # %% lat/lon grid at 1 altitude
     else:
-        atmos = loopalt_gtd(time, glat, glon, altkm,
-                            f107a=f107a, f107=f107, Ap=Ap)
+        atmos = loopalt_gtd(time, glat, glon, altkm, indices)
 
     return atmos
 
 
 def loopalt_gtd(time: datetime,
-                glat: Union[float, np.ndarray], glon: Union[float, np.ndarray],
-                altkm: Union[float, List[float], np.ndarray], *,
-                f107a: float = None, f107: float = None, Ap: int = None) -> xarray.Dataset:
+                glat: typing.Union[float, np.ndarray],
+                glon: typing.Union[float, np.ndarray],
+                altkm: typing.Union[float, typing.Sequence[float], np.ndarray],
+                indices: typing.Dict[str, typing.Any] = {}) -> xarray.Dataset:
     """
     loop over location and time
 
@@ -78,8 +79,7 @@ def loopalt_gtd(time: datetime,
             for j in range(glat.shape[1]):
                 # atmos = xarray.concat((atmos, rungtd1d(t, altkm, glat[i,j], glon[i,j])),
                 #                      data_vars='minimal',coords='minimal',dim='lon')
-                atm = rungtd1d(t, altkm, glat[i, j], glon[i, j],
-                               f107a=f107a, f107=f107, Ap=Ap)
+                atm = rungtd1d(t, altkm, glat[i, j], glon[i, j], indices)
                 atmos = xarray.merge((atmos, atm))
 
     atmos.attrs = atm.attrs
@@ -89,25 +89,24 @@ def loopalt_gtd(time: datetime,
 
 def rungtd1d(time: datetime,
              altkm: np.ndarray,
-             glat: float, glon: float, *,
-             f107a: float = None, f107: float = None, Ap: int = None) -> xarray.Dataset:
+             glat: float,
+             glon: float,
+             indices: typing.Dict[str, typing.Any] = {}) -> xarray.Dataset:
     """
     This is the "atomic" function looped by other functions
     """
     time = todatetime(time)
     # %% get solar parameters for date
-    if f107a and f107a and Ap:
-        pass
-    else:
-        f107Ap = gi.getApF107(time, smoothdays=81)
-        f107a = f107Ap['f107s'].item()
-        f107 = f107Ap['f107'].item()
-        Ap = f107Ap['Ap'].item()
+    if not indices:
+        indices = gi.getApF107(time, smoothdays=81).squeeze()
 # %% dimensions
     altkm = np.atleast_1d(altkm)
-    assert altkm.ndim == 1
-    assert isinstance(glon, (int, float))
-    assert isinstance(glat, (int, float))
+    if altkm.ndim != 1:
+        raise ValueError('altitude read incorrectly')
+    if not isinstance(glon, (int, float, np.int32, np.int64)):
+        raise TypeError('single longitude only')
+    if not isinstance(glat, (int, float, np.int32, np.int64)):
+        raise TypeError('single latitude only')
 
 # %%
     iyd = time.strftime('%y%j')
@@ -119,7 +118,10 @@ def rungtd1d(time: datetime,
         cmd = [EXE,
                iyd, str(time.hour), str(time.minute), str(time.second),
                str(glat), str(glon),
-               str(f107a), str(f107), str(Ap), str(a)]
+               str(indices['f107s']),
+               str(indices['f107']),
+               str(indices['Ap']),
+               str(a)]
 
         ret = subprocess.check_output(cmd,
                                       universal_newlines=True,
@@ -134,7 +136,9 @@ def rungtd1d(time: datetime,
 
     atmos = xarray.Dataset(dsf,
                            coords={'time': [time], 'alt_km': altkm, 'lat': [glat], 'lon': [glon], },
-                           attrs={'Ap': Ap, 'f107': f107, 'f107a': f107a,
-                                  'species': species})
+                           attrs={'species': species,
+                                  'f107s': indices['f107s'],
+                                  'f107': indices['f107'],
+                                  'Ap': indices['Ap']})
 
     return atmos
