@@ -106,7 +106,8 @@ Matlab and GNU Octave users use of MSISE00 is demonstrated in
 [AltitudeProfile.m](./matlab/AlitudeProfile.m) and
 [msise00.m](./matlab/msise00.m).
 
-Install MSISe00 by running [build.m](./matlab/build.m) from within Matlab or Octave:
+MSISE00 should **automatically compile** on first run from Matlab or Octave.
+If you desire, manually compile MSISe00 by running [build.m](./matlab/build.m) from within Matlab or Octave:
 
 ```matlab
 cd matlab

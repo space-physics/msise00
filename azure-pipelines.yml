@@ -21,10 +21,10 @@ stages:
     - script: mypy .
       displayName: Type Check
 
-- stage: PackageInstall
+- stage: PackageTests
   jobs:
 
-  - job: UbuntuIntegrationInstall
+  - job: UbuntuInstall
     pool:
       vmImage: ubuntu-latest
 
@@ -73,7 +73,7 @@ stages:
       inputs:
         versionSpec: '3.6'
         addToPath: true
-    - script: brew install gcc octave
+    - script: brew install gcc
       displayName: 'Install Prereqs'
     - script: pip install -e .[tests]
       displayName: 'Build Python'
@@ -100,7 +100,7 @@ stages:
 - stage: CoverageTests
 
   jobs:
-  - job: Coverage
+  - job: CoverageOctave
     pool:
       vmImage: ubuntu-latest
     steps:
@@ -108,7 +108,7 @@ stages:
       inputs:
         versionSpec: '3.7'
         addToPath: true
-    - script: sudo apt install -yq --no-install-recommends gfortran
+    - script: sudo apt install -yq --no-install-recommends gfortran octave
       displayName: 'Install Prereqs'
     - script: pip install -e .[tests]
       displayName: 'Dev install'

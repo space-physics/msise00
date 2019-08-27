@@ -16,18 +16,6 @@ OCTAVE = shutil.which("octave-cli")
 MATLAB = shutil.which("matlab")
 
 
-@pytest.mark.skipif(not OCTAVE, reason="GNU Octave not available")
-@pytest.mark.parametrize("build_sys", ["cmake", "meson"])
-def test_octave_build(build_sys, tmp_path):
-    subprocess.check_call([OCTAVE, "--eval", "build()"], cwd=Rcode, timeout=60)
-
-
-@pytest.mark.skipif(not MATLAB, reason="Matlab not available")
-@pytest.mark.parametrize("build_sys", ["cmake", "meson"])
-def test_matlab_build(build_sys, tmp_path):
-    subprocess.check_call([MATLAB, "-batch", "build()"], cwd=Rcode, timeout=120)
-
-
 @pytest.mark.skipif(not MATLAB, reason="Matlab not available")
 def test_matlab_api():
     subprocess.check_call([MATLAB, "-batch", "runtests"], cwd=R, timeout=60)
