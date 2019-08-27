@@ -1,3 +1,4 @@
+# wait with Octave till Github Action migrations which has Ubuntu 18.04
 variables:
   CI: true
 
@@ -108,7 +109,7 @@ stages:
       inputs:
         versionSpec: '3.7'
         addToPath: true
-    - script: sudo apt install -yq --no-install-recommends gfortran octave
+    - script: sudo apt install -yq --no-install-recommends gfortran
       displayName: 'Install Prereqs'
     - script: pip install -e .[tests]
       displayName: 'Dev install'
