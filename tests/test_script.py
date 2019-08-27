@@ -19,23 +19,22 @@ R = Path(__file__).parent
 
 
 def test_one_alt_one_time(tmp_path):
-    pytest.importorskip('netCDF4')
-    ref = xarray.open_dataset(R/'ref3.nc')
+    pytest.importorskip("netCDF4")
+    ref = xarray.open_dataset(R / "ref3.nc")
 
     lat, lon = msise00.worldgrid.latlonworldgrid(30, 60)
-    time = '2017-03-01T12'
-    altkm = 200.
-    indices = {'f107': 79.3, 'f107s': 76.6802469, 'Ap': 39}
+    time = "2017-03-01T12"
+    altkm = 200.0
+    indices = {"f107": 79.3, "f107s": 76.6802469, "Ap": 39}
     try:
         dat_mod = msise00.run(time, altkm, lat, lon, indices).squeeze()
     except ConnectionError:
-        pytest.xfail('unable to download RecentIndices.txt')
+        pytest.xfail("unable to download RecentIndices.txt")
     xarray.tests.assert_allclose(ref, dat_mod)
 
-    fn = tmp_path / 'test.nc'
-    cmd = ['MSISE00', '-q', '-w', str(fn), '-a', str(altkm), '-t', time,
-           '-gs', '30', '60']
-    print(' '.join(cmd))
+    fn = tmp_path / "test.nc"
+    cmd = ["MSISE00", "-q", "-w", str(fn), "-a", str(altkm), "-t", time, "-gs", "30", "60"]
+    print(" ".join(cmd))
     subprocess.check_call(cmd)
 
     dat = xarray.open_dataset(fn)
@@ -43,53 +42,64 @@ def test_one_alt_one_time(tmp_path):
 
 
 def test_multiple_time(tmp_path):
-    pytest.importorskip('netCDF4')
-    ref = xarray.open_dataset(R/'ref4.nc')
+    pytest.importorskip("netCDF4")
+    ref = xarray.open_dataset(R / "ref4.nc")
 
     lat, lon = msise00.worldgrid.latlonworldgrid(90, 90)
-    time = ['2017-03-01T12', '2017-03-01T13']
-    altkm = 200.
+    time = ["2017-03-01T12", "2017-03-01T13"]
+    altkm = 200.0
 
     try:
         dat_mod = msise00.run(time, altkm, lat, lon).squeeze()
     except ConnectionError:
-        pytest.xfail('unable to download RecentIndices.txt')
+        pytest.xfail("unable to download RecentIndices.txt")
     xarray.tests.assert_allclose(ref, dat_mod)
 
-    fn = tmp_path / 'test.nc'
-    cmd = ['MSISE00', '-q', '-w', str(fn), '-gs', '90', '90', '-a', str(altkm),
-           '-t', '2017-03-01T12', '2017-03-01T13']
-    print(' '.join(cmd))
+    fn = tmp_path / "test.nc"
+    cmd = [
+        "MSISE00",
+        "-q",
+        "-w",
+        str(fn),
+        "-gs",
+        "90",
+        "90",
+        "-a",
+        str(altkm),
+        "-t",
+        "2017-03-01T12",
+        "2017-03-01T13",
+    ]
+    print(" ".join(cmd))
     subprocess.check_call(cmd)
 
     dat = xarray.open_dataset(fn)
     xarray.tests.assert_allclose(ref, dat)
 
 
-@pytest.mark.parametrize('altkm,reffn', [(100., 'ref5.nc'), (200., 'ref6.nc')])
+@pytest.mark.parametrize("altkm,reffn", [(100.0, "ref5.nc"), (200.0, "ref6.nc")])
 def test_one_loc_one_time(altkm, reffn, tmp_path):
-    pytest.importorskip('netCDF4')
-    ref = xarray.open_dataset(R/reffn)
+    pytest.importorskip("netCDF4")
+    ref = xarray.open_dataset(R / reffn)
 
     lat = 65
     lon = -148
-    time = '2017-03-01T12'
+    time = "2017-03-01T12"
 
     try:
         dat_mod = msise00.run(time, altkm, lat, lon).squeeze()
     except ConnectionError:
-        pytest.xfail('unable to download RecentIndices.txt')
+        pytest.xfail("unable to download RecentIndices.txt")
     xarray.tests.assert_allclose(ref, dat_mod)
 
-    fn = tmp_path / 'test.nc'
-    cmd = ['MSISE00', '-q', '-w', str(fn), '-a', str(altkm),
-           '-t', time, '-c', str(lat), str(lon)]
-    print(' '.join(cmd))
+    fn = tmp_path / "test.nc"
+    cmd = ["MSISE00", "-q", "-w", str(fn), "-a", str(altkm), "-t", time, "-c", str(lat), str(lon)]
+    print(" ".join(cmd))
     subprocess.check_call(cmd)
 
     dat = xarray.open_dataset(fn)
     xarray.tests.assert_allclose(ref, dat)
 
 
-if __name__ == '__main__':
-    pytest.main(['-xv', __file__])
+if __name__ == "__main__":
+    pytest.main(["-xv", __file__])

@@ -10,7 +10,7 @@ validateattributes(altkm, {'numeric'}, {'positive', 'scalar'},mfilename, 'altitu
 cwd = fileparts(mfilename('fullpath'));
 exe = [cwd,filesep,'..', filesep, 'msise00', filesep, 'msise00_driver'];
 if ispc, exe = [exe, '.exe']; end
-if ~exist(exe,'file'), error('compile MSISE00 via setup.m'), end
+if ~exist(exe,'file'), error('compile MSISE00 via msise00/matlab/build.m'), end
 
 doy = date2doy(time);
 v = datevec(time);

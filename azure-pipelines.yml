@@ -1,6 +1,54 @@
-jobs:
+variables:
+  CI: true
 
-- job: Ubuntu
+stages:
+
+- stage: SyntaxChecks
+  jobs:
+
+  - job: PEP8_MyPy_Python37
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.7'
+        addToPath: true
+    - script: pip install -e .[tests,lint]
+      displayName: 'Dev install'
+    - script: flake8
+      displayName: PEP8
+    - script: mypy .
+      displayName: Type Check
+
+- stage: PackageInstall
+  jobs:
+
+  - job: UbuntuIntegrationInstall
+    pool:
+      vmImage: ubuntu-latest
+
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.6'
+        addToPath: true
+    - script: |
+        sudo apt install -yq --no-install-recommends gfortran
+        python setup.py install
+        pip install msise00[tests]
+      displayName: 'Install Prereqs'
+    - script: |
+        cd $HOME
+        python -m pytest $(Build.SourcesDirectory)/tests -r a -v
+      displayName: 'Build Python'
+    - script: pytest -r a -v
+      displayName: 'PyTest'
+
+- stage: IntegrationTests
+  jobs:
+
+  - job: Ubuntu
   pool:
     vmImage: ubuntu-latest
 
@@ -16,56 +64,66 @@ jobs:
   - script: pytest -r a -v
     displayName: 'PyTest'
 
-- job: UbuntuIntegrationInstall
-  pool:
-    vmImage: ubuntu-latest
+  - job: MacOS
+    pool:
+      vmImage: macOS-latest
 
-  steps:
-  - task: UsePythonVersion@0
-    inputs:
-      versionSpec: '3.6'
-      addToPath: true
-  - script: |
-      sudo apt install -yq --no-install-recommends gfortran
-      python setup.py install
-      pip install msise00[tests]
-    displayName: 'Install Prereqs'
-  - script: |
-      cd $HOME
-      python -m pytest $(Build.SourcesDirectory)/tests -r a -v
-    displayName: 'Build Python'
-  - script: pytest -r a -v
-    displayName: 'PyTest'
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.6'
+        addToPath: true
+    - script: brew install gcc octave
+      displayName: 'Install Prereqs'
+    - script: pip install -e .[tests]
+      displayName: 'Build Python'
+    - script: pytest -r a -v
+      displayName: 'PyTest'
+
+  - job: WindowsMinGW
+    pool:
+      vmImage: windows-latest
+
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.6'
+        addToPath: true
+    - script: cinst -y mingw
+      displayName: 'Install Prereqs'
+    - script: pip install -e .[tests]
+      displayName: 'Build Python'
+    - script: pytest -r a -v
+      displayName: 'PyTest'
 
 
-- job: MacOS
-  pool:
-    vmImage: macOS-latest
+- stage: CoverageTests
 
-  steps:
-  - task: UsePythonVersion@0
-    inputs:
-      versionSpec: '3.6'
-      addToPath: true
-  - script: brew install gcc octave
-    displayName: 'Install Prereqs'
-  - script: pip install -e .[tests]
-    displayName: 'Build Python'
-  - script: pytest -r a -v
-    displayName: 'PyTest'
+  jobs:
+  - job: Coverage
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.7'
+        addToPath: true
+    - script: sudo apt install -yq --no-install-recommends gfortran
+      displayName: 'Install Prereqs'
+    - script: pip install -e .[tests]
+      displayName: 'Dev install'
+    - script: pytest --junitxml=junit/test-results.xml --cov --cov-report=xml --cov-report=html
+      displayName: Coverage
 
-- job: WindowsMinGW
-  pool:
-    vmImage: windows-latest
-
-  steps:
-  - task: UsePythonVersion@0
-    inputs:
-      versionSpec: '3.6'
-      addToPath: true
-  - script: cinst -y mingw
-    displayName: 'Install Prereqs'
-  - script: pip install -e .[tests]
-    displayName: 'Build Python'
-  - script: pytest -r a -v
-    displayName: 'PyTest'
+    - task: PublishTestResults@2
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFiles: '**/test-*.xml'
+        testRunTitle: 'Publish test results for Python $(python.version)'
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/languages/python?view=azure-devops#publish-code-coverage-results
+    - task: PublishCodeCoverageResults@1
+      condition: succeeded()
+      inputs:
+        codeCoverageTool: Cobertura
+        summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
+        reportDirectory: '$(System.DefaultWorkingDirectory)/**/htmlcov'

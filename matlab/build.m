@@ -1,22 +1,21 @@
-function build(build_sys, srcdir, builddir)
-% build with 'meson' or 'cmake'
+function build(fc)
 
-validateattributes(build_sys, {'char'}, {'vector'})
+if nargin < 1
+  fc = 'gfortran';
+end
+validateattributes(fc, {'char'}, {'vector'})
 
-if nargin < 3
 cwd = fileparts(mfilename('fullpath'));
-srcdir =   [cwd, filesep,'..', filesep, 'src'];
-builddir = [cwd, filesep,'..',filesep,'build'];
-end
+srcdir = [cwd, filesep,'..',filesep,'src'];
+builddir = [cwd,filesep,'..', filesep, 'msise00'];
 
-assert(exist(srcdir,'dir')==7, ['source directory ',srcdir,' does not exist'])
-assert(exist(builddir,'dir')==7, ['build directory ',builddir,' does not exist'])
+cmd = [fc,' ',...
+       srcdir,filesep,'nrlmsise00_sub.for', ' ', ...
+       srcdir,filesep,'msise00_driver.f90', ' ',...
+       '-o ',builddir,filesep,'msise00_driver'];
 
-switch build_sys
-  case 'meson', build_meson(srcdir, builddir)
-  case 'cmake', build_cmake(srcdir, builddir)
-  otherwise error('Specifiy "meson" or "cmake" to build this project.')
-end
+disp(cmd)
+runcmd(cmd)
 
 end
 
