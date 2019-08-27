@@ -1,13 +1,12 @@
 [![Zenodo DOI](https://zenodo.org/badge/32971905.svg)](https://zenodo.org/badge/latestdoi/32971905)
 
 [![Build Status](https://dev.azure.com/mhirsch0512/MSISE00/_apis/build/status/space-physics.msise00?branchName=master)](https://dev.azure.com/mhirsch0512/MSISE00/_build/latest?definitionId=5&branchName=master)
-[![Build status](https://ci.appveyor.com/api/projects/status/oje6aax4lx4tcryt?svg=true)](https://ci.appveyor.com/project/scivision/msise00)
 [![Python versions (PyPI)](https://img.shields.io/pypi/pyversions/msise00.svg)](https://pypi.python.org/pypi/msise00)
 [![PyPi Download stats](http://pepy.tech/badge/msise00)](http://pepy.tech/project/msise00)
 
 # MSISE-00 in Python and Matlab
 
-NRL MSISE-00 atmospheric model for Python &ge; 3.6, also accessible via Matlab.
+NRL MSISE-00 atmospheric model for Python &ge; 3.6, also accessible via Matlab or GNU Octave.
 Valid from altitude z = 0..1000 km.
 
 The plot immediately below shows a slice at 200km on a world-wide grid.
@@ -103,7 +102,7 @@ Simple examples include:
 
 ### Matlab
 
-Matlab and GNU Octave users can seamlessly access Python modules, as demonstrated in
+Matlab and GNU Octave users use of MSISE00 is demonstrated in
 [AltitudeProfile.m](./matlab/AlitudeProfile.m) and
 [msise00.m](./matlab/msise00.m).
 
