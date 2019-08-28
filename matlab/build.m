@@ -6,8 +6,8 @@ end
 validateattributes(fc, {'char'}, {'vector'})
 
 cwd = fileparts(mfilename('fullpath'));
-srcdir = [cwd, filesep,'..',filesep,'src'];
-builddir = [cwd,filesep,'..', filesep, 'msise00'];
+builddir = [cwd, filesep, '..', filesep, 'msise00'];
+srcdir = [builddir, filesep, 'fortran'];
 
 cmd = [fc,' ',...
        srcdir,filesep,'nrlmsise00_sub.for', ' ', ...

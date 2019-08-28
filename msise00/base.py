@@ -44,11 +44,7 @@ def run(
     glat = np.atleast_2d(glat)
     glon = np.atleast_2d(glon)  # has to be here
     # %% altitude 1-D
-    if (
-        glat.size == 1
-        and glon.size == 1
-        and isinstance(time, (str, date, datetime, np.datetime64))
-    ):
+    if glat.size == 1 and glon.size == 1 and isinstance(time, (str, date, datetime, np.datetime64)):
         atmos = rungtd1d(time, altkm, glat.squeeze()[()], glon.squeeze()[()], indices)
     # %% lat/lon grid at 1 altitude
     else:
@@ -96,11 +92,7 @@ def loopalt_gtd(
 
 
 def rungtd1d(
-    time: datetime,
-    altkm: np.ndarray,
-    glat: float,
-    glon: float,
-    indices: typing.Dict[str, typing.Any] = None,
+    time: datetime, altkm: np.ndarray, glat: float, glon: float, indices: typing.Dict[str, typing.Any] = None
 ) -> xarray.Dataset:
     """
     This is the "atomic" function looped by other functions
@@ -144,10 +136,7 @@ def rungtd1d(
         dens[i, :] = np.genfromtxt(f, max_rows=1)
         temp[i, :] = np.genfromtxt(f, max_rows=1)
 
-    dsf = {
-        k: (("time", "alt_km", "lat", "lon"), v[None, :, None, None])
-        for (k, v) in zip(species, dens.T)
-    }
+    dsf = {k: (("time", "alt_km", "lat", "lon"), v[None, :, None, None]) for (k, v) in zip(species, dens.T)}
     dsf.update(
         {
             "Tn": (("time", "alt_km", "lat", "lon"), temp[:, 1][None, :, None, None]),
@@ -158,12 +147,7 @@ def rungtd1d(
     atmos = xarray.Dataset(
         dsf,
         coords={"time": [time], "alt_km": altkm, "lat": [glat], "lon": [glon]},
-        attrs={
-            "species": species,
-            "f107s": indices["f107s"],
-            "f107": indices["f107"],
-            "Ap": indices["Ap"],
-        },
+        attrs={"species": species, "f107s": indices["f107s"], "f107": indices["f107"], "Ap": indices["Ap"]},
     )
 
     return atmos

@@ -1,6 +1,1 @@
-include LICENSE .coveragerc pytest.ini
-include tests/msise00_demo.gif tests/msis_matlab.png
-recursive-include tests *.py *.nc *.m
-include AltitudeProfile.py TimeProfile.py Worldgrid.py msise00.py
-recursive-include matlab *.m
-include src/CMakeLists.txt  src/meson.build  src/msise00_driver.f90  src/nrlmsise00_sub.for
+include msise00/fortran/msise00_driver.f90 msise00/fortran/nrlmsise00_sub.for

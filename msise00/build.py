@@ -1,17 +1,18 @@
+#!/usr/bin/env python3
 import subprocess
 import shutil
 from pathlib import Path
 from typing import List
 
 R = Path(__file__).parent
-RS = R.parent / "src"
+RS = R / "fortran"
 
 SOURCES = list(map(str, [RS / "nrlmsise00_sub.for", RS / "msise00_driver.f90"]))
 EXE = R / "msise00_driver"
 EXE_OPT = ["-o", str(EXE)]
 
 
-def build(sources: List[str] = SOURCES, compiler: str = "gfortran", exe_opt: List[str] = EXE_OPT):
+def build(sources: List[str] = SOURCES, compiler: str = "gfortran", exe_opt: List[str] = EXE_OPT) -> str:
     """
     Attempt to compile code instead of using setup.py
     """
@@ -22,6 +23,10 @@ def build(sources: List[str] = SOURCES, compiler: str = "gfortran", exe_opt: Lis
     if not fc:
         raise FileNotFoundError(fc)
 
+    for s in SOURCES:
+        if not Path(s).is_file():
+            raise FileNotFoundError(s)
+
     sources = list(map(str, sources))
 
     subprocess.check_call([str(fc)] + sources + EXE_OPT)
@@ -30,4 +35,5 @@ def build(sources: List[str] = SOURCES, compiler: str = "gfortran", exe_opt: Lis
 
 
 if __name__ == "__main__":
-    build()
+    exe = build()
+    print("compiled", exe)
