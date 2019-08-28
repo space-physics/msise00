@@ -41,5 +41,21 @@ def test_ccmc():
     assert A[6] == approx(atmos["Texo"].item(), rel=0.1)
 
 
+def test_ccmc2():
+    t = datetime(2018, 5, 17, 21, 0, 0)
+    glat = 55.0
+    glon = 120.0
+    altkm = 300.0
+    indices = {"f107s": 72.6, "f107": 71.5, "Ap": 9.5}
+
+    atmos = msise00.run(t, altkm, glat, glon, indices)
+
+    assert 4.874e7 == approx(atmos["N2"].item() / 1e6, rel=0.2)
+    assert 1.622e6 == approx(atmos["O2"].item() / 1e6, rel=0.1)
+
+    assert 794.1 == approx(atmos["Tn"].item(), rel=0.1)
+    assert 800.0 == approx(atmos["Texo"].item(), rel=0.1)
+
+
 if __name__ == "__main__":
     pytest.main(["-v", __file__])
