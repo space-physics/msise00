@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import subprocess
 import shutil
+import os
 from pathlib import Path
 from typing import List
 
@@ -16,6 +17,11 @@ def build(sources: List[str] = SOURCES, compiler: str = "gfortran", exe_opt: Lis
     """
     Attempt to compile code instead of using setup.py
     """
+    if compiler == 'ifort' and os.name == 'nt':
+        OPT = ['/O2']
+    else:
+        OPT = ['-O2']
+
     if isinstance(sources, (str, Path)):
         sources = [sources]
 
@@ -29,7 +35,9 @@ def build(sources: List[str] = SOURCES, compiler: str = "gfortran", exe_opt: Lis
 
     sources = list(map(str, sources))
 
-    subprocess.check_call([str(fc)] + sources + EXE_OPT)
+    cmd = [str(fc)] + OPT + sources + EXE_OPT
+    print(' '.join(cmd))
+    subprocess.check_call(cmd)
 
     return shutil.which(EXE.name, path=str(R))
 

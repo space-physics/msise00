@@ -9,7 +9,13 @@ cwd = fileparts(mfilename('fullpath'));
 builddir = [cwd, filesep, '..', filesep, 'msise00'];
 srcdir = [builddir, filesep, 'fortran'];
 
-cmd = [fc,' ',...
+if strcmp(fc, 'ifort') && ispc
+  opt = '/O2';
+else
+  opt = '-O2';
+end
+
+cmd = [fc, ' ', opt, ' ',...
        srcdir,filesep,'nrlmsise00_sub.for', ' ', ...
        srcdir,filesep,'msise00_driver.f90', ' ',...
        '-o ',builddir,filesep,'msise00_driver'];

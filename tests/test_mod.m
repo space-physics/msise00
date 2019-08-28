@@ -11,7 +11,7 @@ cwd = fileparts(mfilename('fullpath'));
 addpath([cwd, filesep, '..', filesep, 'matlab'])
 
 atmo = msise00(time, glat, glon, f107a, f107, Ap, altkm);
-
+%% read CCMC output
 fid = fopen([cwd,filesep,'ccmc.log']);
 
 A = cell2mat(textscan(fid, '%f %f %f %f %f %f %f %f %f %f %f %f', 1, ...
@@ -22,13 +22,13 @@ A(5) = A(5) * 1000; % gram cm^-3 => kg m^-3
 A(8:end) = A(8:end) * 1e6;
 
 fclose(fid);
-
+%% compare
 assert(abs(atmo.altkm - A(1)) < 0.1, 'wrong altitude?')
 assert(abs(atmo.nO - A(2)) < A(2)*0.05, 'O error')
 assert(abs(atmo.nN2 - A(3)) < A(3)*0.25, 'N2 error')
 assert(abs(atmo.nO2 - A(4)) < A(4)*0.3, 'O2 error')
 assert(abs(atmo.nTotal - A(5)) < A(5)*0.1, 'total mass density')
-assert(abs(atmo.Tn - A(6)) < A(6)*0.035, 'Tn')
+assert(abs(atmo.Tn - A(6)) < A(6)*0.035, ['Tn: ', num2str(atmo.Tn), ' ', num2str(A(6))])
 assert(abs(atmo.Texospheric - A(7)) < A(7)*0.035, 'Texo')
 assert(abs(atmo.nHe - A(8)) < A(8)*0.25, 'He')
 assert(abs(atmo.nAr - A(9)) < A(9)*0.4, 'Ar')

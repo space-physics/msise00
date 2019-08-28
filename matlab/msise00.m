@@ -26,8 +26,8 @@ cmd = [exe, ' ', iyd, ' ', hms,...
 [status,dat] = system(cmd);
 if status ~= 0, error(dat), end
 
-
-D = cell2mat(textscan(dat, '%f %f %f %f %f %f %f %f %f', 1, 'ReturnOnError', false));
+D = cell2mat(textscan(dat, '%f', 'ReturnOnError', false));
+assert(length(D)==11, 'unexpected output from MSISe00')
 
 iono.altkm = altkm;
 iono.nHe = D(1);
@@ -40,8 +40,6 @@ iono.nH = D(7);
 iono.nN = D(8);
 iono.nOanomalous = D(9);
 
-
-T = cell2mat(textscan(dat, '%f %f', 1, 'HeaderLines', 1, 'ReturnOnError', false));
-iono.Texospheric = T(1);
-iono.Tn = T(2);
+iono.Texospheric = D(10);
+iono.Tn = D(11);
 end

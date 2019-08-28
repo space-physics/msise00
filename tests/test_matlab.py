@@ -18,7 +18,7 @@ MATLAB = shutil.which("matlab")
 
 @pytest.mark.skipif(not MATLAB, reason="Matlab not available")
 def test_matlab_api():
-    subprocess.check_call([MATLAB, "-batch", "runtests"], cwd=R, timeout=60)
+    subprocess.check_call([MATLAB, "-batch", "test_mod"], cwd=R, timeout=60)
 
 
 @pytest.mark.skipif(not OCTAVE, reason="octave not found")

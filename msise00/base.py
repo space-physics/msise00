@@ -11,7 +11,6 @@ import numpy as np
 import subprocess
 import typing
 from pathlib import Path
-import io
 import shutil
 
 from .timeutils import todatetime
@@ -132,9 +131,12 @@ def rungtd1d(
         ]
 
         ret = subprocess.check_output(cmd, universal_newlines=True, stderr=subprocess.DEVNULL)
-        f = io.StringIO(ret)
-        dens[i, :] = np.genfromtxt(f, max_rows=1)
-        temp[i, :] = np.genfromtxt(f, max_rows=1)
+        # different compilers throw in extra \n
+        raw = list(map(float, ret.split()))
+        if not len(raw) == 9 + 2:
+            raise ValueError(ret)
+        dens[i, :] = raw[:9]
+        temp[i, :] = raw[9:]
 
     dsf = {k: (("time", "alt_km", "lat", "lon"), v[None, :, None, None]) for (k, v) in zip(species, dens.T)}
     dsf.update(
