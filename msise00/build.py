@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import subprocess
 import shutil
 from pathlib import Path
@@ -11,7 +12,7 @@ EXE = R / "msise00_driver"
 EXE_OPT = ["-o", str(EXE)]
 
 
-def build(sources: List[str] = SOURCES, compiler: str = "gfortran", exe_opt: List[str] = EXE_OPT):
+def build(sources: List[str] = SOURCES, compiler: str = "gfortran", exe_opt: List[str] = EXE_OPT) -> str:
     """
     Attempt to compile code instead of using setup.py
     """
@@ -30,4 +31,5 @@ def build(sources: List[str] = SOURCES, compiler: str = "gfortran", exe_opt: Lis
 
 
 if __name__ == "__main__":
-    build()
+    exe = build()
+    print("compiled", exe)

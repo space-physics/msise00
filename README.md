@@ -24,31 +24,23 @@ This process is used for the Python and [Matlab](#matlab) access to MSIS.
 Any Fortran compiler should work.
 Fortran compiler may be installed by
 
-* Mac: `brew install gcc`
+* MacOS / Homebrew: `brew install gcc`
 * Linux: `apt install gfortran`
 * [Windows](https://www.scivision.dev/windows-gcc-gfortran-cmake-make-install/)
 
 Get MSISE00 and install Python package
 
 ```sh
-python3 -m pip install msise00
-```
-
-Or if you wish to install the latest development version:
-
-```sh
 git clone https://github.com/scivision/msise00
 
-cd msise00
-
-python3 -m pip install -e .
+python -m pip install -e msise00
 ```
 
 The Fortran code will automatically compile on first import.
-If you need to recompile manually, use:
+If you need to recompile manually:
 
 ```sh
-python3 -c "import msise00; msise00.build()"
+python msise00/build.py
 ```
 
 ## Examples
@@ -82,22 +74,22 @@ Simple examples include:
 * Altitude Profile at a single time:
 
   ```sh
-  MSISE00.py -t 2017-08-21T20:48 -c 40 -90
+  python MSISE00.py -t 2017-08-21T20:48 -c 40 -90
   ```
 * Alt. profile time-range with hourly time step:
 
   ```sh
-  MSISE00.py -t 2017-08-21 2017-08-22 -c 40 -90
+  python MSISE00.py -t 2017-08-21 2017-08-22 -c 40 -90
   ```
 * Grid: time,lat,lon: generates the plots in the README:
 
   ```sh
-  MSISE00.py -t 2016-09-20 2016-09-21
+  python MSISE00.py -t 2016-09-20 2016-09-21
   ```
 * single time lat/lon can be plotted:
 
   ```sh
-  MSISE00.py -t 2017-01-02T12
+  python MSISE00.py -t 2017-01-02T12
   ```
 
 ### Matlab
