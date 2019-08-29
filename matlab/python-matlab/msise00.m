@@ -1,6 +1,6 @@
 function atmos = msise00(time, alt_km, glat, glon)
 %% call MSISE00 model from Matlab.
-% https://www.scivision.co/matlab-python-user-module-import/
+% https://www.scivision.dev/matlab-python-user-module-import/
 assert(~verLessThan('matlab', '9.5'), 'Matlab >= R2018b required')
 
 narginchk(4,4)

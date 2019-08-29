@@ -1,6 +1,6 @@
 function msise00()
 % quick demo calling MSISE00 model from Matlab.
-% https://www.scivision.co/matlab-python-user-module-import/
+% https://www.scivision.dev/matlab-python-user-module-import/
 
 assert(~verLessThan('matlab', '8.4'), 'Matlab >= R2014b required')
 
@@ -26,7 +26,7 @@ function plotmsis(atmos)
 
   figure(1), clf(1)
   ax = axes('nextplot','add');
-  
+
   for i = 1:size(species)
     dens = xarray2mat(atmos{species{i}});
     semilogx(ax, dens, alt_km, 'DisplayName', species{i})
