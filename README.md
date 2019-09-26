@@ -1,6 +1,7 @@
 [![Zenodo DOI](https://zenodo.org/badge/32971905.svg)](https://zenodo.org/badge/latestdoi/32971905)
 
-[![Build Status](https://dev.azure.com/mhirsch0512/MSISE00/_apis/build/status/space-physics.msise00?branchName=master)](https://dev.azure.com/mhirsch0512/MSISE00/_build/latest?definitionId=5&branchName=master)
+[![Actions Status](https://github.com/space-physics/msise00/workflows/ci/badge.svg)](https://github.com/space-physics/msise00/actions)
+
 [![Python versions (PyPI)](https://img.shields.io/pypi/pyversions/msise00.svg)](https://pypi.python.org/pypi/msise00)
 [![PyPi Download stats](http://pepy.tech/badge/msise00)](http://pepy.tech/project/msise00)
 

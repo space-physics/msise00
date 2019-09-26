@@ -1,0 +1,64 @@
+name: ci
+
+on: [push, pull_request]
+
+jobs:
+
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v1
+      with:
+        python-version: '3.x'
+    - run: sudo apt install -yq --no-install-recommends ninja-build gfortran
+    - run: |
+        pip install -e .[tests,lint]
+        pip install meson
+    - run: flake8
+    - run: mypy .
+    - run: pytest -r a -v
+
+  macos:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v1
+      with:
+        python-version: '3.x'
+    - run: brew install gcc ninja
+    - run: |
+        pip install -e .[tests]
+        pip install meson
+    - run: pytest -r a -v
+
+  windows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v1
+      with:
+        python-version: '3.x'
+    - run: |
+        cinst -y ninja
+        pip install meson
+    - run: pip install -e .[tests]
+    - run: pytest -r a -v
+
+
+  install:
+    needs: [linux]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v1
+      with:
+        python-version: '3.x'
+    - run: sudo apt install -yq --no-install-recommends ninja-build gfortran
+    - run: pip install meson
+    - run: python setup.py install
+    - name: install test
+      run: |
+        cd ${HOME}
+        python -m pip install pytest meson python-dateutil numpy xarray geomagindices
+        python -m pytest ${GITHUB_WORKSPACE} -r a -v
