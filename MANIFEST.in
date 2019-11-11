@@ -1,1 +1,2 @@
 include msise00/fortran/msise00_driver.f90 msise00/fortran/nrlmsise00_sub.for
+include msise00/CMakeLists.txt msise00/meson.build

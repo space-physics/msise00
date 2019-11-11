@@ -18,12 +18,21 @@ from .build import build
 
 import geomagindices as gi
 
-R = Path(__file__).resolve().parent
-EXE = shutil.which("msise00_driver", path=str(R))
-if not EXE:
-    EXE = build()
-if not EXE:
-    raise RuntimeError("could not compile or find msise00_driver")
+SDIR = Path(__file__).parent
+BDIR = SDIR / "build"
+
+EXE = shutil.which("msise00_driver", path=str(BDIR))
+if EXE is None:
+    if shutil.which("meson"):
+        build("meson", SDIR, BDIR)
+    elif shutil.which("cmake"):
+        build("cmake", SDIR, BDIR)
+    else:
+        raise RuntimeError("Need Meson or CMake to build")
+    EXE = shutil.which("msise00_driver", path=str(BDIR))
+    if EXE is None:
+        raise ModuleNotFoundError(f"could not build, binary not found in {BDIR}")
+
 
 species = ["He", "O", "N2", "O2", "Ar", "Total", "H", "N", "AnomalousO"]
 ttypes = ["Texo", "Tn"]
