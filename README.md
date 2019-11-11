@@ -25,24 +25,30 @@ This process is used for the Python and [Matlab](#matlab) access to MSIS.
 Any Fortran compiler should work.
 Fortran compiler may be installed by
 
-* MacOS / Homebrew: `brew install gcc`
-* Linux: `apt install gfortran`
-* [Windows](https://www.scivision.dev/windows-gcc-gfortran-cmake-make-install/)
+* MacOS / Homebrew: `brew install gcc ninja`
+* Linux: `apt install gfortran ninja-build`
+* [Windows](https://www.scivision.dev/windows-gcc-gfortran-cmake-make-install/) and extract [ninja](https://github.com/ninja-build/ninja/releases) to your PATH.
 
-Get MSISE00 and install Python package
+Get MSISE00 and install Python package:
 
 ```sh
-git clone https://github.com/scivision/msise00
+pip install msise00
+```
+
+
+or for the latest development code
+
+```sh
+git clone https://github.com/space-physics/msise00
 
 python -m pip install -e msise00
 ```
 
-The Fortran code will automatically compile on first import.
-If you need to recompile manually:
+### Build on Run
 
-```sh
-python msise00/build.py
-```
+The Fortran code will *automatically compile* on first `import msise00`.
+This does not use setuptools and so is OS / Python distribution method agnostic.
+
 
 ## Examples
 
@@ -99,14 +105,7 @@ Matlab and GNU Octave users use of MSISE00 is demonstrated in
 [AltitudeProfile.m](./matlab/AlitudeProfile.m) and
 [msise00.m](./matlab/msise00.m).
 
-MSISE00 should **automatically compile** on first run from Matlab or Octave.
-If you desire, manually compile MSISe00 by running [build.m](./matlab/build.m) from within Matlab or Octave:
-
-```matlab
-cd matlab
-
-build()
-```
+MSISE00 will **automatically compile** "build on run" on first run from Matlab or Octave.
 
 Optionally, verify Matlab is working by from the top `msise00/` directory in Terminal
 
