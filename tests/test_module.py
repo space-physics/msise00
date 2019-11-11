@@ -18,7 +18,7 @@ def test_past():
     try:
         atmos = msise00.run(t, altkm, glat, glon)
     except ConnectionError:
-        pytest.xfail("unable to download RecentIndices.txt")
+        pytest.skip("unable to download RecentIndices.txt")
 
     assert atmos["He"].ndim == 4
     assert atmos["He"].size == 1
@@ -77,9 +77,9 @@ def test_forecast():
 
     assert atmos.species == ["He", "O", "N2", "O2", "Ar", "Total", "H", "N", "AnomalousO"]
 
-    assert atmos["Tn"].item() == approx(671.513672)
-    assert atmos["Texo"].item() == approx(883.342529)
+    assert atmos["Tn"].item() == approx(671.513, abs=0.01)
+    assert atmos["Texo"].item() == approx(883.342, abs=0.01)
 
 
 if __name__ == "__main__":
-    pytest.main(["-v", __file__])
+    pytest.main([__file__])
