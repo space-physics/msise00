@@ -1,9 +1,9 @@
 function plotalt(atmos, times, glat, glon)
-
+narginchk(4,4)
 validateattributes(atmos, {'struct'}, {})
 %% Density profiles
 hp = figure;
-try
+try %#ok<TRYNC>
 sgtitle(hp, {[datestr(times),' deg.  (',num2str(glat),', ', num2str(glon),')']})
 end
 ax = subplot(1,2,1, 'parent', hp);

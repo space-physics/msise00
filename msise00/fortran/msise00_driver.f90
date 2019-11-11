@@ -1,5 +1,3 @@
-program msise00
-
 use, intrinsic:: iso_fortran_env, only: stderr=>error_unit
 
 implicit none
@@ -72,7 +70,7 @@ lst = utsec/3600. + glon/15.
 
 CALL GTD7(doy, utsec, alt_km, glat, glon, lst, f107a, f107, ap,48, Density, Temperature)
 
-print *,Density
-print *,Temperature
+print '(9ES15.7)',Density
+print '(2F9.2)',Temperature
 
 end program

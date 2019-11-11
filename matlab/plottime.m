@@ -1,5 +1,5 @@
 function plottime(atmos, times, glat, glon)
-
+narginchk(4,4)
 figure(1); clf(1)
 ax1 = subplot(2,1,1);
 set(ax1,'nextplot','add')
