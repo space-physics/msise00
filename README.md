@@ -25,9 +25,9 @@ This process is used for the Python and [Matlab](#matlab) access to MSIS.
 Any Fortran compiler should work.
 Fortran compiler may be installed by
 
-* MacOS / Homebrew: `brew install gcc ninja`
-* Linux: `apt install gfortran ninja-build`
-* [Windows](https://www.scivision.dev/windows-gcc-gfortran-cmake-make-install/) and extract [ninja](https://github.com/ninja-build/ninja/releases) to your PATH.
+* MacOS / Homebrew: `brew install gcc`
+* Linux: `apt install gfortran`
+* [Windows](https://www.scivision.dev/windows-gcc-gfortran-cmake-make-install/)
 
 Get MSISE00 and install Python package:
 
@@ -44,10 +44,8 @@ git clone https://github.com/space-physics/msise00
 python -m pip install -e msise00
 ```
 
-### Build on Run
-
-The Fortran code will *automatically compile* on first `import msise00`.
-This does not use setuptools and so is OS / Python distribution method agnostic.
+This Python module uses our build-on-run technique.
+The first time you use this Python module, you will see messages from the Meson build system.
 
 
 ## Examples
@@ -113,14 +111,6 @@ Optionally, verify Matlab is working by from the top `msise00/` directory in Ter
 matlab -batch runtests('tests')
 ```
 
-## Fortran source
-
-The MSISE00 Fortran source code may also be used directly.
-We have provided for easy code reuse in
-[CMake](./CMakeLists.txt)
-and
-[Meson](./meson.build)
-projects.
 
 ## Reference
 
