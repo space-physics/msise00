@@ -1,5 +1,8 @@
 name: ci
 
+env:
+  CMAKE_GENERATOR: Ninja
+
 on:
   push:
     paths:
@@ -17,7 +20,9 @@ jobs:
       with:
         python-version: '3.x'
 
-    - run: pip install .[tests,lint]
+    - run: |
+        pip install ninja
+        pip install .[tests,lint]
 
     - run: flake8
     - run: mypy .
@@ -33,6 +38,7 @@ jobs:
       with:
         python-version: '3.x'
 
+    - run: brew install ninja
     - run: pip install .[tests]
 
     - run: pytest
@@ -47,6 +53,8 @@ jobs:
     - uses: actions/setup-python@v1
       with:
         python-version: '3.x'
+
+    - run: cinst -y ninja
 
     - run: pip install .[tests]
 
