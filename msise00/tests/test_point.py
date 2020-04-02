@@ -18,7 +18,7 @@ R = Path(__file__).resolve().parent
 lat = 65
 lon = -148
 time = "2017-03-01T12"
-script = R.parent / "MSISE00.py"
+script = R.parents[1] / "MSISE00.py"
 
 
 @pytest.mark.parametrize("altkm,reffn", [(100.0, "ref5.nc"), (200.0, "ref6.nc")])

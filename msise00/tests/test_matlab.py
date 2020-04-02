@@ -10,7 +10,7 @@ import pytest
 import shutil
 
 R = Path(__file__).parent
-Rcode = R.parent / "matlab"
+Rcode = R.parents[1] / "matlab"
 
 OCTAVE = shutil.which("octave-cli")
 MATLAB = shutil.which("matlab")

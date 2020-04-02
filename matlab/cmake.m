@@ -6,11 +6,7 @@ validateattributes(builddir,{'char'},{'vector'})
 
 tail = [' -S ', srcdir, ' -B ', builddir];
 
-if ispc
-  ccmd = ['cmake -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ', tail];
-else
-  ccmd = ['cmake ',tail];
-end
+ccmd = ['cmake ',tail];
 
 runcmd(ccmd)
 

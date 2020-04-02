@@ -8,7 +8,9 @@ Ap = 7;
 altkm = 400.;
 
 cwd = fileparts(mfilename('fullpath'));
-addpath([cwd, filesep, '..', filesep, 'matlab'])
+matlab_root = [cwd, '/../../matlab'];
+assert(isfolder(matlab_root), ['Matlab directory does not exist: ', matlab_root])
+addpath(matlab_root)
 
 atmo = msise00(time, glat, glon, f107a, f107, Ap, altkm);
 %% read CCMC output
@@ -35,3 +37,5 @@ assert(abs(atmo.nAr - A(9)) < A(9)*0.4, 'Ar')
 assert(abs(atmo.nH - A(10)) < A(10)*0.15, 'H')
 assert(abs(atmo.nN - A(11)) < A(11)*0.3, 'N')
 assert(abs(atmo.nOanomalous - A(12)) < A(12)*0.3, 'AO')
+
+disp(['OK: MSISE00: ',version])

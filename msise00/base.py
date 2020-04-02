@@ -23,10 +23,10 @@ BDIR = SDIR / "build"
 
 EXE = shutil.which("msise00_driver", path=str(BDIR))
 if EXE is None:
-    if shutil.which("meson"):
-        build("meson", SDIR, BDIR)
-    elif shutil.which("cmake"):
+    if shutil.which("cmake"):
         build("cmake", SDIR, BDIR)
+    elif shutil.which("meson"):
+        build("meson", SDIR, BDIR)
     else:
         raise RuntimeError("Need Meson or CMake to build")
     EXE = shutil.which("msise00_driver", path=str(BDIR))

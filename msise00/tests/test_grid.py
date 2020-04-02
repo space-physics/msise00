@@ -14,7 +14,7 @@ import msise00.worldgrid
 R = Path(__file__).resolve().parent
 altkm = 200.0
 time = "2017-03-01T12"
-script = R.parent / "MSISE00.py"
+script = R.parents[1] / "MSISE00.py"
 
 
 def test_one_alt_one_time():
