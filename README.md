@@ -1,11 +1,11 @@
+# MSISE-00 in Python and Matlab
+
 [![Zenodo DOI](https://zenodo.org/badge/32971905.svg)](https://zenodo.org/badge/latestdoi/32971905)
-
-[![Actions Status](https://github.com/space-physics/msise00/workflows/ci/badge.svg)](https://github.com/space-physics/msise00/actions)
-
+![Actions Status](https://github.com/space-physics/msise00/workflows/ci_linux/badge.svg)
+![Actions Status](https://github.com/space-physics/msise00/workflows/ci_mac/badge.svg)
+![Actions Status](https://github.com/space-physics/msise00/workflows/ci_windows/badge.svg)
 [![Python versions (PyPI)](https://img.shields.io/pypi/pyversions/msise00.svg)](https://pypi.python.org/pypi/msise00)
 [![PyPi Download stats](http://pepy.tech/badge/msise00)](http://pepy.tech/project/msise00)
-
-# MSISE-00 in Python and Matlab
 
 NRL MSISE-00 atmospheric model for Python &ge; 3.6, also accessible via Matlab or GNU Octave.
 Valid from altitude z = 0..1000 km.
@@ -13,11 +13,11 @@ Valid from altitude z = 0..1000 km.
 The plot immediately below shows a slice at 200km on a world-wide grid.
 The yellow ball represents the sun footprint on Earth.
 
-![MSIS global time animation](./tests/msise00_demo.gif)
+![MSIS global time animation](./msise00/tests/msise00_demo.gif)
 
-This plot is from [Matlab](./tests/test_msise00_matlab.m) calling MSISE00:
+This plot is from [Matlab](./msise00/tests/test_msise00_matlab.m) calling MSISE00:
 
-![MSISE00 Matlab](./tests/msis_matlab.png)
+![MSISE00 Matlab](./msise00/tests/msis_matlab.png)
 
 ## Install
 
@@ -47,7 +47,6 @@ python -m pip install -e msise00
 This Python module uses our build-on-run technique.
 The first time you use this Python module, you will see messages from the Meson build system.
 
-
 ## Examples
 
 MSISE00 can be used from the command line, as an imported module, and even from Matlab.
@@ -64,7 +63,6 @@ atmos = msise00.run(time=datetime(2013, 3, 31, 12), altkm=150., glat=65., glon=-
 atmos is an [xarray.Dataset](http://xarray.pydata.org/en/stable/generated/xarray.Dataset.html) containing all the simulation output values.
 `atmos` is 4-D: (time, altitude, lat, lon), and indexed like `atmos['N2']`
 
-
 ### Command Line
 
 Write NetCDF4 output (HDF5 compatible) with command line argument `-w filename.nc`.
@@ -74,7 +72,6 @@ Simple examples include:
 * AltitudeProfile.py
 * TimeProfile.py
 * Worldgrid.py
-
 
 * Altitude Profile at a single time:
 
@@ -110,7 +107,6 @@ Optionally, verify Matlab is working by from the top `msise00/` directory in Ter
 ```sh
 matlab -batch runtests('tests')
 ```
-
 
 ## Reference
 

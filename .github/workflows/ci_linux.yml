@@ -1,0 +1,31 @@
+name: ci_linux
+
+env:
+  CMAKE_GENERATOR: Ninja
+
+on:
+  push:
+    paths:
+    - "**.py"
+    - .github/workflows/ci_linux.yml
+  pull_request:
+
+jobs:
+
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v1
+      with:
+        python-version: '3.x'
+
+    - run: |
+        pip install ninja
+        pip install .[tests,lint]
+
+    - run: flake8
+    - run: mypy .
+    - run: pytest
+      env:
+        FC: gfortran-9
