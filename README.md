@@ -1,6 +1,7 @@
 # MSISE-00 in Python and Matlab
 
 [![Zenodo DOI](https://zenodo.org/badge/32971905.svg)](https://zenodo.org/badge/latestdoi/32971905)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/space-physics/msise00.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/space-physics/msise00/context:python)
 ![Actions Status](https://github.com/space-physics/msise00/workflows/ci_linux/badge.svg)
 ![Actions Status](https://github.com/space-physics/msise00/workflows/ci_mac/badge.svg)
 ![Actions Status](https://github.com/space-physics/msise00/workflows/ci_windows/badge.svg)
