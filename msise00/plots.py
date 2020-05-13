@@ -128,7 +128,7 @@ def plot1dalt(atmos: xarray.Dataset, odir: Path = None):
     ax.grid(True)
     ax.set_title("Number Density from MSISE-00" + footer)
     if odir:
-        ofn = odir / (f"number-density_" + str(atmos.time.values.squeeze())[:-13] + ".png")
+        ofn = odir / ("number-density_" + str(atmos.time.values.squeeze())[:-13] + ".png")
         writeplot(fg, ofn)
 
     # %% total mass
@@ -141,7 +141,7 @@ def plot1dalt(atmos: xarray.Dataset, odir: Path = None):
     ax.set_title("Total Mass Density from MSISE-00" + footer)
 
     if odir:
-        ofn = odir / (f"total-density_" + str(atmos.time.values.squeeze())[:-13] + ".png")
+        ofn = odir / ("total-density_" + str(atmos.time.values.squeeze())[:-13] + ".png")
         writeplot(fg, ofn)
 
     # %% temperature
@@ -154,7 +154,7 @@ def plot1dalt(atmos: xarray.Dataset, odir: Path = None):
     ax.set_title("Temperature from MSISE-00" + footer)
 
     if odir:
-        ofn = odir / (f"temperature_" + str(atmos.time.values.squeeze())[:-13] + ".png")
+        ofn = odir / ("temperature_" + str(atmos.time.values.squeeze())[:-13] + ".png")
         writeplot(fg, ofn)
 
 
@@ -177,7 +177,7 @@ def plot1dtime(atmos: xarray.Dataset, odir: Path = None):
     ax.grid(True)
     ax.set_title("Number Density from MSISE-00" + footer)
     if odir:
-        ofn = odir / (f"number-density_" + str(atmos.time.values.squeeze())[:-13] + ".png")
+        ofn = odir / ("number-density_" + str(atmos.time.values.squeeze())[:-13] + ".png")
         writeplot(fg, ofn)
 
     # %% total mass
@@ -190,7 +190,7 @@ def plot1dtime(atmos: xarray.Dataset, odir: Path = None):
     ax.set_title("Total Mass Density from MSISE-00" + footer)
 
     if odir:
-        ofn = odir / (f"total-density_" + str(atmos.time.values.squeeze())[:-13] + ".png")
+        ofn = odir / ("total-density_" + str(atmos.time.values.squeeze())[:-13] + ".png")
         writeplot(fg, ofn)
 
     # %% temperature
@@ -203,7 +203,7 @@ def plot1dtime(atmos: xarray.Dataset, odir: Path = None):
     ax.set_title("Temperature from MSISE-00" + footer)
 
     if odir:
-        ofn = odir / (f"temperature_" + str(atmos.time.values.squeeze())[:-13] + ".png")
+        ofn = odir / ("temperature_" + str(atmos.time.values.squeeze())[:-13] + ".png")
         writeplot(fg, ofn)
 
 
