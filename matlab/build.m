@@ -1,10 +1,10 @@
 function build(srcdir, builddir, build_sys)
-narginchk(2,3)
+narginchk(1,3)
 
 assert(is_folder(srcdir), ['source directory not found: ', srcdir])
 
 if nargin < 3
-  if system('cmake --version') == 0
+  if system('cmake --version') == 0 || nargin < 2
     build_sys = 'cmake';
   elseif system('meson --version') == 0 && system('ninja --version') == 0
     build_sys = 'meson';
