@@ -9,7 +9,6 @@ from pathlib import Path
 import subprocess
 import typing
 import sys
-import pkg_resources
 import argparse
 import logging
 
@@ -25,8 +24,6 @@ def build(build_sys: str, src_dir: Path = SRCDIR, bin_dir: Path = BINDIR):
     if build_sys == "meson":
         meson_setup(src_dir, bin_dir)
     elif build_sys == "cmake":
-        if not check_cmake_version("3.13"):
-            raise ValueError("Need at least CMake 3.13")
         cmake_setup(src_dir, bin_dir)
     else:
         raise ValueError("Unknown build system {}".format(build_sys))
@@ -34,19 +31,13 @@ def build(build_sys: str, src_dir: Path = SRCDIR, bin_dir: Path = BINDIR):
 
 def cmake_setup(src_dir: Path, bin_dir: Path):
     """
-    attempt to build using CMake >= 3
+    attempt to build using CMake
     """
-    cmake_exe = shutil.which("cmake")
-    if not cmake_exe:
+    exe = shutil.which("ctest")
+    if not exe:
         raise FileNotFoundError("CMake not available")
 
-    cfgfn = bin_dir / "CMakeCache.txt"
-    if cfgfn.is_file():
-        cfgfn.unlink()
-
-    subprocess.run([cmake_exe, "-S", str(src_dir), "-B", str(bin_dir)])
-
-    subprocess.run([cmake_exe, "--build", str(bin_dir), "--parallel"])
+    subprocess.run([exe, "-S", str(src_dir / "setup.cmake"), "-VV"])
 
 
 def meson_setup(src_dir: Path, bin_dir: Path):
@@ -55,7 +46,6 @@ def meson_setup(src_dir: Path, bin_dir: Path):
     """
     args: typing.List[str] = []
     meson_exe = shutil.which("meson")
-
     if not meson_exe:
         raise FileNotFoundError("Meson not available")
 
@@ -67,19 +57,6 @@ def meson_setup(src_dir: Path, bin_dir: Path):
     subprocess.run(cmd)
 
     subprocess.run([meson_exe, "test", "-C", str(bin_dir)])
-
-
-def check_cmake_version(min_version: str) -> bool:
-    cmake = shutil.which("cmake")
-    if not cmake:
-        return False
-
-    cmake_version = subprocess.check_output([cmake, "--version"], universal_newlines=True).split()[2]
-
-    pmin = pkg_resources.parse_version(min_version)
-    pcmake = pkg_resources.parse_version(cmake_version)
-
-    return pcmake >= pmin
 
 
 def get_libpath(bin_dir: Path, stem: str) -> Path:

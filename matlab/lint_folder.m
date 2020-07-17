@@ -8,7 +8,7 @@ assert(is_folder(folder), [folder, ' is not a folder'])
 matfiles = dir([folder, '/*.m']);
 
 for i = 1:length(matfiles)
-  file = [folder, '/', matfiles(i).name];
+  file = fullfile(folder, matfiles(i).name);
   res = checkcode(file);
   if ~isempty(res)
     [~, stem] = fileparts(file);

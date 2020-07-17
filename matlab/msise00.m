@@ -9,9 +9,9 @@ validateattributes(Ap, {'numeric'}, {'positive','scalar'}, mfilename, 'MAGNETIC 
 validateattributes(altkm, {'numeric'}, {'positive', 'scalar'},mfilename, 'altitude [km]',7)
 %% binary MSISe00
 cwd = fileparts(mfilename('fullpath'));
-src_dir = [cwd,'/../msise00'];
-build_dir = [src_dir, '/build'];
-exe = [build_dir, '/msise00_driver'];
+src_dir = fullfile(cwd,'../msise00');
+build_dir = fullfile(src_dir, 'build');
+exe = fullfile(build_dir, 'msise00_driver');
 if ispc, exe = [exe, '.exe']; end
 if ~is_file(exe), build('meson', src_dir, build_dir), end
 

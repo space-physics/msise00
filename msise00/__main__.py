@@ -6,29 +6,17 @@ Example:
 Poker Flat Research Range altitude profile:
 
 MSISE00.py -t 2018-01-01 -c 65 -148 -a 0.2
-
 """
+
 from pathlib import Path
 import numpy as np
-import msise00
 from argparse import ArgumentParser
-from msise00.worldgrid import latlonworldgrid
 
-try:
-    from matplotlib.pyplot import show
-    import msise00.plots as msplots
-except ImportError as e:
-    print(e)
-    msplots = None  # type: ignore
-try:
-    import seaborn as sns
-
-    sns.set_style("ticks")
-except ImportError:
-    pass
+from .base import run
+from .worldgrid import latlonworldgrid
 
 
-def main():
+def cli():
     p = ArgumentParser(description="calls MSISE-00 from Python, save to NetCDF4 and/or plot")
     p.add_argument("-t", "--time", help="time or times", nargs="+", required=True)
     p.add_argument(
@@ -54,7 +42,7 @@ def main():
     else:
         glat, glon = latlonworldgrid(*P.gs)
     # %% run
-    atmos = msise00.run(P.time, altkm, glat, glon)
+    atmos = run(P.time, altkm, glat, glon)
     # %% save
     if P.w:
         ncfn = Path(P.w).expanduser()
@@ -62,12 +50,12 @@ def main():
         # NOTE: .squeeze() avoids ValueError: unsupported dtype for netCDF4 variable: datetime64[ns]
         atmos.squeeze().to_netcdf(ncfn)
     # %% plot
-    if msplots is not None and not P.quiet:
-        msplots.plotgtd(atmos, P.odir)
-        show()
-    else:
-        print("skipped plots")
+    if not P.quiet:
+        try:
+            from matplotlib.pyplot import show
+            from .plots import plotgtd
 
-
-if __name__ == "__main__":
-    main()
+            plotgtd(atmos, P.odir)
+            show()
+        except ImportError:
+            print("skipped plotting")

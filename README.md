@@ -36,13 +36,18 @@ Get MSISE00 and install Python package:
 pip install msise00
 ```
 
-
 or for the latest development code
 
 ```sh
 git clone https://github.com/space-physics/msise00
 
-python -m pip install -e msise00
+pip install -e msise00
+```
+
+optionally check that MSIS is working via:
+
+```sh
+pytest msise00
 ```
 
 This Python module uses our build-on-run technique.
@@ -61,7 +66,9 @@ from datetime import datetime
 atmos = msise00.run(time=datetime(2013, 3, 31, 12), altkm=150., glat=65., glon=-148.)
 ```
 
-atmos is an [xarray.Dataset](http://xarray.pydata.org/en/stable/generated/xarray.Dataset.html) containing all the simulation output values.
+atmos is an
+[xarray.Dataset](http://xarray.pydata.org/en/stable/generated/xarray.Dataset.html)
+containing all the simulation output values.
 `atmos` is 4-D: (time, altitude, lat, lon), and indexed like `atmos['N2']`
 
 ### Command Line
@@ -77,22 +84,22 @@ Simple examples include:
 * Altitude Profile at a single time:
 
   ```sh
-  python MSISE00.py -t 2017-08-21T20:48 -c 40 -90
+  msise00 -t 2017-08-21T20:48 -c 40 -90
   ```
 * Alt. profile time-range with hourly time step:
 
   ```sh
-  python MSISE00.py -t 2017-08-21 2017-08-22 -c 40 -90
+  msise00 -t 2017-08-21 2017-08-22 -c 40 -90
   ```
 * Grid: time,lat,lon: generates the plots in the README:
 
   ```sh
-  python MSISE00.py -t 2016-09-20 2016-09-21
+  msise00 -t 2016-09-20 2016-09-21
   ```
 * single time lat/lon can be plotted:
 
   ```sh
-  python MSISE00.py -t 2017-01-02T12
+  msise00 -t 2017-01-02T12
   ```
 
 ### Matlab

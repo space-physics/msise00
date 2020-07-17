@@ -4,10 +4,9 @@ validateattributes(srcdir,{'char'},{'vector'})
 validateattributes(builddir,{'char'},{'vector'})
 
 cmd = ['meson setup ',builddir,' ',srcdir];
-if is_file([builddir, '/build.ninja'])
+if is_file(fullfile(builddir, 'build.ninja'))
   cmd = [cmd, ' --wipe'];
 end
-
 
 runcmd(cmd)
 

@@ -15,7 +15,7 @@ end
 
 switch build_sys
   case 'meson', meson(srcdir, builddir)
-  case 'cmake', cmake(srcdir, builddir)
+  case 'cmake', cmake(srcdir)
   otherwise, error(['unknown build system ', build_sys])
 end
 end % function

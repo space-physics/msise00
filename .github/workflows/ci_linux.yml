@@ -15,16 +15,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-python@v1
+    - uses: actions/setup-python@v2
       with:
         python-version: '3.x'
 
-    - run: |
-        pip install ninja
-        pip install .[tests,lint]
+    - run: pip install ninja
+    - run: pip install .[tests,lint]
 
     - run: flake8
     - run: mypy .
+
     - run: pytest
       env:
         FC: gfortran-9

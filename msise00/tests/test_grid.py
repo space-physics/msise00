@@ -3,7 +3,6 @@
 python MSISE00.py -q -w tests/ref3.nc -a 200 -t 2017-03-01T12
 """
 from pathlib import Path
-import sys
 import subprocess
 import pytest
 import xarray
@@ -14,7 +13,6 @@ import msise00.worldgrid
 R = Path(__file__).resolve().parent
 altkm = 200.0
 time = "2017-03-01T12"
-script = R.parents[1] / "MSISE00.py"
 
 
 def test_one_alt_one_time():
@@ -31,13 +29,12 @@ def test_one_alt_one_time():
     xarray.tests.assert_allclose(ref, dat_mod)
 
 
-@pytest.mark.skipif(not script.is_file(), reason="demo script not available")
 def test_script(tmp_path):
     pytest.importorskip("netCDF4")
     ref = xarray.open_dataset(R / "ref3.nc")
 
     fn = tmp_path / "test.nc"
-    cmd = [sys.executable, str(script), "-q", "-w", str(fn), "-a", str(altkm), "-t", time, "-gs", "30", "60"]
+    cmd = ["msise00", "-q", "-w", str(fn), "-a", str(altkm), "-t", time, "-gs", "30", "60"]
     print(" ".join(cmd))
     subprocess.check_call(cmd)
 

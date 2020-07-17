@@ -1,15 +1,10 @@
-function cmake(srcdir, builddir)
-% assumes CMake >= 3.13
-narginchk(2,2)
-validateattributes(srcdir,{'char'},{'vector'})
-validateattributes(builddir,{'char'},{'vector'})
+function cmake(srcdir)
+% build project with CMake
+narginchk(1,1)
+validateattributes(srcdir,{'char'},{'vector'},1)
 
-tail = [' -S ', srcdir, ' -B ', builddir];
-
-ccmd = ['cmake ',tail];
+ccmd = ['ctest -S ', srcdir, '/setup.cmake -VV'];
 
 runcmd(ccmd)
-
-runcmd(['cmake --build ',builddir,' --parallel'])
 
 end
