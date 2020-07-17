@@ -20,6 +20,12 @@ This plot is from [Matlab](./src/msise00/tests/test_msise00_matlab.m) calling MS
 
 ![MSISE00 Matlab](./src/msise00/tests/msis_matlab.png)
 
+## Units
+
+* Temperature: degrees Kelvin [K]
+* Density: particles per cubic meter [m^-3]
+* Mass density: kilograms per cubic meter [kg m^-3]
+
 ## Install
 
 This process is used for the Python and [Matlab](#matlab) access to MSIS.
