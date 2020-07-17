@@ -14,11 +14,11 @@ Valid from altitude z = 0..1000 km.
 The plot immediately below shows a slice at 200km on a world-wide grid.
 The yellow ball represents the sun footprint on Earth.
 
-![MSIS global time animation](./msise00/tests/msise00_demo.gif)
+![MSIS global time animation](./src/msise00/tests/msise00_demo.gif)
 
-This plot is from [Matlab](./msise00/tests/test_msise00_matlab.m) calling MSISE00:
+This plot is from [Matlab](./src/msise00/tests/test_msise00_matlab.m) calling MSISE00:
 
-![MSISE00 Matlab](./msise00/tests/msis_matlab.png)
+![MSISE00 Matlab](./src/msise00/tests/msis_matlab.png)
 
 ## Install
 
@@ -28,7 +28,7 @@ Fortran compiler may be installed by
 
 * MacOS / Homebrew: `brew install gcc`
 * Linux: `apt install gfortran`
-* [Windows](https://www.scivision.dev/windows-gcc-gfortran-cmake-make-install/)
+* [Windows](https://www.scivision.dev/install-msys2-windows)
 
 Get MSISE00 and install Python package:
 
@@ -75,11 +75,7 @@ containing all the simulation output values.
 
 Write NetCDF4 output (HDF5 compatible) with command line argument `-w filename.nc`.
 
-Simple examples include:
-
-* AltitudeProfile.py
-* TimeProfile.py
-* Worldgrid.py
+Simple examples under [Examples/](./Examples)
 
 * Altitude Profile at a single time:
 
