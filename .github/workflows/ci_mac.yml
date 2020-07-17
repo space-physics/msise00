@@ -1,8 +1,5 @@
 name: ci_mac
 
-env:
-  CMAKE_GENERATOR: Ninja
-
 on:
   push:
     paths:

@@ -1,8 +1,5 @@
 name: ci_linux
 
-env:
-  CMAKE_GENERATOR: Ninja
-
 on:
   push:
     paths:
