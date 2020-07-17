@@ -24,12 +24,12 @@ def build(build_sys: str, src_dir: Path = SRCDIR, bin_dir: Path = BINDIR):
     if build_sys == "meson":
         meson_setup(src_dir, bin_dir)
     elif build_sys == "cmake":
-        cmake_setup(src_dir, bin_dir)
+        cmake_setup(src_dir)
     else:
         raise ValueError("Unknown build system {}".format(build_sys))
 
 
-def cmake_setup(src_dir: Path, bin_dir: Path):
+def cmake_setup(src_dir: Path):
     """
     attempt to build using CMake
     """
@@ -37,7 +37,7 @@ def cmake_setup(src_dir: Path, bin_dir: Path):
     if not exe:
         raise FileNotFoundError("CMake not available")
 
-    subprocess.run([exe, "-S", str(src_dir / "setup.cmake"), "-VV"])
+    subprocess.check_call([exe, "-S", str(src_dir / "setup.cmake"), "-VV"])
 
 
 def meson_setup(src_dir: Path, bin_dir: Path):
@@ -54,9 +54,9 @@ def meson_setup(src_dir: Path, bin_dir: Path):
 
     cmd = [meson_exe, "setup", str(bin_dir), str(src_dir)] + args
     logging.debug(cmd)
-    subprocess.run(cmd)
+    subprocess.check_call(cmd)
 
-    subprocess.run([meson_exe, "test", "-C", str(bin_dir)])
+    subprocess.check_call([meson_exe, "test", "-C", str(bin_dir)])
 
 
 def get_libpath(bin_dir: Path, stem: str) -> Path:

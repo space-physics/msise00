@@ -24,7 +24,7 @@ BDIR = SDIR / "build"
 EXE = shutil.which("msise00_driver", path=str(BDIR))
 if EXE is None:
     if shutil.which("cmake"):
-        build("cmake", SDIR, BDIR)
+        build("cmake", SDIR)
     elif shutil.which("meson"):
         build("meson", SDIR, BDIR)
     else:
@@ -139,9 +139,11 @@ def rungtd1d(
             str(a),
         ]
 
-        ret = subprocess.check_output(cmd, universal_newlines=True, stderr=subprocess.DEVNULL)
+        ret = subprocess.run(cmd, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        if ret.returncode != 0:
+            raise RuntimeError(f"MSISE00 error code {ret.returncode}\n{ret.stderr}")
         # different compilers throw in extra \n
-        raw = list(map(float, ret.split()))
+        raw = list(map(float, ret.stdout.split()))
         if not len(raw) == 9 + 2:
             raise ValueError(ret)
         dens[i, :] = raw[:9]
