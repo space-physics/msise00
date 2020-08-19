@@ -75,7 +75,3 @@ def test_forecast():
 
     assert atmos["Tn"].item() == approx(671.513, abs=0.01)
     assert atmos["Texo"].item() == approx(883.342, abs=0.01)
-
-
-if __name__ == "__main__":
-    pytest.main([__file__])
