@@ -3,7 +3,7 @@ function results = lint_folder(folder, verbose)
 % distinct from mlintrpt() in that this function is all CLI instead of GUI
 
 narginchk(1,2)
-assert(is_folder(folder), [folder, ' is not a folder'])
+assert(isfolder(folder), [folder, ' is not a folder'])
 
 matfiles = dir([folder, '/*.m']);
 
