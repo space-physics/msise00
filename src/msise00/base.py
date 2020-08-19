@@ -5,38 +5,35 @@ Michael Hirsch, Ph.D.
 Original fortran code from
 http://nssdcftp.gsfc.nasa.gov/models/atmospheric/msis/nrlmsise00/
 """
+
+import os
+import importlib.resources
 from datetime import datetime, date
 import xarray
 import numpy as np
 import subprocess
 import typing
-from pathlib import Path
 import shutil
+from pathlib import Path
 
 from .timeutils import todatetime
-from .build import build
 
 import geomagindices as gi
-
-SDIR = Path(__file__).parent
-BDIR = SDIR / "build"
-
-EXE = shutil.which("msise00_driver", path=str(BDIR))
-if EXE is None:
-    if shutil.which("cmake"):
-        build("cmake", SDIR)
-    elif shutil.which("meson"):
-        build("meson", SDIR, BDIR)
-    else:
-        raise RuntimeError("Need Meson or CMake to build")
-    EXE = shutil.which("msise00_driver", path=str(BDIR))
-    if EXE is None:
-        raise ModuleNotFoundError(f"could not build, binary not found in {BDIR}")
-
 
 species = ["He", "O", "N2", "O2", "Ar", "Total", "H", "N", "AnomalousO"]
 ttypes = ["Texo", "Tn"]
 first = True
+
+
+def cmake(setup_file: Path):
+    """
+    attempt to build using CMake
+    """
+    exe = shutil.which("ctest")
+    if not exe:
+        raise FileNotFoundError("CMake not available")
+
+    subprocess.check_call([exe, "-S", str(setup_file), "-VV"])
 
 
 def run(
@@ -124,30 +121,41 @@ def rungtd1d(
     # %%
     dens = np.empty((altkm.size, len(species)))
     temp = np.empty((altkm.size, len(ttypes)))
-    for i, a in enumerate(altkm):
-        cmd = [
-            EXE,
-            iyd,
-            str(time.hour),
-            str(time.minute),
-            str(time.second),
-            str(glat),
-            str(glon),
-            str(indices["f107s"]),
-            str(indices["f107"]),
-            str(indices["Ap"]),
-            str(a),
-        ]
+    # %% build on run
+    exe_name = "msise00_driver"
+    if os.name == "nt":
+        exe_name += ".exe"
+    if not importlib.resources.is_resource(__package__, exe_name):
+        with importlib.resources.path(__package__, "setup.cmake") as setup_file:
+            cmake(setup_file)
+    if not importlib.resources.is_resource(__package__, exe_name):
+        raise ModuleNotFoundError("could not build MSISE00 Fortran driver")
 
-        ret = subprocess.run(cmd, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if ret.returncode != 0:
-            raise RuntimeError(f"MSISE00 error code {ret.returncode}\n{ret.stderr}")
-        # different compilers throw in extra \n
-        raw = list(map(float, ret.stdout.split()))
-        if not len(raw) == 9 + 2:
-            raise ValueError(ret)
-        dens[i, :] = raw[:9]
-        temp[i, :] = raw[9:]
+    with importlib.resources.path(__package__, exe_name) as exe:
+        for i, a in enumerate(altkm):
+            cmd = [
+                str(exe),
+                iyd,
+                str(time.hour),
+                str(time.minute),
+                str(time.second),
+                str(glat),
+                str(glon),
+                str(indices["f107s"]),
+                str(indices["f107"]),
+                str(indices["Ap"]),
+                str(a),
+            ]
+
+            ret = subprocess.run(cmd, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            if ret.returncode != 0:
+                raise RuntimeError(f"MSISE00 error code {ret.returncode}\n{ret.stderr}")
+            # different compilers throw in extra \n
+            raw = list(map(float, ret.stdout.split()))
+            if not len(raw) == 9 + 2:
+                raise ValueError(ret)
+            dens[i, :] = raw[:9]
+            temp[i, :] = raw[9:]
 
     dsf = {k: (("time", "alt_km", "lat", "lon"), v[None, :, None, None]) for (k, v) in zip(species, dens.T)}
     dsf.update(

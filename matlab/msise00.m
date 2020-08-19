@@ -10,8 +10,7 @@ validateattributes(altkm, {'numeric'}, {'positive', 'scalar'},mfilename, 'altitu
 %% binary MSISe00
 cwd = fileparts(mfilename('fullpath'));
 src_dir = fullfile(cwd,'../src/msise00');
-build_dir = fullfile(src_dir, 'build');
-exe = fullfile(build_dir, 'msise00_driver');
+exe = fullfile(src_dir, 'msise00_driver');
 if ispc, exe = [exe, '.exe']; end
 if ~isfile(exe), cmake(src_dir), end
 
