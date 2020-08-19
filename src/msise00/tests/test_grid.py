@@ -1,23 +1,25 @@
-#!/usr/bin/env python3
 """
 python MSISE00.py -q -w tests/ref3.nc -a 200 -t 2017-03-01T12
 """
-from pathlib import Path
+
 import subprocess
 import pytest
 import xarray
 import xarray.tests
+import importlib.resources
+
 import msise00
 import msise00.worldgrid
 
-R = Path(__file__).resolve().parent
 altkm = 200.0
 time = "2017-03-01T12"
 
 
 def test_one_alt_one_time():
     pytest.importorskip("netCDF4")
-    ref = xarray.open_dataset(R / "ref3.nc")
+
+    with importlib.resources.path(__package__, "ref3.nc") as fn:
+        ref = xarray.open_dataset(fn)
 
     lat, lon = msise00.worldgrid.latlonworldgrid(30, 60)
 
@@ -31,7 +33,9 @@ def test_one_alt_one_time():
 
 def test_script(tmp_path):
     pytest.importorskip("netCDF4")
-    ref = xarray.open_dataset(R / "ref3.nc")
+
+    with importlib.resources.path(__package__, "ref3.nc") as fn:
+        ref = xarray.open_dataset(fn)
 
     fn = tmp_path / "test.nc"
     cmd = ["msise00", "-q", "-w", str(fn), "-a", str(altkm), "-t", time, "-gs", "30", "60"]
@@ -40,7 +44,3 @@ def test_script(tmp_path):
 
     dat = xarray.open_dataset(fn)
     xarray.tests.assert_allclose(ref, dat)
-
-
-if __name__ == "__main__":
-    pytest.main([__file__])

@@ -1,17 +1,12 @@
-#!/usr/bin/env python3
 """
 compare with CCMC web service output
 """
 from datetime import datetime
 import numpy as np
-import pytest
 from pytest import approx
-from pathlib import Path
+import importlib.resources
 
 import msise00
-
-R = Path(__file__).parent
-reffn = R / "ccmc.log"
 
 
 def test_ccmc():
@@ -21,7 +16,8 @@ def test_ccmc():
     altkm = 400.0
     indices = {"f107s": 163.6666, "f107": 146.7, "Ap": 7}
 
-    A = np.loadtxt(reffn, skiprows=25)
+    with importlib.resources.path(__package__, "ccmc.log") as fn:
+        A = np.loadtxt(fn, skiprows=25)
 
     atmos = msise00.run(t, altkm, glat, glon, indices)
     assert atmos.f107s == approx(163.6666)
@@ -55,7 +51,3 @@ def test_ccmc2():
 
     assert 794.1 == approx(atmos["Tn"].item(), rel=0.1)
     assert 800.0 == approx(atmos["Texo"].item(), rel=0.1)
-
-
-if __name__ == "__main__":
-    pytest.main([__file__])

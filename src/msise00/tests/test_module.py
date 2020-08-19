@@ -1,12 +1,8 @@
-#!/usr/bin/env python3
 from datetime import datetime
 import pytest
 from pytest import approx
-from pathlib import Path
 
 import msise00
-
-R = Path(__file__).parent
 
 
 def test_past():
