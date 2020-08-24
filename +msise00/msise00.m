@@ -14,7 +14,9 @@ cwd = fileparts(mfilename('fullpath'));
 src_dir = fullfile(cwd,'../src/msise00');
 exe = fullfile(src_dir, 'msise00_driver');
 if ispc, exe = [exe, '.exe']; end
-if ~isfile(exe), cmake(src_dir), end
+if ~isfile(exe)
+  msise00.cmake(src_dir)
+end
 
 doy = day(time, 'dayofyear');
 year2 = int2str(year(time));
