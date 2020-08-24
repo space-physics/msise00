@@ -16,7 +16,6 @@ jobs:
       with:
         python-version: '3.x'
 
-    - run: pip install ninja
     - run: pip install .[tests]
 
     - run: pytest

@@ -1,12 +1,15 @@
 function plotalt(atmos, times, glat, glon)
-narginchk(4,4)
-validateattributes(atmos, {'struct'}, {})
+arguments
+  atmos struct
+  times datetime
+  glat (1,1) double
+  glon (1,1) double
+end
 %% Density profiles
 hp = figure;
-try %#ok<TRYNC>
 sgtitle(hp, {[datestr(times),' deg.  (',num2str(glat),', ', num2str(glon),')']})
-end
-ax = subplot(1,2,1, 'parent', hp);
+t = tiledlayout(hp, 1,2);
+ax = nexttile(t);
 set(ax, 'nextplot','add')
 
 altkm = [atmos.altkm];
@@ -31,13 +34,13 @@ legend(ax, 'show','location','northeast')
 
 %% Temperature Profiles
 
-ax = subplot(1,2,2, 'parent', hp);
+ax = nexttile(t);
 set(ax, 'nextplot','add')
 
 plot(ax, [atmos.Tn], altkm, 'DisplayName', 'T_n')
 plot(ax, [atmos.Texospheric], altkm, 'DisplayName', 'T_{exo}')
 
-title('Temperature')
+title(ax, 'Temperature')
 xlabel(ax, 'Temperature [K]')
 ylabel(ax, 'altitude [km]')
 

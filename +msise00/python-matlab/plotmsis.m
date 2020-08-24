@@ -1,4 +1,7 @@
 function plotmsis(atmos)
+  arguments
+    atmos struct
+  end
 
 species = cellfun(@char, cell(atmos.attrs{'species'}), 'uniformoutput', false);
 alt_km = xarrayind2vector(atmos, 'alt_km');

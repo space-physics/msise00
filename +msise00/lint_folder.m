@@ -1,8 +1,11 @@
 function results = lint_folder(folder, verbose)
 %% lints each Matlab .m file in folder.
 % distinct from mlintrpt() in that this function is all CLI instead of GUI
+arguments
+  folder char
+  verbose (1,1) logical
+end
 
-narginchk(1,2)
 assert(isfolder(folder), [folder, ' is not a folder'])
 
 matfiles = dir([folder, '/*.m']);

@@ -1,5 +1,5 @@
 %% simple
-time = datenum(2001,2,2,8,0,0);
+time = datetime(2001,2,2,8,0,0);
 glat = 60;
 glon = -70;
 f107a = 163.6666;
@@ -9,7 +9,7 @@ altkm = 400.;
 
 cwd = fileparts(mfilename('fullpath'));
 
-atmo = msise00(time, glat, glon, f107a, f107, Ap, altkm);
+atmo = msise00.msise00(time, glat, glon, f107a, f107, Ap, altkm);
 %% read CCMC output
 ref_fn = fullfile(cwd, '../src/msise00/tests/ccmc.log');
 fid = fopen(ref_fn);

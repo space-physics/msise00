@@ -8,7 +8,7 @@
 [![Python versions (PyPI)](https://img.shields.io/pypi/pyversions/msise00.svg)](https://pypi.python.org/pypi/msise00)
 [![PyPi Download stats](http://pepy.tech/badge/msise00)](http://pepy.tech/project/msise00)
 
-NRL MSISE-00 atmospheric model for Python &ge; 3.6, also accessible via Matlab or GNU Octave.
+NRL MSISE-00 atmospheric model for Python &ge; 3.6, also accessible via Matlab.
 Valid from altitude z = 0..1000 km.
 
 The plot immediately below shows a slice at 200km on a world-wide grid.
@@ -106,16 +106,15 @@ Simple examples under [Examples/](./Examples)
 
 ### Matlab
 
-Matlab and GNU Octave users use of MSISE00 is demonstrated in
-[AltitudeProfile.m](./matlab/AlitudeProfile.m) and
-[msise00.m](./matlab/msise00.m).
+Matlab use of MSISE00 is demonstrated in
+[Examples](./Examples/)
 
-MSISE00 will **automatically compile** "build on run" on first run from Matlab or Octave.
+MSISE00 will **automatically compile** "build on run" on first run from Matlab as with Python.
 
 Optionally, verify Matlab is working by from the top `msise00/` directory in Terminal
 
 ```sh
-matlab -batch runtests('tests')
+matlab -batch msise00.test_mod
 ```
 
 ## Reference

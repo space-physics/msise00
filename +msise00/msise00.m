@@ -1,12 +1,14 @@
 function iono = msise00(time, glat, glon, f107a, f107, Ap, altkm)
-%% run MSIS E00
-narginchk(7,7)
-validateattributes(glat, {'numeric'}, {'scalar'}, mfilename, 'geodetic latitude',2)
-validateattributes(glon, {'numeric'}, {'scalar'}, mfilename, 'geodetic longitude',3)
-validateattributes(f107a, {'numeric'}, {'positive','scalar'},mfilename, '81 day AVERAGE OF F10.7 FLUX (centered on day)',4)
-validateattributes(f107, {'numeric'}, {'positive','scalar'},mfilename, 'DAILY F10.7 FLUX FOR PREVIOUS DAY', 5)
-validateattributes(Ap, {'numeric'}, {'positive','scalar'}, mfilename, 'MAGNETIC INDEX(DAILY)',6)
-validateattributes(altkm, {'numeric'}, {'positive', 'scalar'},mfilename, 'altitude [km]',7)
+%% run MSISe00
+arguments
+  time (1,1) datetime
+  glat (1,1) {mustBeNumeric,mustBeFinite}
+  glon (1,1) {mustBeNumeric,mustBeFinite}
+  f107a (1,1) {mustBeNumeric,mustBeFinite,mustBeNonnegative}
+  f107 (1,1) {mustBeNumeric,mustBeFinite,mustBeNonnegative}
+  Ap (1,1) {mustBeNumeric,mustBeFinite,mustBeNonnegative}
+  altkm (1,1) {mustBeNumeric,mustBeFinite,mustBeNonnegative}
+end
 %% binary MSISe00
 cwd = fileparts(mfilename('fullpath'));
 src_dir = fullfile(cwd,'../src/msise00');
@@ -14,21 +16,19 @@ exe = fullfile(src_dir, 'msise00_driver');
 if ispc, exe = [exe, '.exe']; end
 if ~isfile(exe), cmake(src_dir), end
 
-doy = date2doy(time);
-v = datevec(time);
-hms = num2str(v(4:6));
-iyd = int2str(v(1));
-iyd = [iyd(3:4), num2str(floor(doy),'%03d')];
-
+doy = day(time, 'dayofyear');
+year2 = int2str(year(time));
+year2 = year2(3:4);
+iyd = sprintf('%s%03d', year2, doy);
+hms = sprintf('%02d %02d %02d', hour(time), minute(time), second(time));
 
 cmd = [exe, ' ', iyd, ' ', hms,...
        ' ',num2str(glat), ' ', num2str(glon),...
        ' ',num2str(f107a), ' ', num2str(f107), ' ', num2str(Ap),...
        ' ',num2str(altkm)];
 
-[status,dat] = system(cmd);
-if status ~= 0, error(dat), end
-
+[ret,dat] = system(cmd);
+assert(ret == 0, dat)
 
 D = cell2mat(textscan(dat, '%f', 'ReturnOnError', false));
 if length(D)~=11
