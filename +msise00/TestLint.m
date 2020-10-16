@@ -5,7 +5,7 @@ methods (Test)
 function test_linter(tc)
 cwd = fileparts(mfilename('fullpath'));
 
-fail = checkcode_recursive(fullfile(cwd, '..'), tc, fullfile(cwd, "MLint.txt"));
+fail = checkcode_recursive(cwd, tc, fullfile(cwd, "MLint.txt"));
 
 tc.verifyFalse(fail)
 end
