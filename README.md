@@ -5,6 +5,7 @@
 ![Actions Status](https://github.com/space-physics/msise00/workflows/ci_linux/badge.svg)
 ![Actions Status](https://github.com/space-physics/msise00/workflows/ci_mac/badge.svg)
 ![Actions Status](https://github.com/space-physics/msise00/workflows/ci_windows/badge.svg)
+[![Build Status](https://travis-ci.com/space-physics/msise00.svg?branch=master)](https://travis-ci.com/space-physics/msise00)
 [![Python versions (PyPI)](https://img.shields.io/pypi/pyversions/msise00.svg)](https://pypi.python.org/pypi/msise00)
 [![PyPi Download stats](http://pepy.tech/badge/msise00)](http://pepy.tech/project/msise00)
 
