@@ -20,6 +20,11 @@ from .timeutils import todatetime
 
 import geomagindices as gi
 
+try:
+    from numpy.typing import ArrayLike
+except ImportError:
+    ArrayLike = np.ndarray
+
 species = ["He", "O", "N2", "O2", "Ar", "Total", "H", "N", "AnomalousO"]
 ttypes = ["Texo", "Tn"]
 first = True
@@ -39,8 +44,8 @@ def cmake(setup_file: Path):
 def run(
     time: datetime,
     altkm: float,
-    glat: typing.Union[float, np.ndarray],
-    glon: typing.Union[float, np.ndarray],
+    glat: typing.Union[float, ArrayLike],
+    glon: typing.Union[float, ArrayLike],
     indices: typing.Dict[str, typing.Any] = None,
 ) -> xarray.Dataset:
     """
@@ -60,18 +65,18 @@ def run(
 
 def loopalt_gtd(
     time: datetime,
-    glat: typing.Union[float, np.ndarray],
-    glon: typing.Union[float, np.ndarray],
-    altkm: typing.Union[float, typing.Sequence[float], np.ndarray],
+    glat: typing.Union[float, ArrayLike],
+    glon: typing.Union[float, ArrayLike],
+    altkm: typing.Union[float, ArrayLike],
     indices: typing.Dict[str, typing.Any] = None,
 ) -> xarray.Dataset:
     """
     loop over location and time
 
-    time: datetime or numpy.datetime64 or list of datetime or np.ndarray of datetime
-    glat: float or 2-D np.ndarray
-    glon: float or 2-D np.ndarray
-    altkm: float or list or 1-D np.ndarray
+    time: datetime or numpy.datetime64 or list of datetime or ArrayLike of datetime
+    glat: float or 2-D ArrayLike
+    glon: float or 2-D ArrayLike
+    altkm: float or list or 1-D ArrayLike
     """
     glat = np.atleast_2d(glat)
     glon = np.atleast_2d(glon)
@@ -97,7 +102,7 @@ def loopalt_gtd(
 
 
 def rungtd1d(
-    time: datetime, altkm: np.ndarray, glat: float, glon: float, indices: typing.Dict[str, typing.Any] = None
+    time: datetime, altkm: ArrayLike, glat: float, glon: float, indices: typing.Dict[str, typing.Any] = None
 ) -> xarray.Dataset:
     """
     This is the "atomic" function looped by other functions
@@ -129,7 +134,7 @@ def rungtd1d(
         with importlib.resources.path(__package__, "setup.cmake") as setup_file:
             cmake(setup_file)
     if not importlib.resources.is_resource(__package__, exe_name):
-        raise ModuleNotFoundError("could not build MSISE00 Fortran driver")
+        raise RuntimeError("could not build MSISE00 Fortran driver")
 
     with importlib.resources.path(__package__, exe_name) as exe:
         for i, a in enumerate(altkm):

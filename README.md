@@ -2,9 +2,7 @@
 
 [![Zenodo DOI](https://zenodo.org/badge/32971905.svg)](https://zenodo.org/badge/latestdoi/32971905)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/space-physics/msise00.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/space-physics/msise00/context:python)
-![Actions Status](https://github.com/space-physics/msise00/workflows/ci_linux/badge.svg)
-![Actions Status](https://github.com/space-physics/msise00/workflows/ci_mac/badge.svg)
-![Actions Status](https://github.com/space-physics/msise00/workflows/ci_windows/badge.svg)
+![Actions Status](https://github.com/space-physics/msise00/workflows/ci/badge.svg)
 [![Build Status](https://travis-ci.com/space-physics/msise00.svg?branch=master)](https://travis-ci.com/space-physics/msise00)
 [![Python versions (PyPI)](https://img.shields.io/pypi/pyversions/msise00.svg)](https://pypi.python.org/pypi/msise00)
 [![PyPi Download stats](http://pepy.tech/badge/msise00)](http://pepy.tech/project/msise00)
