@@ -7,7 +7,8 @@
 [![Python versions (PyPI)](https://img.shields.io/pypi/pyversions/msise00.svg)](https://pypi.python.org/pypi/msise00)
 [![PyPi Download stats](http://pepy.tech/badge/msise00)](http://pepy.tech/project/msise00)
 
-NRL MSISE-00 atmospheric model for Python &ge; 3.6, also accessible via Matlab.
+NRL MSISE-00 atmospheric model for Python.
+Also accessible via Matlab.
 Valid from altitude z = 0..1000 km.
 
 The plot immediately below shows a slice at 200km on a world-wide grid.
