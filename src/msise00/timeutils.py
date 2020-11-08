@@ -7,26 +7,28 @@ TIME_FMTS = typing.Union[str, datetime, np.datetime64]
 
 
 def todt64(time: TIME_FMTS) -> np.ndarray:
-    time = np.atleast_1d(time)
+    dtime = np.atleast_1d(todatetime(time))
 
-    if time.size == 1:
-        time = np.atleast_1d(np.datetime64(time[0], dtype="datetime64[us]"))
-    elif time.size == 2:
-        time = np.arange(time[0], time[1], dtype="datetime64[h]")
+    if dtime.size == 1:
+        dtime = np.atleast_1d(np.datetime64(dtime[0], dtype="datetime64[us]"))  # type: ignore
+        # mypy bug
+    elif dtime.size == 2:
+        dtime = np.arange(dtime[0], dtime[1], dtype="datetime64[h]")
     else:
         pass
 
-    return time
+    return dtime
 
 
 def todatetime(time: TIME_FMTS) -> datetime:
 
     if isinstance(time, str):
-        dtime = parse(time)
+        dtime: datetime = parse(time)
     elif isinstance(time, datetime):
         dtime = time
     elif isinstance(time, np.datetime64):
-        dtime = time.astype(datetime)
+        dtime = time.astype(datetime)  # type: ignore
+        # mypy bug
     else:
         raise TypeError(f"{type(time)} not allowed")
 

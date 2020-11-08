@@ -20,10 +20,6 @@ from .timeutils import todatetime
 
 import geomagindices as gi
 
-try:
-    from numpy.typing import ArrayLike
-except ImportError:
-    ArrayLike = np.ndarray
 
 species = ["He", "O", "N2", "O2", "Ar", "Total", "H", "N", "AnomalousO"]
 ttypes = ["Texo", "Tn"]
@@ -44,8 +40,8 @@ def cmake(setup_file: Path):
 def run(
     time: datetime,
     altkm: float,
-    glat: typing.Union[float, ArrayLike],
-    glon: typing.Union[float, ArrayLike],
+    glat: float,
+    glon: float,
     indices: typing.Dict[str, typing.Any] = None,
 ) -> xarray.Dataset:
     """
@@ -65,9 +61,9 @@ def run(
 
 def loopalt_gtd(
     time: datetime,
-    glat: typing.Union[float, ArrayLike],
-    glon: typing.Union[float, ArrayLike],
-    altkm: typing.Union[float, ArrayLike],
+    glat: float,
+    glon: float,
+    altkm: float,
     indices: typing.Dict[str, typing.Any] = None,
 ) -> xarray.Dataset:
     """
@@ -102,7 +98,7 @@ def loopalt_gtd(
 
 
 def rungtd1d(
-    time: datetime, altkm: ArrayLike, glat: float, glon: float, indices: typing.Dict[str, typing.Any] = None
+    time: datetime, altkm: float, glat: float, glon: float, indices: typing.Dict[str, typing.Any] = None
 ) -> xarray.Dataset:
     """
     This is the "atomic" function looped by other functions
