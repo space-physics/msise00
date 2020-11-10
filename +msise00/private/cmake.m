@@ -5,25 +5,14 @@ arguments
   src_dir (1,1) string
 end
 
+assert(isfolder(src_dir), "source directory not found: %s", src_dir)
+
 fix_macos()
 
-cmd = "cmake --version";
-ret = system(cmd);
-if ret ~= 0
-  error('cmake:runtime_error', 'CMake not found')
-end
+assert(system("cmake --version") == 0, 'CMake not found')
 
-cmd = "ctest -S " + fullfile(src_dir, "setup.cmake") +  " -VV";
-
-
-if ~isfolder(src_dir)
-  error("cmake:file_not_found", "source directory not found: " + src_dir)
-end
-
-ret = system(cmd);
-if ret ~= 0
-  error('cmake:runtime_error', 'error building with CMake')
-end
+cmd = sprintf("ctest -S %s -VV", fullfile(src_dir, "setup.cmake"));
+assert(system(cmd) == 0, 'error building with CMake')
 
 end
 
