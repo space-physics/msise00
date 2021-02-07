@@ -1,4 +1,4 @@
-function plotalt(atmos, times, glat, glon)
+function hp = plotalt(atmos, times, glat, glon)
 arguments
   atmos struct
   times datetime
@@ -38,7 +38,7 @@ ax = nexttile(t);
 set(ax, 'nextplot','add')
 
 plot(ax, [atmos.Tn], altkm, 'DisplayName', 'T_n')
-plot(ax, [atmos.Texospheric], altkm, 'DisplayName', 'T_{exo}')
+plot(ax, [atmos.Texo], altkm, 'DisplayName', 'T_{exo}')
 
 title(ax, 'Temperature')
 xlabel(ax, 'Temperature [K]')

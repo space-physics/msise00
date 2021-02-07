@@ -1,6 +1,5 @@
 function cmake(src_dir)
-% build program using CMake and default generator
-% to specify generator with CMake >= 3.15 set environment variable CMAKE_GENERATOR
+% build program using CMake
 arguments
   src_dir (1,1) string
 end
@@ -27,7 +26,7 @@ if ~ismac
 end
 
 sys_path = getenv("PATH");
-needed_paths = "/usr/local/bin";
+needed_paths = ["/usr/local/bin", "/opt/homebrew/bin"];
 for np = needed_paths
   if isfolder(np) && ~contains(sys_path, np)
     sys_path = np + pathsep + sys_path;

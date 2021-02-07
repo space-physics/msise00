@@ -1,4 +1,4 @@
-function plottime(atmos, times, glat, glon)
+function fig = plottime(atmos, times, glat, glon)
 arguments
   atmos struct
   times datetime

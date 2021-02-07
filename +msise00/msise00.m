@@ -1,12 +1,10 @@
-function iono = msise00(time, glat, glon, f107a, f107, Ap, altkm)
+function atmos = msise00(time, glat, glon, indices, altkm)
 %% run MSISe00
 arguments
   time (1,1) datetime
   glat (1,1) {mustBeNumeric,mustBeFinite}
   glon (1,1) {mustBeNumeric,mustBeFinite}
-  f107a (1,1) {mustBeNumeric,mustBeFinite,mustBeNonnegative}
-  f107 (1,1) {mustBeNumeric,mustBeFinite,mustBeNonnegative}
-  Ap (1,1) {mustBeNumeric,mustBeFinite,mustBeNonnegative}
+  indices (1,1) struct
   altkm (1,1) {mustBeNumeric,mustBeFinite,mustBeNonnegative}
 end
 %% binary MSISe00
@@ -23,11 +21,13 @@ hms = sprintf('%02d %02d %02d', hour(time), minute(time), second(time));
 
 cmd = exe + " " + doy + " " + hms +...
        " " + num2str(glat) + " " + num2str(glon) + ...
-       " " + num2str(f107a) + " " + num2str(f107) + " " + num2str(Ap) + ...
+       " " + num2str(indices.f107s) + " " + num2str(indices.f107) + " " + num2str(indices.Ap) + ...
        " " + num2str(altkm);
 
 [ret,dat] = system(cmd);
-assert(ret == 0, dat)
+if ret ~= 0
+  error("msise00:runtimeError", "MSISE00 failure %s", dat)
+end
 
 D = cell2mat(textscan(dat, '%f', 'ReturnOnError', false));
 if length(D)~=11
@@ -35,17 +35,8 @@ if length(D)~=11
   error("unexpected output from MSISe00 using " + exe)
 end
 
-iono.altkm = altkm;
-iono.nHe = D(1);
-iono.nO = D(2);
-iono.nN2 = D(3);
-iono.nO2 = D(4);
-iono.nAr = D(5);
-iono.nTotal = D(6);
-iono.nH = D(7);
-iono.nN = D(8);
-iono.nOanomalous = D(9);
+atmos = struct("altkm", altkm, "f107s", indices.f107s, "f107", indices.f107, "Ap", indices.Ap,...
+  "nHe", D(1), "nO", D(2), "nN2", D(3), "nO2", D(4), "nAr", D(5), ...
+  "nTotal", D(6), "nH", D(7), "nN",  D(8),  "nOanomalous", D(9), "Texo", D(10), "Tn", D(11));
 
-iono.Texospheric = D(10);
-iono.Tn = D(11);
 end
