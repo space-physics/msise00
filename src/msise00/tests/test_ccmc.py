@@ -20,21 +20,21 @@ def test_ccmc():
         A = np.loadtxt(fn, skiprows=25)
 
     atmos = msise00.run(t, altkm, glat, glon, indices)
-    assert atmos.f107s == approx(163.6666)
-    assert atmos.f107 == approx(146.7)
-    assert atmos.Ap == approx(7)
+    assert atmos.f107s == approx(indices["f107s"])
+    assert atmos.f107 == approx(indices["f107"])
+    assert atmos.Ap == indices["Ap"]
     assert A[0] == approx(altkm)
-    assert A[1] == approx(atmos["O"].item() / 1e6, rel=0.05)
-    assert A[2] == approx(atmos["N2"].item() / 1e6, rel=0.3)
-    assert A[3] == approx(atmos["O2"].item() / 1e6, rel=0.35)
-    assert A[7] == approx(atmos["He"].item() / 1e6, rel=0.2)
-    assert A[8] == approx(atmos["Ar"].item() / 1e6, rel=0.6)
-    assert A[9] == approx(atmos["H"].item() / 1e6, rel=0.1)
-    assert A[10] == approx(atmos["N"].item() / 1e6, rel=0.3)
-    assert A[11] == approx(atmos["AnomalousO"].item() / 1e6, rel=0.3)
+    assert A[1] == approx(atmos["O"].item() / 1e6, rel=0.01)
+    assert A[2] == approx(atmos["N2"].item() / 1e6, rel=0.01)
+    assert A[3] == approx(atmos["O2"].item() / 1e6, rel=0.01)
+    assert A[7] == approx(atmos["He"].item() / 1e6, rel=0.01)
+    assert A[8] == approx(atmos["Ar"].item() / 1e6, rel=0.01)
+    assert A[9] == approx(atmos["H"].item() / 1e6, rel=0.01)
+    assert A[10] == approx(atmos["N"].item() / 1e6, rel=0.01)
+    assert A[11] == approx(atmos["AnomalousO"].item() / 1e6, rel=0.01)
 
-    assert A[5] == approx(atmos["Tn"].item(), rel=0.1)
-    assert A[6] == approx(atmos["Texo"].item(), rel=0.1)
+    assert A[5] == approx(atmos["Tn"].item(), rel=0.001)
+    assert A[6] == approx(atmos["Texo"].item(), rel=0.001)
 
 
 def test_ccmc2():
@@ -46,8 +46,8 @@ def test_ccmc2():
 
     atmos = msise00.run(t, altkm, glat, glon, indices)
 
-    assert 4.874e7 == approx(atmos["N2"].item() / 1e6, rel=0.2)
-    assert 1.622e6 == approx(atmos["O2"].item() / 1e6, rel=0.1)
+    assert 4.874e7 == approx(atmos["N2"].item() / 1e6, rel=0.01)
+    assert 1.622e6 == approx(atmos["O2"].item() / 1e6, rel=0.01)
 
-    assert 794.1 == approx(atmos["Tn"].item(), rel=0.1)
-    assert 800.0 == approx(atmos["Texo"].item(), rel=0.1)
+    assert 794.1 == approx(atmos["Tn"].item(), rel=0.01)
+    assert 800.0 == approx(atmos["Texo"].item(), rel=0.01)

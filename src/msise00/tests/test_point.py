@@ -1,8 +1,8 @@
 """
 Regenerate test data:
 
-./MSISE00.py -q -w tests/ref6.nc -a 200 -t 2017-03-01T12 -c 65 -148
-./MSISE00.py -q -w tests/ref5.nc -a 100 -t 2017-03-01T12 -c 65 -148
+python -m msise00 -w src/msise00/tests/ref6.nc -a 200 -t 2017-03-01T12 -c 65 -148
+python -m msise00 -w src/msise00/tests/ref5.nc -a 100 -t 2017-03-01T12 -c 65 -148
 """
 
 import importlib.resources

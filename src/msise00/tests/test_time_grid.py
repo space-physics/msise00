@@ -1,5 +1,7 @@
 """
-python MSISE00.py -q -w tests/ref4.nc -a 200 -gs 90 90 -t 2017-03-01T12 2017-03-01T14
+generate the reference data:
+
+python -m msise00 -w src/msise00/tests/ref4.nc -a 200 -gs 90 90 -t 2017-03-01T12 2017-03-01T13
 """
 
 import importlib.resources

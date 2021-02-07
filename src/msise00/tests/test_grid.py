@@ -1,5 +1,7 @@
 """
-python MSISE00.py -q -w tests/ref3.nc -a 200 -t 2017-03-01T12
+regenerate data:
+
+python -m msise00 -w src/msise00/tests/ref3.nc -a 200 -gs 30 60 -t 2017-03-01T12
 """
 
 import subprocess
@@ -23,9 +25,8 @@ def test_one_alt_one_time():
 
     lat, lon = msise00.worldgrid.latlonworldgrid(30, 60)
 
-    indices = {"f107": 79.3, "f107s": 76.6802469, "Ap": 39}
     try:
-        dat_mod = msise00.run(time, altkm, lat, lon, indices).squeeze()
+        dat_mod = msise00.run(time, altkm, lat, lon).squeeze()
     except ConnectionError:
         pytest.skip("unable to download RecentIndices.txt")
     xarray.tests.assert_allclose(ref, dat_mod)

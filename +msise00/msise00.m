@@ -19,12 +19,9 @@ if ~isfile(exe)
 end
 
 doy = day(time, 'dayofyear');
-year2 = int2str(year(time));
-year2 = year2(3:4);
-iyd = sprintf('%s%03d', year2, doy);
 hms = sprintf('%02d %02d %02d', hour(time), minute(time), second(time));
 
-cmd = exe + " " + iyd + " " + hms +...
+cmd = exe + " " + doy + " " + hms +...
        " " + num2str(glat) + " " + num2str(glon) + ...
        " " + num2str(f107a) + " " + num2str(f107) + " " + num2str(Ap) + ...
        " " + num2str(altkm);

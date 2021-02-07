@@ -1,6 +1,7 @@
 program msis_driver
 
 use, intrinsic:: iso_fortran_env, only: stderr=>error_unit
+use msise00_python, only : gtd7, meters
 
 implicit none
 
@@ -14,7 +15,7 @@ real :: glat, glon ! geodetic latitude, longitude [deg]
 real :: lst ! local solar time
 real :: f107a
 real :: f107
-real :: Ap
+real :: Ap, Ap7(7)
 
 real :: hour, minute, second
 
@@ -27,6 +28,7 @@ real :: Temperature(2)
 ! SW is as defined in NRL example
 real, parameter :: SW(25)=[1.,1.,1.,1.,1.,1.,1.,1.,-1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.]
 
+call meters(.true.)
 
 ! --- command line input
 if (command_argument_count() < 10) then
@@ -60,6 +62,7 @@ read(argv,*) f107
 
 call get_command_argument(9, argv)
 read(argv,*) Ap
+Ap7 = Ap
 
 call get_command_argument(10, argv)
 read(argv,*) alt_km
@@ -70,7 +73,7 @@ utsec = hour*3600. + minute*60. + second
 
 lst = utsec/3600. + glon/15.
 
-CALL GTD7(doy, utsec, alt_km, glat, glon, lst, f107a, f107, ap,48, Density, Temperature)
+CALL GTD7(doy, utsec, alt_km, glat, glon, lst, f107a, f107, Ap7, 48, Density, Temperature)
 
 print '(9ES15.7)',Density
 print '(2F9.2)',Temperature

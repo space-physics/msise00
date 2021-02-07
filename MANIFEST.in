@@ -1,2 +1,2 @@
-include src/msise00/fortran/msise00_driver.f90 src/msise00/fortran/nrlmsise00_sub.for
-include src/msise00/CMakeLists.txt src/msise00/setup.cmake src/msise00/meson.build
+graft src/msise00/fortran
+include src/msise00/CMakeLists.txt src/msise00/setup.cmake

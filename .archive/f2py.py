@@ -2,7 +2,9 @@ import numpy as np
 import xarray
 
 
-def rungtd1d(time: Union[datetime, str, np.ndarray], altkm: np.ndarray, glat: float, glon: float) -> xarray.Dataset:
+def rungtd1d(
+    time: Union[datetime, str, np.ndarray], altkm: np.ndarray, glat: float, glon: float
+) -> xarray.Dataset:
     """
     This is the "atomic" function looped by other functions
     """
@@ -40,7 +42,10 @@ def rungtd1d(time: Union[datetime, str, np.ndarray], altkm: np.ndarray, glat: fl
     for i, a in enumerate(altkm):
         dens[i, :], temp[i, :] = gtd7.gtd7(iyd, utsec, a, glat, glon, stl, f107a, f107, Ap, MASS)
 
-    dsf = {k: (("time", "alt_km", "lat", "lon"), v[None, :, None, None]) for (k, v) in zip(species, dens.T)}
+    dsf = {
+        k: (("time", "alt_km", "lat", "lon"), v[None, :, None, None])
+        for (k, v) in zip(species, dens.T)
+    }
     dsf.update(
         {
             "Tn": (("time", "alt_km", "lat", "lon"), temp[:, 1][None, :, None, None]),

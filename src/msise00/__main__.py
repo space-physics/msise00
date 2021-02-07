@@ -20,12 +20,26 @@ def cli():
     p = ArgumentParser(description="calls MSISE-00 from Python, save to NetCDF4 and/or plot")
     p.add_argument("-t", "--time", help="time or times", nargs="+", required=True)
     p.add_argument(
-        "-a", "--altkm", help="altitude (km). scalar, or (start,stop,step) or list of alts.", type=float, nargs="+", required=True
+        "-a",
+        "--altkm",
+        help="altitude (km). scalar, or (start,stop,step) or list of alts.",
+        type=float,
+        nargs="+",
+        required=True,
     )
-    p.add_argument("-c", "--latlon", help="geodetic latitude/longitude (deg)", metavar=("lat", "lon"), type=float, nargs=2)
+    p.add_argument(
+        "-c",
+        "--latlon",
+        help="geodetic latitude/longitude (deg)",
+        metavar=("lat", "lon"),
+        type=float,
+        nargs=2,
+    )
     p.add_argument("-o", "--odir", help="directory to write plots to")
     p.add_argument("-w", help="NetCDF4 .nc filename to write")
-    p.add_argument("-gs", help="geographic grid spacing (lat, lon)", nargs=2, type=float, default=(10, 10))
+    p.add_argument(
+        "-gs", help="geographic grid spacing (lat, lon)", nargs=2, type=float, default=(10, 10)
+    )
     p.add_argument("-q", "--quiet", help="disable plotting", action="store_true")
     P = p.parse_args()
 
@@ -59,3 +73,7 @@ def cli():
             show()
         except ImportError:
             print("skipped plotting")
+
+
+if __name__ == "__main__":
+    cli()

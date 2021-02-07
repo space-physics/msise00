@@ -34,7 +34,9 @@ def plotgtd(atmos: xarray.Dataset, rodir: Path = None):
         elif "time" in tmp.dims:
             plot1dtime(atmos)
         else:
-            raise NotImplementedError("didnt handle this plotting case yet. Should be straightforward.")
+            raise NotImplementedError(
+                "didnt handle this plotting case yet. Should be straightforward."
+            )
     elif tmp.ndim == 2:
         if "lat" in tmp.dims and "lon" in tmp.dims:
             plot2dlatlon(atmos, rodir)
@@ -42,7 +44,9 @@ def plotgtd(atmos: xarray.Dataset, rodir: Path = None):
             for t in atmos.time:
                 plot1dalt(atmos.sel(time=t), rodir)
         else:
-            raise NotImplementedError("didnt handle this plotting case yet. Should be straightforward.")
+            raise NotImplementedError(
+                "didnt handle this plotting case yet. Should be straightforward."
+            )
     elif tmp.ndim in (3, 4):  # lat/lon grid vs. time
         plot4d(atmos, rodir)
     else:  # single point
@@ -58,7 +62,9 @@ def plot4d(atmos: xarray.Dataset, rodir: Path = None):
             sun = get_sun(time=time)
             aaf = AltAz(obstime=time, location=obs)
             sloc = sun.transform_to(aaf)
-            slat, slon = aer2geodetic(sloc.az.value, sloc.alt.value, sloc.distance.value, 0, 0, 0)[:2]
+            slat, slon = aer2geodetic(sloc.az.value, sloc.alt.value, sloc.distance.value, 0, 0, 0)[
+                :2
+            ]
             plot2dlatlon(atmos.sel(time=t), rodir, slat, slon)
         else:
             plot2dlatlon(atmos.sel(time=t), rodir)
@@ -69,7 +75,10 @@ def plot2dlatlon(atmos: xarray.Dataset, rodir: Path = None, slat: float = None, 
     fg = figure(figsize=(8, 8))
     ax = fg.subplots(4, 2, sharex=True).ravel()
 
-    fg.suptitle(str(atmos.time.values.squeeze())[:-13] + f" alt.(km) {atmos.alt_km.item()}\n" f"Ap={atmos.Ap}  F10.7={atmos.f107}")
+    fg.suptitle(
+        str(atmos.time.values.squeeze())[:-13] + f" alt.(km) {atmos.alt_km.item()}\n"
+        f"Ap={atmos.Ap}  F10.7={atmos.f107}"
+    )
 
     j = 0
 
@@ -104,7 +113,9 @@ def plot2dlatlon(atmos: xarray.Dataset, rodir: Path = None, slat: float = None, 
         ax[k].set_xlabel("longitude (deg)")
 
     if rodir:
-        ofn = rodir / (f"{atmos.alt_km.item():.1f}_" + str(atmos.time.values.squeeze())[:-13] + ".png")
+        ofn = rodir / (
+            f"{atmos.alt_km.item():.1f}_" + str(atmos.time.values.squeeze())[:-13] + ".png"
+        )
         writeplot(fg, ofn)
 
 
