@@ -15,11 +15,9 @@ steps:
       sudo apt install -yq --no-install-recommends gfortran
     displayName: 'Install Linux prereqs'
   - task: InstallMATLAB@0
-    inputs:
-      release: R2020a
   - task: RunMATLABCommand@0
     inputs:
-      command: TestAll
+      command: "disp(version); TestAll"
   - task: PublishTestResults@2
     condition: succeededOrFailed()
     inputs:
