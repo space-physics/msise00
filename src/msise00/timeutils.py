@@ -1,13 +1,12 @@
+from __future__ import annotations
+
 from dateutil.parser import parse
 import numpy as np
 from datetime import datetime, date
-import typing
-
-TIME_FMTS = typing.Union[str, datetime, np.datetime64]
 
 
-def todt64(time: TIME_FMTS) -> np.ndarray:
-    dtime = np.atleast_1d(todatetime(time))
+def todt64(time: str | datetime | np.datetime64) -> np.ndarray:
+    dtime = np.atleast_1d(todatetime(time))  # type: ignore
 
     if dtime.size == 1:
         dtime = np.atleast_1d(np.datetime64(dtime[0], dtype="datetime64[us]"))  # type: ignore
@@ -20,7 +19,7 @@ def todt64(time: TIME_FMTS) -> np.ndarray:
     return dtime
 
 
-def todatetime(time: TIME_FMTS) -> datetime:
+def todatetime(time: str | datetime | np.datetime64) -> datetime:
 
     if isinstance(time, str):
         dtime: datetime = parse(time)

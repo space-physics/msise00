@@ -6,6 +6,7 @@ Original fortran code from
 http://nssdcftp.gsfc.nasa.gov/models/atmospheric/msis/nrlmsise00/
 """
 
+from __future__ import annotations
 import os
 import importlib.resources
 from datetime import datetime, date
@@ -42,7 +43,7 @@ def run(
     altkm: float,
     glat: float,
     glon: float,
-    indices: typing.Dict[str, typing.Any] = None,
+    indices: dict[str, typing.Any] = None,
 ) -> xarray.Dataset:
     """
     loops the rungtd1d function below. Figure it's easier to troubleshoot in Python than Fortran.
@@ -61,24 +62,24 @@ def run(
 
 def loopalt_gtd(
     time: datetime,
-    glat: float,
-    glon: float,
+    glat: float | np.ndarray,
+    glon: float | np.ndarray,
     altkm: float,
-    indices: typing.Dict[str, typing.Any] = None,
+    indices: dict[str, typing.Any] = None,
 ) -> xarray.Dataset:
     """
     loop over location and time
 
-    time: datetime or numpy.datetime64 or list of datetime or ArrayLike of datetime
-    glat: float or 2-D ArrayLike
-    glon: float or 2-D ArrayLike
-    altkm: float or list or 1-D ArrayLike
+    time: datetime or numpy.datetime64 or list of datetime or ndarray of datetime
+    glat: float or 2-D ndarray
+    glon: float or 2-D ndarray
+    altkm: float or list or 1-D ndarray
     """
     glat = np.atleast_2d(glat)
     glon = np.atleast_2d(glon)
     assert glat.ndim == glon.ndim == 2
 
-    times = np.atleast_1d(time)
+    times = np.atleast_1d(time)  # type: ignore
     assert times.ndim == 1
 
     atmos = xarray.Dataset()
@@ -97,16 +98,15 @@ def loopalt_gtd(
     return atmos
 
 
-def rungtd1d(
-    time: datetime, altkm: float, glat: float, glon: float, indices: typing.Dict[str, typing.Any] = None
-) -> xarray.Dataset:
+def rungtd1d(time: datetime, altkm: float, glat: float, glon: float, indices: dict[str, typing.Any] = None) -> xarray.Dataset:
     """
     This is the "atomic" function looped by other functions
     """
     time = todatetime(time)
     # %% get solar parameters for date
     if not indices:
-        indices = gi.getApF107(time, smoothdays=81).squeeze()
+        indices = gi.get_indices(time, smoothdays=81).squeeze().to_dict()
+    assert isinstance(indices, dict)
     # %% dimensions
     altkm = np.atleast_1d(altkm)
     if altkm.ndim != 1:
@@ -167,7 +167,7 @@ def rungtd1d(
     )
 
     atmos = xarray.Dataset(
-        dsf,
+        dsf,  # type: ignore
         coords={"time": [time], "alt_km": altkm, "lat": [glat], "lon": [glon]},
         attrs={"species": species, "f107s": indices["f107s"], "f107": indices["f107"], "Ap": indices["Ap"]},
     )
