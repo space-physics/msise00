@@ -31,11 +31,8 @@ def cmake(setup_file: Path):
     """
     attempt to build using CMake
     """
-    exe = shutil.which("ctest")
-    if not exe:
-        raise FileNotFoundError("CMake not available")
 
-    subprocess.check_call([exe, "-S", str(setup_file), "-VV"])
+    subprocess.check_call(["ctest", "-S", str(setup_file), "-VV"])
 
 
 def run(
@@ -127,6 +124,13 @@ def rungtd1d(time: datetime, altkm: float, glat: float, glon: float, indices: di
     if os.name == "nt":
         exe_name += ".exe"
     if not importlib.resources.is_resource(__package__, exe_name):
+        # check for CMake here to avoid "generator didn't stop after throw() higher level raise"
+        if not shutil.which("ctest"):
+            raise FileNotFoundError("""
+    CMake not available. try installing CMake like:
+
+        pip install cmake""")
+
         with importlib.resources.path(__package__, "setup.cmake") as setup_file:
             cmake(setup_file)
     if not importlib.resources.is_resource(__package__, exe_name):
