@@ -117,6 +117,21 @@ Optionally, verify Matlab is working by from the top `msise00/` directory in Ter
 matlab -batch msise00.test_mod
 ```
 
+### Fortran
+
+Those wishing to use MSIS from a plain Fortran program can do from the top-level msise00/ directory:
+
+```sh
+cmake -B build
+cmake --build build
+```
+
+optionally:
+
+```sh
+ctest --test-dir build
+```
+
 ## Reference
 
 * Original fortran [code](https://ccmc.gsfc.nasa.gov/pub/modelweb/atmospheric/msis/)
