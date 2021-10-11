@@ -1,15 +1,10 @@
-cmake_minimum_required(VERSION 3.13...${CMAKE_VERSION})
-
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug or Release")
-endif()
+cmake_minimum_required(VERSION 3.14...3.21)
 
 project(msise00 LANGUAGES Fortran)
 
 include(CTest)
 
 if(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
-  add_compile_options(-fmax-errors=3)
   set(old_flags -std=legacy)
 endif()
 
