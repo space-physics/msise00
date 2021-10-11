@@ -19,7 +19,7 @@ def test_past():
     assert atmos["He"].ndim == 4
     assert atmos["He"].size == 1
     dims = list(atmos.dims)
-    assert ["alt_km", "lat", "lon", "time"] == dims
+    assert ["time", "alt_km", "lat", "lon"] == dims
 
     # daily resolution
     assert atmos["He"].item() == approx(1.2523275e13)
@@ -48,7 +48,7 @@ def test_forecast():
     assert atmos["He"].ndim == 4
     assert atmos["He"].size == 1
     dims = list(atmos.dims)
-    assert ["alt_km", "lat", "lon", "time"] == dims
+    assert ["time", "alt_km", "lat", "lon"] == dims
 
     assert atmos["He"].item() == approx(4.3926901e12)
     assert atmos["O"].item() == approx(4.5728936e15)

@@ -7,6 +7,7 @@ http://nssdcftp.gsfc.nasa.gov/models/atmospheric/msis/nrlmsise00/
 """
 
 from __future__ import annotations
+import typing as T
 import os
 import logging
 import importlib.resources
@@ -14,9 +15,7 @@ from datetime import datetime, date
 import xarray
 import numpy as np
 import subprocess
-import typing
 import shutil
-from pathlib import Path
 
 from .timeutils import todatetime
 
@@ -28,12 +27,24 @@ ttypes = ["Texo", "Tn"]
 first = True
 
 
-def cmake(setup_file: Path):
+def build():
     """
     attempt to build using CMake
     """
+    cmake = shutil.which("cmake")
+    if not cmake:
+        raise FileNotFoundError("CMake not available")
 
-    subprocess.check_call(["ctest", "-S", str(setup_file), "-VV"])
+    with importlib.resources.path(__package__, "CMakeLists.txt") as f:
+        s = f.parent
+        b = s / "build"
+        g = []
+
+        if os.name == "nt" and not os.environ.get("CMAKE_GENERATOR"):
+            g = ["-G", "MinGW Makefiles"]
+
+        subprocess.check_call([cmake, f"-S{s}", f"-B{b}"] + g)
+        subprocess.check_call([cmake, "--build", str(b), "--parallel"])
 
 
 def run(
@@ -41,7 +52,7 @@ def run(
     altkm: float,
     glat: float,
     glon: float,
-    indices: dict[str, typing.Any] = None,
+    indices: dict[str, T.Any] = None,
 ) -> xarray.Dataset:
     """
     loops the rungtd1d function below. Figure it's easier to troubleshoot in Python than Fortran.
@@ -63,7 +74,7 @@ def loopalt_gtd(
     glat: float | np.ndarray,
     glon: float | np.ndarray,
     altkm: float,
-    indices: dict[str, typing.Any] = None,
+    indices: dict[str, T.Any] = None,
 ) -> xarray.Dataset:
     """
     loop over location and time
@@ -97,7 +108,7 @@ def loopalt_gtd(
 
 
 def rungtd1d(
-    time: datetime, altkm: float, glat: float, glon: float, indices: dict[str, typing.Any] = None
+    time: datetime, altkm: float, glat: float, glon: float, indices: dict[str, T.Any] = None
 ) -> xarray.Dataset:
     """
     This is the "atomic" function looped by other functions
@@ -126,20 +137,6 @@ def rungtd1d(
     exe_name = "msise00_driver"
     if os.name == "nt":
         exe_name += ".exe"
-    if not importlib.resources.is_resource(__package__, exe_name):
-        # check for CMake here to avoid "generator didn't stop after throw() higher level raise"
-        if not shutil.which("ctest"):
-            raise FileNotFoundError(
-                """
-    CMake not available. try installing CMake like:
-
-        pip install cmake"""
-            )
-
-        with importlib.resources.path(__package__, "setup.cmake") as setup_file:
-            cmake(setup_file)
-    if not importlib.resources.is_resource(__package__, exe_name):
-        raise RuntimeError("could not build MSISE00 Fortran driver")
 
     # check inputs for error, especially unavailable indices
     if not np.isfinite(glat).all():
@@ -163,6 +160,12 @@ def rungtd1d(
     Ap = indices["Ap"]
     if not np.isfinite(Ap):
         raise ValueError("Ap is not finite.")
+
+    try:
+        with importlib.resources.path(__package__, exe_name) as exe:
+            pass
+    except FileNotFoundError:
+        build()
 
     with importlib.resources.path(__package__, exe_name) as exe:
         for i, a in enumerate(altkm):

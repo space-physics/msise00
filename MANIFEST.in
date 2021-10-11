@@ -1,2 +1,2 @@
 graft src/msise00/fortran
-include src/msise00/CMakeLists.txt src/msise00/setup.cmake
+include src/msise00/CMakeLists.txt
