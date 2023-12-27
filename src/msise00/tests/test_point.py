@@ -22,7 +22,7 @@ time = "2017-03-01T12"
 def test_one_loc_one_time(altkm, reffn):
     pytest.importorskip("netCDF4")
 
-    with importlib.resources.path(__package__, reffn) as fn:
+    with importlib.resources.as_file(importlib.resources.files(__package__)/reffn) as fn:
         ref = xarray.open_dataset(fn)
 
     try:
@@ -36,7 +36,7 @@ def test_one_loc_one_time(altkm, reffn):
 def test_script(altkm, reffn, tmp_path):
     pytest.importorskip("netCDF4")
 
-    with importlib.resources.path(__package__, reffn) as fn:
+    with importlib.resources.as_file(importlib.resources.files(__package__)/reffn) as fn:
         ref = xarray.open_dataset(fn)
 
     fn = tmp_path / "test.nc"

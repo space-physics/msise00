@@ -7,20 +7,20 @@ http://nssdcftp.gsfc.nasa.gov/models/atmospheric/msis/nrlmsise00/
 """
 
 from __future__ import annotations
-import typing as T
-import os
-import logging
-import importlib.resources
-from datetime import datetime, date
-import xarray
-import numpy as np
-import subprocess
-import shutil
 
-from .timeutils import todatetime
+import importlib.resources
+import logging
+import os
+import shutil
+import subprocess
+import typing as T
+from datetime import date, datetime
 
 import geomagindices as gi
+import numpy as np
+import xarray
 
+from .timeutils import todatetime
 
 species = ["He", "O", "N2", "O2", "Ar", "Total", "H", "N", "AnomalousO"]
 ttypes = ["Texo", "Tn"]
@@ -35,7 +35,7 @@ def build():
     if not cmake:
         raise FileNotFoundError("CMake not available")
 
-    with importlib.resources.path(__package__, "CMakeLists.txt") as f:
+    with importlib.resources.as_file(importlib.resources.files(__package__)/'CMakeLists.txt') as f:
         s = f.parent
         b = s / "build"
         g = []
@@ -161,38 +161,35 @@ def rungtd1d(
     if not np.isfinite(Ap):
         raise ValueError("Ap is not finite.")
 
-    try:
-        with importlib.resources.path(__package__, exe_name) as exe:
-            pass
-    except FileNotFoundError:
+    exe = importlib.resources.files(__package__)/exe_name
+    if not os.path.exists(exe):
         build()
 
-    with importlib.resources.path(__package__, exe_name) as exe:
-        for i, a in enumerate(altkm):
-            cmd = [
-                str(exe),
-                doy,
-                str(time.hour),
-                str(time.minute),
-                str(time.second),
-                str(glat),
-                str(glon),
-                str(f107s),
-                str(f107),
-                str(Ap),
-                str(a),
-            ]
+    for i, a in enumerate(altkm):
+        cmd = [
+            str(exe),
+            doy,
+            str(time.hour),
+            str(time.minute),
+            str(time.second),
+            str(glat),
+            str(glon),
+            str(f107s),
+            str(f107),
+            str(Ap),
+            str(a),
+        ]
 
-            logging.info(" ".join(cmd))
+        logging.info(" ".join(cmd))
 
-            ret = subprocess.check_output(cmd, text=True)
+        ret = subprocess.check_output(cmd, text=True)
 
-            # different compilers throw in extra \n
-            raw = list(map(float, ret.split()))
-            if not len(raw) == 9 + 2:
-                raise ValueError(ret)
-            dens[i, :] = raw[:9]
-            temp[i, :] = raw[9:]
+        # different compilers throw in extra \n
+        raw = list(map(float, ret.split()))
+        if not len(raw) == 9 + 2:
+            raise ValueError(ret)
+        dens[i, :] = raw[:9]
+        temp[i, :] = raw[9:]
 
     dsf = {
         k: (("time", "alt_km", "lat", "lon"), v[None, :, None, None])
