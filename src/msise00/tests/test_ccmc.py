@@ -16,7 +16,7 @@ def test_ccmc():
     altkm = 400.0
     indices = {"f107s": 163.6666, "f107": 146.7, "Ap": 7}
 
-    with importlib.resources.path(__package__, "ccmc.log") as fn:
+    with importlib.resources.as_file(importlib.resources.files(__package__)/"ccmc.log") as fn:
         A = np.loadtxt(fn, skiprows=25)
 
     atmos = msise00.run(t, altkm, glat, glon, indices)

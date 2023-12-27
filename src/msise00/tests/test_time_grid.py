@@ -19,7 +19,7 @@ altkm = 200.0
 def test_multiple_time():
     pytest.importorskip("netCDF4")
 
-    with importlib.resources.path(__package__, "ref4.nc") as fn:
+    with importlib.resources.as_file(importlib.resources.files(__package__, "ref4.nc")) as fn:
         ref = xarray.open_dataset(fn)
 
     lat, lon = msise00.worldgrid.latlonworldgrid(90, 90)
@@ -34,7 +34,7 @@ def test_multiple_time():
 def test_script(tmp_path):
     pytest.importorskip("netCDF4")
 
-    with importlib.resources.path(__package__, "ref4.nc") as fn:
+    with importlib.resources.as_file(importlib.resources.files(__package__, "ref4.nc")) as fn:
         ref = xarray.open_dataset(fn)
 
     fn = tmp_path / "test.nc"
