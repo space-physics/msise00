@@ -39,7 +39,20 @@ def test_script(tmp_path):
         ref = xarray.open_dataset(fn)
 
     fn = tmp_path / "test.nc"
-    cmd = [sys.executable, "-m", "msise00", "-q", "-w", str(fn), "-gs", "90", "90", "-a", str(altkm), "-t"] + time
+    cmd = [
+        sys.executable,
+        "-m",
+        "msise00",
+        "-q",
+        "-w",
+        str(fn),
+        "-gs",
+        "90",
+        "90",
+        "-a",
+        str(altkm),
+        "-t",
+    ] + time
     print(" ".join(cmd))
     subprocess.check_call(cmd)
 

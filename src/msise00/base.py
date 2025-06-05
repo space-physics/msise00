@@ -109,9 +109,7 @@ def loopalt_gtd(
     return atmos
 
 
-def rungtd1d(
-    time: datetime, altkm: float, glat: float, glon: float, indices: dict[str, T.Any] | None = None
-):
+def rungtd1d(time: datetime, altkm, glat, glon, indices: dict[str, T.Any] | None = None):
     """
     This is the "atomic" function looped by other functions
     """
