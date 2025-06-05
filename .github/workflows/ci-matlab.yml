@@ -12,7 +12,12 @@ on:
     - "**.cmake"
     - "**/CMakeLists.txt"
     - ".github/workflows/ci-matlab.yml"
+  workflow_dispatch:
 
+# avoid wasted runs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
 
@@ -56,13 +61,14 @@ jobs:
 
     steps:
     - uses: msys2/setup-msys2@v2
+      id: msys2
       with:
         update: true
         install: >-
           mingw-w64-ucrt-x86_64-gcc-fortran
 
     - name: Put MSYS2_MinGW64 on PATH
-      run: echo "${{ runner.temp }}/msys64/ucrt64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      run: echo "${{ steps.msys2.outputs.msys2-location }}/ucrt64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
     - name: Install MATLAB
       timeout-minutes: 10
