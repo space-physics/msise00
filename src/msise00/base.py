@@ -1,6 +1,5 @@
 """
 Call NRL MSISE-00 using f2py from Python
-Michael Hirsch, Ph.D.
 
 Original fortran code from
 http://nssdcftp.gsfc.nasa.gov/models/atmospheric/msis/nrlmsise00/
