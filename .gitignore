@@ -1,5 +1,4 @@
-src/msise00/msis00_driver
-msis00_driver
+msise00_driver
 
 *.m~
 *.svg
