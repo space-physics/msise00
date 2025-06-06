@@ -19,8 +19,6 @@ time = "2017-03-01T12"
 
 
 def test_one_alt_one_time():
-    pytest.importorskip("netCDF4")
-
     with importlib.resources.as_file(importlib.resources.files(__package__) / "ref3.nc") as fn:
         ref = xarray.open_dataset(fn)
 
@@ -34,7 +32,6 @@ def test_one_alt_one_time():
 
 
 def test_script(tmp_path):
-    pytest.importorskip("netCDF4")
 
     with importlib.resources.as_file(importlib.resources.files(__package__) / "ref3.nc") as fn:
         ref = xarray.open_dataset(fn)
