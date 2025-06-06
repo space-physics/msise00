@@ -26,8 +26,7 @@ def todatetime(time: str | datetime) -> datetime:
     elif isinstance(time, datetime):
         dtime = time
     elif isinstance(time, np.datetime64):
-        dtime = time.astype(datetime)  # type: ignore
-        # mypy bug
+        dtime = time.astype(datetime)
     else:
         raise TypeError(f"{type(time)} not allowed")
 

@@ -14,8 +14,6 @@ from datetime import datetime
 import xarray
 import xarray.testing
 
-
-import geomagindices as gi
 import msise00
 
 lat = 65.0
@@ -28,18 +26,9 @@ def test_one_loc_one_time(altkm, reffn):
     with importlib.resources.as_file(importlib.resources.files(__package__) / reffn) as fn:
         ref = xarray.open_dataset(fn)
 
-    try:
-        i = gi.get_indices(time, smoothdays=81).squeeze().to_dict()
-    except ConnectionError:
-        pytest.skip("unable to download RecentIndices.txt")
+    ds = {"time": time, "Ap": 39, "Kp": 4.7, "f107": 79.3, "f107s": 74.989727, "Aps": 9.675052}
 
-    assert i["Ap"] == 39
-    assert i["Kp"] == pytest.approx(4.7)
-    assert i["f107"] == pytest.approx(79.3)
-    assert i["f107s"] == pytest.approx(74.989727)
-    assert i["Aps"] == pytest.approx(9.675052)
-
-    dat = msise00.run(time, altkm, lat, lon, indices=i).squeeze()
+    dat = msise00.run(time, altkm, lat, lon, indices=ds).squeeze()
 
     assert dat.lat == ref.lat == lat
     assert dat.lon == ref.lon == lon
@@ -64,7 +53,7 @@ def test_script(altkm, reffn, tmp_path):
         "-a",
         str(altkm),
         "-t",
-        time,
+        str(time),
         "-c",
         str(lat),
         str(lon),
