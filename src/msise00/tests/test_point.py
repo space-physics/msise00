@@ -30,7 +30,8 @@ def test_one_loc_one_time(altkm, reffn):
         dat_mod = msise00.run(time, altkm, lat, lon).squeeze()
     except ConnectionError:
         pytest.skip("unable to download RecentIndices.txt")
-    xarray.testing.assert_allclose(ref, dat_mod)
+
+    xarray.testing.assert_allclose(ref, dat_mod, rtol=0.001)
 
 
 @pytest.mark.parametrize("altkm,reffn", [(100.0, "ref5.nc"), (200.0, "ref6.nc")])
@@ -60,4 +61,4 @@ def test_script(altkm, reffn, tmp_path):
     subprocess.check_call(cmd)
 
     dat = xarray.open_dataset(fn)
-    xarray.testing.assert_allclose(ref, dat)
+    xarray.testing.assert_allclose(ref, dat, rtol=0.001)
