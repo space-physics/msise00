@@ -1,4 +1,4 @@
-FC = gfortran 
+FC = gfortran
 FCFLAGS = -O3 -mtune=native -pedantic -Wall
 
 all: libnrlmsis.a testgtd7

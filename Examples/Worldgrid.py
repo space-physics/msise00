@@ -4,6 +4,7 @@ Example:
 
 lat / lon grid at altitude example
 """
+
 from datetime import datetime
 from matplotlib.pyplot import show
 

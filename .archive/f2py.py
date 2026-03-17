@@ -41,7 +41,9 @@ def rungtd1d(time: datetime | str, altkm, glat: float, glon: float) -> xarray.Da
     dens = np.empty((altkm.size, len(species)))
     temp = np.empty((altkm.size, len(ttypes)))
     for i, a in enumerate(altkm):
-        dens[i, :], temp[i, :] = gtd7.gtd7(iyd, utsec, a, glat, glon, stl, f107a, f107, Ap, MASS)
+        dens[i, :], temp[i, :] = gtd7.gtd7(
+            iyd, utsec, a, glat, glon, stl, f107a, f107, Ap, MASS
+        )
 
     dsf = {
         k: (("time", "alt_km", "lat", "lon"), v[None, :, None, None])
@@ -56,7 +58,12 @@ def rungtd1d(time: datetime | str, altkm, glat: float, glon: float) -> xarray.Da
 
     atmos = xarray.Dataset(
         dsf,
-        coords={"time": time.astype(datetime), "alt_km": altkm, "lat": [glat], "lon": [glon]},
+        coords={
+            "time": time.astype(datetime),
+            "alt_km": altkm,
+            "lat": [glat],
+            "lon": [glon],
+        },
         attrs={"Ap": Ap, "f107": f107, "f107a": f107a, "species": species},
     )
 

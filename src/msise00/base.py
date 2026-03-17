@@ -61,7 +61,11 @@ def run(
     glat = np.atleast_2d(glat)
     glon = np.atleast_2d(glon)  # has to be here
     # %% altitude 1-D
-    if glat.size == 1 and glon.size == 1 and isinstance(time, (str, date, datetime, np.datetime64)):
+    if (
+        glat.size == 1
+        and glon.size == 1
+        and isinstance(time, (str, date, datetime, np.datetime64))
+    ):
         atmos = rungtd1d(time, altkm, glat.squeeze()[()], glon.squeeze()[()], indices)
     # %% lat/lon grid at 1 altitude
     else:
@@ -108,7 +112,9 @@ def loopalt_gtd(
     return atmos
 
 
-def rungtd1d(time: datetime, altkm, glat, glon, indices: dict[str, T.Any] | None = None):
+def rungtd1d(
+    time: datetime, altkm, glat, glon, indices: dict[str, T.Any] | None = None
+):
     """
     This is the "atomic" function looped by other functions
     """

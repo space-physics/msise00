@@ -1454,7 +1454,7 @@ module physics_msis
                                p(88)*swc(4)*dcos(d_2*dr*(day-p(89)))) * &
                 ((p(65)*plg(3,2)+p(66)*plg(5,2)+p(67)*plg(7,2)+         &
                   p(75)*plg(2,2)+p(76)*plg(4,2)+p(77)*plg(6,2)) *       &
-                  dcos(deg2rad*glong) +                                   & 
+                  dcos(deg2rad*glong) +                                   &
                  (p(91)*plg(3,2)+p(92)*plg(5,2)+p(93)*plg(7,2)+         &
                   p(78)*plg(2,2)+p(79)*plg(4,2)+p(80)*plg(6,2)) *       &
                   dsin(deg2rad*glong))

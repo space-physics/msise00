@@ -23,10 +23,19 @@ time = datetime(2017, 3, 1, 12)
 
 @pytest.mark.parametrize("altkm,reffn", [(100.0, "ref5.nc"), (200.0, "ref6.nc")])
 def test_one_loc_one_time(altkm, reffn):
-    with importlib.resources.as_file(importlib.resources.files(__package__) / reffn) as fn:
+    with importlib.resources.as_file(
+        importlib.resources.files(__package__) / reffn
+    ) as fn:
         ref = xarray.open_dataset(fn)
 
-    ds = {"time": time, "Ap": 39, "Kp": 4.7, "f107": 79.3, "f107s": 74.989727, "Aps": 9.675052}
+    ds = {
+        "time": time,
+        "Ap": 39,
+        "Kp": 4.7,
+        "f107": 79.3,
+        "f107s": 74.989727,
+        "Aps": 9.675052,
+    }
 
     dat = msise00.run(time, altkm, lat, lon, indices=ds).squeeze()
 
@@ -39,7 +48,9 @@ def test_one_loc_one_time(altkm, reffn):
 
 @pytest.mark.parametrize("altkm,reffn", [(100.0, "ref5.nc"), (200.0, "ref6.nc")])
 def test_script(altkm, reffn, tmp_path):
-    with importlib.resources.as_file(importlib.resources.files(__package__) / reffn) as fn:
+    with importlib.resources.as_file(
+        importlib.resources.files(__package__) / reffn
+    ) as fn:
         ref = xarray.open_dataset(fn)
 
     fn = tmp_path / "test.nc"

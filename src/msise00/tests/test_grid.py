@@ -19,7 +19,9 @@ time = "2017-03-01T12"
 
 
 def test_one_alt_one_time():
-    with importlib.resources.as_file(importlib.resources.files(__package__) / "ref3.nc") as fn:
+    with importlib.resources.as_file(
+        importlib.resources.files(__package__) / "ref3.nc"
+    ) as fn:
         ref = xarray.open_dataset(fn)
 
     lat, lon = msise00.worldgrid.latlonworldgrid(30, 60)
@@ -33,7 +35,9 @@ def test_one_alt_one_time():
 
 def test_script(tmp_path):
 
-    with importlib.resources.as_file(importlib.resources.files(__package__) / "ref3.nc") as fn:
+    with importlib.resources.as_file(
+        importlib.resources.files(__package__) / "ref3.nc"
+    ) as fn:
         ref = xarray.open_dataset(fn)
 
     fn = tmp_path / "test.nc"

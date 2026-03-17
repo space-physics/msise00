@@ -34,7 +34,17 @@ def test_past():
     assert atmos["Tn"].item() == approx(655.79, abs=0.01)
     assert atmos["Texo"].item() == approx(875.18, abs=0.01)
 
-    assert atmos.species == ["He", "O", "N2", "O2", "Ar", "Total", "H", "N", "AnomalousO"]
+    assert atmos.species == [
+        "He",
+        "O",
+        "N2",
+        "O2",
+        "Ar",
+        "Total",
+        "H",
+        "N",
+        "AnomalousO",
+    ]
 
 
 def test_forecast():
@@ -50,7 +60,17 @@ def test_forecast():
     dims = list(atmos.dims)
     assert ["time", "alt_km", "lat", "lon"] == dims
 
-    assert atmos.species == ["He", "O", "N2", "O2", "Ar", "Total", "H", "N", "AnomalousO"]
+    assert atmos.species == [
+        "He",
+        "O",
+        "N2",
+        "O2",
+        "Ar",
+        "Total",
+        "H",
+        "N",
+        "AnomalousO",
+    ]
 
     assert atmos["Tn"].item() == approx(616.09, abs=0.1)
     assert atmos["Texo"].item() == approx(769.82, abs=0.01)

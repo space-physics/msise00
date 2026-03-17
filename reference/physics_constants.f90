@@ -13,7 +13,7 @@ module physics_constants
   real(8) , parameter :: navgdr = 6.0221407818_r8
 
   ! Gas constant in J/K/mol
-  real(dp) , parameter :: rgasmol = boltzk*navgdr 
+  real(dp) , parameter :: rgasmol = boltzk*navgdr
 
   ! Molecular weight of water
   real(dp) , parameter :: watmolwgt = 18.01528_r8 ! g/mol
@@ -58,7 +58,7 @@ module physics_constants
   real(dp) , parameter :: rgovcp = rgas/cpd
   real(dp) , parameter :: rgovg  = rgas/egrav
   real(dp) , parameter :: govrg  = egrav/rgas
-  
+
   real(dp) , parameter :: regrav = d_1/egrav
   real(dp) , parameter :: rrgas = d_1/rgas
   real(dp) , parameter :: rcpd = d_1/cpd

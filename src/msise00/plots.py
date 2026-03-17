@@ -62,16 +62,19 @@ def plot4d(atmos, rodir: Path | None = None):
             sun = get_sun(time=time)
             aaf = AltAz(obstime=time, location=obs)
             sloc = sun.transform_to(aaf)
-            slat, slon = aer2geodetic(sloc.az.value, sloc.alt.value, sloc.distance.value, 0, 0, 0)[
-                :2
-            ]
+            slat, slon = aer2geodetic(
+                sloc.az.value, sloc.alt.value, sloc.distance.value, 0, 0, 0
+            )[:2]
             plot2dlatlon(atmos.sel(time=t), rodir, slat, slon)
         else:
             plot2dlatlon(atmos.sel(time=t), rodir)
 
 
 def plot2dlatlon(
-    atmos, rodir: Path | None = None, slat: float | None = None, slon: float | None = None
+    atmos,
+    rodir: Path | None = None,
+    slat: float | None = None,
+    slon: float | None = None,
 ):
 
     fg = figure(figsize=(8, 8))
@@ -116,14 +119,18 @@ def plot2dlatlon(
 
     if rodir:
         ofn = rodir / (
-            f"{atmos.alt_km.item():.1f}_" + str(atmos.time.values.squeeze())[:-13] + ".png"
+            f"{atmos.alt_km.item():.1f}_"
+            + str(atmos.time.values.squeeze())[:-13]
+            + ".png"
         )
         writeplot(fg, ofn)
 
 
 def plot1dalt(atmos, odir: Path | None = None):
 
-    footer = f"\n({atmos.lat.item()},{atmos.lon.item()})  Ap {atmos.Ap}  F10.7 {atmos.f107}"
+    footer = (
+        f"\n({atmos.lat.item()},{atmos.lon.item()})  Ap {atmos.Ap}  F10.7 {atmos.f107}"
+    )
 
     z = atmos.alt_km.values
 
@@ -141,7 +148,9 @@ def plot1dalt(atmos, odir: Path | None = None):
     ax.grid(True)
     ax.set_title("Number Density from MSISE-00" + footer)
     if odir:
-        ofn = odir / ("number-density_" + str(atmos.time.values.squeeze())[:-13] + ".png")
+        ofn = odir / (
+            "number-density_" + str(atmos.time.values.squeeze())[:-13] + ".png"
+        )
         writeplot(fg, ofn)
 
     # %% total mass
@@ -154,7 +163,9 @@ def plot1dalt(atmos, odir: Path | None = None):
     ax.set_title("Total Mass Density from MSISE-00" + footer)
 
     if odir:
-        ofn = odir / ("total-density_" + str(atmos.time.values.squeeze())[:-13] + ".png")
+        ofn = odir / (
+            "total-density_" + str(atmos.time.values.squeeze())[:-13] + ".png"
+        )
         writeplot(fg, ofn)
 
     # %% temperature
@@ -190,7 +201,9 @@ def plot1dtime(atmos, odir: Path | None = None):
     ax.grid(True)
     ax.set_title("Number Density from MSISE-00" + footer)
     if odir:
-        ofn = odir / ("number-density_" + str(atmos.time.values.squeeze())[:-13] + ".png")
+        ofn = odir / (
+            "number-density_" + str(atmos.time.values.squeeze())[:-13] + ".png"
+        )
         writeplot(fg, ofn)
 
     # %% total mass
@@ -203,7 +216,9 @@ def plot1dtime(atmos, odir: Path | None = None):
     ax.set_title("Total Mass Density from MSISE-00" + footer)
 
     if odir:
-        ofn = odir / ("total-density_" + str(atmos.time.values.squeeze())[:-13] + ".png")
+        ofn = odir / (
+            "total-density_" + str(atmos.time.values.squeeze())[:-13] + ".png"
+        )
         writeplot(fg, ofn)
 
     # %% temperature

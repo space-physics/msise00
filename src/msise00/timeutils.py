@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from dateutil.parser import parse
 import numpy as np
 from datetime import datetime, date
 
@@ -22,7 +21,7 @@ def todt64(time: str | datetime):
 def todatetime(time: str | datetime) -> datetime:
 
     if isinstance(time, str):
-        dtime: datetime = parse(time)
+        dtime: datetime = datetime.fromisoformat(time)
     elif isinstance(time, datetime):
         dtime = time
     elif isinstance(time, np.datetime64):

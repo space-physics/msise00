@@ -8,15 +8,15 @@ module utils_spline
 
   contains
 
-!    
+!
 !  Calculate 2nd derivatives of cubic spline interp function
 !  Adapted from numerical recipes by press et al
-!    
+!
     subroutine spline(x,y,yp1,ypn,y2)
       implicit none
-!    
+!
       integer , parameter :: nmax = 100
-!    
+!
       ! Arrays of tabulated function in ascending order by x with y = f(x)
       real(dp) , dimension(:) , intent(in)  :: x , y
       ! Specified derivatives at x(1) and x(n)
@@ -24,7 +24,7 @@ module utils_spline
       real(dp) , intent(in) :: yp1 , ypn
       ! Output array of second derivatives
       real(dp) , dimension(:) , intent(out) :: y2
-!    
+!
       integer :: n , i , k
       real(dp) :: p , qn , sig , un
       real(dp) , dimension(nmax) :: u
@@ -103,7 +103,7 @@ module utils_spline
 !
       ! Arrays of tabulated function values in ascending xa order
       real(dp) , dimension(:) , intent(in) :: xa , ya
-      ! Arrays of second derivatives 
+      ! Arrays of second derivatives
       real(dp) , dimension(:) , intent(in) :: y2a
       ! Abscissa of interpolation
       real(dp) , intent(in) :: x

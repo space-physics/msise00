@@ -2,6 +2,7 @@
 """
 Time profile example
 """
+
 import numpy as np
 from datetime import datetime, timedelta
 from matplotlib.pyplot import show

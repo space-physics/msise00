@@ -15,24 +15,16 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Topic :: Scientific/Engineering :: Atmospheric Science"
 ]
-dependencies = ["python-dateutil", "numpy", "xarray", "geomagindices>=1.4.0"]
+dependencies = ["numpy", "xarray", "geomagindices>=1.4.0"]
 dynamic = ["readme", "version"]
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 
 [tool.setuptools.dynamic]
 readme = {file = ["README.md"], content-type = "text/markdown"}
 version = {attr = "msise00.__version__"}
 
 [project.optional-dependencies]
-tests = ["pytest", "netCDF4"]
-lint = [
-    "flake8",
-    "flake8-bugbear",
-    "flake8-builtins",
-    "flake8-blind-except",
-    "mypy",
-    "types-python-dateutil"
-]
+tests = ["pytest", "netCDF4", "mypy"]
 plot = [
     "matplotlib",
     "astropy",
@@ -44,7 +36,10 @@ plot = [
 line-length = 100
 
 [tool.mypy]
-files = ["src/"]
+files = ["./"]
 
 ignore_missing_imports = true
 allow_redefinition = true
+exclude = [
+    ".archive/"
+]

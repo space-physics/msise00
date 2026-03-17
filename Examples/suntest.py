@@ -2,6 +2,7 @@
 """
 understanding sun apparent position over Earth in geodetic lat,lon
 """
+
 from astropy.time import Time
 from astropy.coordinates import get_sun, AltAz, EarthLocation
 import astropy.units as u
@@ -37,7 +38,9 @@ fg.suptitle(f"sun over 1 year @ lat,lon,alt: {obslla}")
 
 # %%
 
-lat, lon, alt = aer2geodetic(sloc.az.value, sloc.alt.value, sloc.distance.value, *obslla)
+lat, lon, alt = aer2geodetic(
+    sloc.az.value, sloc.alt.value, sloc.distance.value, *obslla
+)
 
 ax = figure().gca()
 ax.plot(time, lat)

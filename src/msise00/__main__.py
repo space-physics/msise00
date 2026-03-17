@@ -16,7 +16,9 @@ from .base import run
 from .worldgrid import latlonworldgrid
 
 
-p = ArgumentParser(description="calls MSISE-00 from Python, save to NetCDF4 and/or plot")
+p = ArgumentParser(
+    description="calls MSISE-00 from Python, save to NetCDF4 and/or plot"
+)
 p.add_argument("-t", "--time", help="time or times", nargs="+", required=True)
 p.add_argument(
     "-a",
@@ -37,7 +39,11 @@ p.add_argument(
 p.add_argument("-o", "--odir", help="directory to write plots to")
 p.add_argument("-w", help="NetCDF4 .nc filename to write")
 p.add_argument(
-    "-gs", help="geographic grid spacing (lat, lon)", nargs=2, type=float, default=(10, 10)
+    "-gs",
+    help="geographic grid spacing (lat, lon)",
+    nargs=2,
+    type=float,
+    default=(10, 10),
 )
 p.add_argument("-q", "--quiet", help="disable plotting", action="store_true")
 P = p.parse_args()
