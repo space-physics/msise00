@@ -28,7 +28,7 @@ jobs:
         python-version: ["3.11", "3.14"]
 
     env:
-      FC: gfortran-15
+      FC: gfortran-14
 
     runs-on: ${{ matrix.os }}
 
