@@ -10,10 +10,12 @@ import pytest
 import sys
 import xarray
 import xarray.testing
+from datetime import datetime
+
 import msise00
 import msise00.worldgrid
 
-time = ["2017-03-01T12", "2017-03-01T13"]
+time = [datetime(2017, 3, 1, 12), datetime(2017, 3, 1, 13)]
 altkm = 200.0
 
 
@@ -48,7 +50,7 @@ def test_script(tmp_path):
         "-a",
         str(altkm),
         "-t",
-    ] + time
+    ] + list(map(str, time))
     print(" ".join(cmd))
     subprocess.check_call(cmd)
 
