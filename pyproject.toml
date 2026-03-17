@@ -41,5 +41,6 @@ files = ["./"]
 ignore_missing_imports = true
 allow_redefinition = true
 exclude = [
-    ".archive/"
+    ".archive/",
+    "^build([/\\\\]|$)"
 ]

@@ -2,7 +2,7 @@ name: matlab
 
 env:
   CTEST_NO_TESTS_ACTION: error
-  CMAKE_BUILD_PARALLEL_LEVEL: 4
+  CMAKE_GENERATOR: Ninja
   CTEST_PARALLEL_LEVEL: 0
 
 on:
@@ -35,21 +35,25 @@ jobs:
 
     steps:
 
-    - name: Install MATLAB
+    - &install-matlab
+      name: Install MATLAB
       timeout-minutes: 10
       uses: matlab-actions/setup-matlab@v2
       with:
         release: ${{ matrix.matlab }}
         cache: true
 
-    - uses: actions/checkout@v4
+    - &checkout
+      uses: actions/checkout@v6
 
-    - name: Lint task
+    - &lint
+      name: Lint task
       uses: matlab-actions/run-build@v2
       with:
         tasks: check
 
-    - name: Test task
+    - &test
+      name: Test task
       uses: matlab-actions/run-build@v2
       with:
         tasks: test
@@ -58,6 +62,10 @@ jobs:
   msys2:
     runs-on: windows-latest
     timeout-minutes: 10
+
+    strategy:
+      matrix:
+        matlab: [R2024b]
 
     steps:
     - uses: msys2/setup-msys2@v2
@@ -70,21 +78,10 @@ jobs:
     - name: Put MSYS2_MinGW64 on PATH
       run: echo "${{ steps.msys2.outputs.msys2-location }}/ucrt64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
-    - name: Install MATLAB
-      timeout-minutes: 10
-      uses: matlab-actions/setup-matlab@v2
-      with:
-        release: R2024b
-        cache: true
+    - *install-matlab
 
-    - uses: actions/checkout@v4
+    - *checkout
 
-    - name: Lint task
-      uses: matlab-actions/run-build@v2
-      with:
-        tasks: check
+    - *lint
 
-    - name: Test task
-      uses: matlab-actions/run-build@v2
-      with:
-        tasks: test
+    - *test
