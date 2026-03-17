@@ -1,9 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Time profile example
 """
 
-import numpy as np
 from datetime import datetime, timedelta
 from matplotlib.pyplot import show
 
@@ -16,7 +15,7 @@ alt_km = 200
 t0 = datetime(2015, 12, 13, 10, 0, 0)
 t1 = datetime(2015, 12, 14, 10, 0, 0)
 
-times = np.arange(t0, t1, timedelta(hours=1))
+times = [t0 + timedelta(hours=i) for i in range(int((t1 - t0).total_seconds() // 3600))]
 
 atmos = msise00.run(times, alt_km, glat, glon)
 

@@ -5,7 +5,6 @@ Original fortran code from
 http://nssdcftp.gsfc.nasa.gov/models/atmospheric/msis/nrlmsise00/
 """
 
-from __future__ import annotations
 import typing as T
 import os
 import logging
@@ -49,7 +48,7 @@ def build():
 
 
 def run(
-    time: datetime,
+    time: datetime | list[datetime],
     altkm,
     glat,
     glon,
@@ -75,7 +74,7 @@ def run(
 
 
 def loopalt_gtd(
-    time: datetime,
+    time: datetime | list[datetime],
     glat,
     glon,
     altkm,
@@ -105,8 +104,7 @@ def loopalt_gtd(
                 # atmos = xarray.concat((atmos, rungtd1d(t, altkm, glat[i,j], glon[i,j])),
                 #                      data_vars='minimal',coords='minimal',dim='lon')
                 atm = rungtd1d(t, altkm, glat[i, j], glon[i, j], indices)
-                atmos = xarray.merge((atmos, atm))
-
+            atmos = xarray.merge((atmos, atm), join='outer', compat='override')
     atmos.attrs = atm.attrs
 
     return atmos
